@@ -1,14 +1,15 @@
 {
   "pages": [
     "pages/profile/profile",
-    "pages/group/group",
+    "pages/createEvent/createEvent",
+    "pages/event/event",
     "pages/index/index",
     "pages/logs/logs"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#000",
-    "navigationBarTitleText": "When2Meet别鸽我",
+    "navigationBarTitleText": "别鸽我",
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
   },
@@ -23,7 +24,7 @@
         "selectedIconPath": "image/user.png"
       },
       {
-        "pagePath": "pages/group/group",
+        "pagePath": "pages/event/event",
         "text": "team",
         "iconPath": "image/group.png",
         "selectedIconPath": "image/group.png"

@@ -5,7 +5,9 @@ Page({
    * Page initial data
    */
   data: {
-    userInfo: ''
+    user: '',
+    nickName:'',
+    profilePic: ''
   },
 
   /**
@@ -13,14 +15,12 @@ Page({
    */
   onLoad: function(options) {
     let that = this
-
     wx.cloud.callFunction({
       name: 'login',
       complete: res => {
         that.setData({
-          userInfo: res.result
+          user: res.result.openId
         })
-        console.log(that.data.userInfo.openId)
         that.setUser()
 
       }
@@ -31,21 +31,35 @@ Page({
     //此处查询theAttrYouSearch中等于aaa的记录
 
   },
-
+  getUser: function(){
+    console.log('getUser')
+    var that = this
+    wx.getUserInfo({
+      success: function (res) {
+        that.setData({
+          nickName: res.userInfo.nickName,
+          profilePic: res.userInfo.avatarUrl
+        })
+        that.updateUser()
+        console.log("mydata" + that.data.nickName)
+      }
+    })
+  },
   setUser: function() {
     let that = this
     const db = wx.cloud.database()
     const _ = db.commond
     try {
-      db.collection("users").doc(that.data.userInfo.openId).get({
+      db.collection("users").doc(that.data.user).get({
         fail: function() {
-          console.log("fail" + that.data.userInfo.openId)
+          console.log("fail" + that.data.user)
           db.collection("users").add({
             data: {
-              _id: that.data.userInfo.openId,
+              _id: that.data.user,
               AttendEvent: 'test',
               SponsorEvent: '',
-              userInfo: that.data.userInfo
+              nickName: '',
+              profilePic:''
             }
           })
         }
@@ -66,7 +80,6 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-    // console.log(getApp().globalData.userInfo)
   },
 
   /**
@@ -124,6 +137,8 @@ Page({
       key: "end",
       data: this.data.end,
     })
+    console.log('submit')
+    this.getUser()
     const db = wx.cloud.database()
     const _ = db.command
     // db.collection('events').add({
@@ -141,15 +156,21 @@ Page({
     // db.collection('events').doc
     // db.collection('users').add({})
     // console.log
-    db.collection('users').doc(this.data.userInfo.openId).update({
-      data:{
-        AttendEvent: 'test'
+
+
+
+
+  },
+  updateUser: function(){
+    const db = wx.cloud.database()
+    const _ = db.command
+    db.collection('users').doc(this.data.user).update({
+      data: {
+        AttendEvent: 'test',
+        nickName: this.data.nickName,
+        profilePic: this.data.profilePic,
       }
     })
-
-
-
-
   }
 
 })

@@ -2,7 +2,8 @@
 App({
   globalData: {
     appid: 'wxd6397161949fd434',
-    secret: 'ee5b16d9d571a666979d75d38ee27c2c'
+    secret: 'ee5b16d9d571a666979d75d38ee27c2c',
+    userInfo:''
   },
   onLaunch: function() {
     if (!wx.cloud) {
@@ -13,5 +14,7 @@ App({
         traceUser: true,
       })
     }
+
   }
+  
 })

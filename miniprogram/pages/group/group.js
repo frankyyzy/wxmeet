@@ -5,7 +5,8 @@ Page({
    * Page initial data
    */
   data: {
-    times: []
+    times: [],
+    event: [{}]
   },
 
   /**
@@ -38,10 +39,22 @@ Page({
     this.setData({
       times: arr
     })
+  },
 
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow: function () {
     const db = wx.cloud.database()
     var start, end;
-    var that=this
+    var that = this
     db.collection('events').doc('94b1e1fc5d0a5d28046e17606e2457ca').get({
       success: function (res) {
         // res.data 包含该记录的数据
@@ -61,20 +74,6 @@ Page({
     });
     console.log("here")
 
-  },
-
-  /**
-   * Lifecycle function--Called when page is initially rendered
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page show
-   */
-  onShow: function () {
-  
   },
 
   /**

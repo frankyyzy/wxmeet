@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/profile/profile",
+    "pages/group/group",
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#000",
+    "navigationBarTitleText": "When2Meet别鸽我",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "backgroundColor": "#FFF",
+    "selectedColor": "#1DFF42",
+    "list": [
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "image/user.png",
+        "selectedIconPath": "image/user.png"
+      },
+      {
+        "pagePath": "pages/group/group",
+        "text": "team",
+        "iconPath": "image/group.png",
+        "selectedIconPath": "image/group.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

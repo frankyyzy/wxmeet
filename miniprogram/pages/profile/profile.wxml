@@ -1,0 +1,19 @@
+<!--pages/profile/profile.wxml-->
+
+  <view class="page-section">
+    <view class="page-section-title">开始时间</view>
+    <view class="textarea-wrp">
+      <textarea bindinput="bindStart" auto-height />
+    </view>
+  </view>
+
+  <view class="page-section">
+    <view class="page-section-title">结束时间</view>
+    <view class="textarea-wrp">
+      <textarea bindinput="bindEnd" auto-height />
+    </view>
+  </view>
+
+  <button size="default" type="primary" bindtap="onSubmitTap">submit</button>
+
+

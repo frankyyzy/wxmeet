@@ -31,7 +31,7 @@
   </picker-view>
 </view>
 
-<view bindtap = "touchAndDrag">
+<!-- <view bindtap = "touchAndDrag">
   <view class="table">
       <view class="tr">
           
@@ -42,6 +42,6 @@
           <view class="td td2" bindtouchstart="mytouchstart" bindlongtap="mylongtap" bindtouchend="mytouchend" bindtap="mytap></view>
       </view>
     </view>
-</view>
+</view> -->
 
 

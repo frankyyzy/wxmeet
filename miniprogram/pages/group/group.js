@@ -19,17 +19,17 @@ Page({
       return
     }
 
-    const db = wx.cloud.database()
-    db.collection('events').get({
-      success: res => {
-        // res.data 包含该记录的数据
-        console.log('hello')
-        console.log(res.data)
-      },
+    // const db = wx.cloud.database()
+    // db.collection('events').get({
+    //   success: res => {
+    //     // res.data 包含该记录的数据
+    //     console.log('hello')
+    //     console.log(res.data)
+    //   },
       fail: err => {
         console.log('error')
       }
-    })
+    // })
 
     var arr = []
     for (var i = 0; i < 24; i++) {
@@ -39,7 +39,27 @@ Page({
       times: arr
     })
 
+    const db = wx.cloud.database()
+    var start, end;
+    var that=this
+    db.collection('events').doc('94b1e1fc5d0a5d28046e17606e2457ca').get({
+      success: function (res) {
+        // res.data 包含该记录的数据
+        console.log(res.data)
+        start = res.data.start
+        end = res.data.end
+        console.log("s" + start + "e" + end)
+        if (start >= 0 && end >= start) {
+          that.update(start, end)
+        }
 
+      },
+
+      fail: err => {
+        console.log('error')
+      }
+    });
+    console.log("here")
 
   },
 
@@ -54,13 +74,7 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    var that = this
-    var start = wx.getStorageSync("start");
-    var end = wx.getStorageSync("end");
-    console.log("s" + start + "e" + end)
-    if (start >= 0 && end >= start) {
-      this.update(start, end)
-    }
+  
   },
 
   /**
@@ -99,6 +113,7 @@ Page({
   },
 
   update(start, end) {
+    console.log("updating...")
     for (var i = 0; i < 24; i++) {
       var value = 0
       if (i >= start && i <= end) value = 1

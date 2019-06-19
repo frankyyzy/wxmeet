@@ -1,4 +1,21 @@
 // pages/profile/profile.js
+const date = new Date()
+const day = []
+const startTime = []
+const endTime = []
+
+for (let i = 1; i<=7; i++) {
+  day.push(i);
+}
+
+for (let i = 0; i <= 23; i++) {
+  startTime.push(i)
+}
+
+for (let i = 0; i <= 23; i++) {
+  endTime.push(i)
+}
+
 Page({
 
   /**
@@ -7,7 +24,10 @@ Page({
   data: {
     user: '',
     nickName:'',
-    profilePic: ''
+    profilePic: '',
+    day: day,
+    startTime: startTime,
+    endTime: endTime,
   },
 
   /**

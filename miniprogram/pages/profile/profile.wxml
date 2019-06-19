@@ -31,7 +31,7 @@
   </picker-view>
 </view>
 
-<!-- <view bindtap = "touchAndDrag">
+<view bindtap = "touchAndDrag">
   <view class="table">
       <view class="tr">
           
@@ -39,9 +39,9 @@
       </view>
       <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
           <view class="td td1" >{{i}}</view>
-          <view class="td td2" bindtouchstart="mytouchstart" bindlongtap="mylongtap" bindtouchend="mytouchend" bindtap="mytap></view>
+          <view class="td td2" ></view>
       </view>
     </view>
-</view> -->
+</view>
 
 

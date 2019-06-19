@@ -140,26 +140,13 @@ Page({
     // })
     // db.collection('events').doc
     // db.collection('users').add({})
-    try {
-      // console.log
-      db.collection('users').doc(this.data.user).set({
-        data: _.set({
-          _id: this.data.user,
-          AttendEvent: 'test5',
-          nickName: this.data.nickName
-        })
-      })
-    } catch (e) {
-      console.log("catch" + e)
-      // db.collection('users').update({
-      //   data: {
-      //     _id: this.data.user,
-      //     AttendEvent: 'test',
-      //     nickName: this.data.nickName
-      //   }
-      // })
-    }
-    console.log("hi")
+    // console.log
+    db.collection('users').doc(this.data.userInfo.openId).update({
+      data:{
+        AttendEvent: 'test'
+      }
+    })
+
 
 
 

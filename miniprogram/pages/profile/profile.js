@@ -7,8 +7,7 @@ Page({
   data: {
 
   },
-
-  /**
+  /*
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
@@ -66,8 +65,27 @@ Page({
 
   onCreateEventTap: function (){
     console.log("tap")
-    wx.navigateTo({
+    wx.redirectTo({
       url: '../createEvent/createEvent',
     })
-  }
+  },
+
+  onSponserEventTap: function () {
+    wx.redirectTo({
+      url: '../masterEvent/masterEvent',
+    })
+  },
+
+  onAttendingEventTap: function () {
+    wx.redirectTo({
+      url: '../guestEvent/guestEvent',
+    })
+  },
+
+
+
+
+
+
+
 })

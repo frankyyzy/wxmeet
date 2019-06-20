@@ -10,4 +10,9 @@
           <view class="td td2">{{times[i]}}</view>
       </view>
     </view>
+
+
+    <button type="primary" bindtap='onBackHomeTap'>回到首页</button>
+    <button type="primary" bindtap='onEditTap'>修改</button>
+    <button type="primary" bindtap='onEndTap'>结束</button>
  </view>

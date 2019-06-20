@@ -1,4 +1,4 @@
-// pages/index/index.js
+// pages/selectTime/selectTime.js
 Page({
 
   /**
@@ -62,5 +62,10 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  onConfirmTap: function () {
+    wx.redirectTo({
+      url: '/pages/guestEvent/guestEvent',
+    })
   }
 })

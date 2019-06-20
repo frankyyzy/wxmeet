@@ -122,5 +122,17 @@ Page({
       })
     }
     console.log(this.data)
+  },
+
+
+  onBackHomeTap: function(){
+    wx.redirectTo({
+      url: '/pages/profile/profile',
+    })
+  },
+  onEditTap: function () {
+    wx.redirectTo({
+      url: '/pages/createEvent/createEvent',
+    })
   }
 })

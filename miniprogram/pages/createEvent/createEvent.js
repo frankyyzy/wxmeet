@@ -154,12 +154,14 @@ Page({
     this.getUser()
     this.updateInterval()
     var that = this
-    // const db = wx.cloud.database()
-    // const _ = db.command
+    const db = wx.cloud.database()
+    const _ = db.command
     // db.collection('events').doc('test').update({
     //   data: {
     //     Attendee: {
-    //       [this.data.user]: _.set((this.data.intervals))
+    //       // [this.data.user]: _.set((this.data.intervals))
+    //       id2: _.set((this.data.intervals))
+
     //     }
     //   }
     // })
@@ -171,10 +173,10 @@ Page({
       },
       success: res => {
         console.log('更新数据成功')
+        wx.redirectTo({
+          url: '/pages/masterEvent/masterEvent',
+        })
       }
-    })
-    wx.redirectTo({
-      url: '/pages/masterEvent/masterEvent',
     })
 
 

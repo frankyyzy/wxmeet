@@ -1,13 +1,14 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
-console.log("here in cloud")
-cloud.init()
-const db = wx.cloud.database()
-const _ = db.command
+cloud.init({
+  env: 'wxmeet-5taii'
+})
 
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
+    const db = wx.cloud.database()
+    const _ = db.command
     return await db.collection('events').doc('test').update({
       data: {
         Attendee: {

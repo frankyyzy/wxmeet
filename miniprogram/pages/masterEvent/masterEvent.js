@@ -1,4 +1,7 @@
 // pages/group/group.js
+const opacity1 = 0.1;
+const opacity2 = 0.9;
+
 Page({
 
   /**
@@ -6,9 +9,11 @@ Page({
    */
   data: {
     times: [],
-    event: [{}]
+    event: [{}],
+    color: [],
   },
 
+  
   /**
    * Lifecycle function--Called when page load
    */
@@ -26,9 +31,26 @@ Page({
     setInterval(function () {
       that.getTime()
     }, 10000)
+
+    
   },
 
-  /**
+  setcolor: function(NumOfPeople){
+    console.log("setting color" +  NumOfPeople);
+    var arr = []
+    console.log(this.data.times)
+
+    for (var i = 0; i < this.data.times.length; i++) {
+
+      console.log("opacity" + (this.data.times[i] / NumOfPeople));
+      arr[i] = "rgba(0, 151, 19," + (this.data.times[i] / NumOfPeople) + ")";
+    }
+    this.setData({
+      color: arr
+    })
+  },
+
+  /** 
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function() {
@@ -45,12 +67,13 @@ Page({
   clear: function () {
     var arr = []
     for (var i = 0; i < 24; i++) {
-      arr[i] = 0
+      arr[i] = 0;
     }
     this.setData({
       times: arr
     })
   },
+
   getTime: function () {
     const db = wx.cloud.database()
     var that = this
@@ -104,10 +127,13 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
+    console.log(Object.keys(arr).length)
     this.setData({
       times: localArr
     })
+    this.setcolor(Object.keys(arr).length)
   },
+
   update(arr, localArr) {
     for (var i = 0; i < 24; i++) {
       if (arr[i]) localArr[i]++

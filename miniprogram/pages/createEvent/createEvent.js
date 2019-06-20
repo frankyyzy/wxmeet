@@ -28,6 +28,8 @@ Page({
     day: day,
     startTime: startTime,
     endTime: endTime,
+    start: -1,
+    end: -1,
     intervals: []
   },
 

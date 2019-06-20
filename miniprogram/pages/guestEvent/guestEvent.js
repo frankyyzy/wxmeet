@@ -1,4 +1,4 @@
-// pages/index/index.js
+// pages/guestEvent/guestEvent.js
 Page({
 
   /**
@@ -62,5 +62,15 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  onBackHomeTap: function () {
+    wx.redirectTo({
+      url: '/pages/profile/profile',
+    })
+  },
+  onEditTap: function () {
+    wx.redirectTo({
+      url: '/pages/selectTime/selectTime',
+    })
   }
 })

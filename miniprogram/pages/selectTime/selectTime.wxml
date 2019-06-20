@@ -1,0 +1,5 @@
+<!--pages/selectTime/selectTime.wxml-->
+<text>pages/selectTime/selectTime.wxml</text>
+
+
+<button type="primary" bindtap='onConfirmTap'>确认</button>

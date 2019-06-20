@@ -177,8 +177,8 @@ Page({
     // db.collection('users').add({})
     // console.log
 
-    wx.switchTab({
-      url: '/pages/event/event',
+    wx.redirectTo({
+      url: '/pages/masterEvent/masterEvent',
     })
 
 

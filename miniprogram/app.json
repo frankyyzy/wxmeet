@@ -2,9 +2,9 @@
   "pages": [
     "pages/profile/profile",
     "pages/createEvent/createEvent",
-    "pages/event/event",
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/masterEvent/masterEvent",
+    "pages/selectTime/selectTime",
+    "pages/guestEvent/guestEvent"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -13,23 +13,6 @@
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
   },
-  "tabBar": {
-    "backgroundColor": "#FFF",
-    "selectedColor": "#1DFF42",
-    "list": [
-      {
-        "pagePath": "pages/profile/profile",
-        "text": "我的",
-        "iconPath": "image/user.png",
-        "selectedIconPath": "image/user.png"
-      },
-      {
-        "pagePath": "pages/event/event",
-        "text": "team",
-        "iconPath": "image/group.png",
-        "selectedIconPath": "image/group.png"
-      }
-    ]
-  },
+
   "sitemapLocation": "sitemap.json"
 }

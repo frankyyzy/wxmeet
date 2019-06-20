@@ -42,7 +42,6 @@ Page({
           user: res.result.openId
         })
         that.setUser()
-
       }
     })
 
@@ -52,7 +51,7 @@ Page({
 
   },
   getUser: function(){
-    console.log('getUser')
+    // console.log('getUser')
     var that = this
     wx.getUserInfo({
       success: function (res) {
@@ -61,7 +60,7 @@ Page({
           profilePic: res.userInfo.avatarUrl
         })
         that.updateUser()
-        console.log("mydata" + that.data.nickName)
+        // console.log("mydata" + that.data.nickName)
       }
     })
   },
@@ -149,39 +148,33 @@ Page({
   },
 
   onSubmitTap: function() {
-    wx.setStorage({
-      key: "start",
-      data: this.data.start,
-    })
-    wx.setStorage({
-      key: "end",
-      data: this.data.end,
-    })
-    console.log('submit')
     this.getUser()
+    this.updateInterval()
     const db = wx.cloud.database()
     const _ = db.command
-    // db.collection('events').add({
-    //   // data 字段表示需新增的 JSON 数据
-    //   data: {
-    //     // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
-    //     start: this.data.start,
-    //     end: this.data.end
-    //   },
-    //   success: function (res) {
-    //     // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
-    //     console.log(res)
-    //   }
-    // })
-    // db.collection('events').doc
-    // db.collection('users').add({})
-    // console.log
-
+    db.collection('events').doc('test').update({
+      data: {
+        Attendee: {
+          [this.data.user]: _.set((this.data.intervals))
+        }
+      }
+    })
     wx.redirectTo({
       url: '/pages/masterEvent/masterEvent',
     })
 
 
+  },
+  updateInterval: function () {
+    var arr = []
+    for (var i = 0; i < 24; i++) {
+      var value = false
+      if (i >= this.data.start && i <= this.data.end) value = true
+      arr[i] = value
+    }
+    this.setData({
+      intervals: arr
+    })
   },
   updateUser: function(){
     const db = wx.cloud.database()

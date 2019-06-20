@@ -2,7 +2,6 @@
 .history-table-wrap{
   position: absolute;
   width: 668rpx;
-  height: 578rpx;
   left: 50%;
   margin-left: -334rpx;
   top: 70rpx;

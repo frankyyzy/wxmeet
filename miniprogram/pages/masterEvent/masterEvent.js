@@ -19,26 +19,13 @@ Page({
       })
       return
     }
-
-    // const db = wx.cloud.database()
-    // db.collection('events').get({
-    //   success: res => {
-    //     // res.data 包含该记录的数据
-    //     console.log('hello')
-    //     console.log(res.data)
-    //   },
-    fail: err => {
-      console.log('error')
-    }
-    // })
-
-    var arr = []
-    for (var i = 0; i < 24; i++) {
-      arr[i] = 0
-    }
-    this.setData({
-      times: arr
-    })
+    const db = wx.cloud.database()
+    var start, end;
+    var that = this
+    this.getTime()
+    setInterval(function () {
+      that.getTime()
+    }, 10000)
   },
 
   /**
@@ -52,28 +39,26 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+    this.getTime()
+  },
+
+  clear: function () {
+    var arr = []
+    for (var i = 0; i < 24; i++) {
+      arr[i] = 0
+    }
+    this.setData({
+      times: arr
+    })
+  },
+  getTime: function () {
     const db = wx.cloud.database()
-    var start, end;
     var that = this
-    db.collection('events').doc('94b1e1fc5d0a5d28046e17606e2457ca').get({
-      success: function(res) {
-        // res.data 包含该记录的数据
-        console.log(res.data)
-        start = res.data.start
-        end = res.data.end
-        console.log("s" + start + "e" + end)
-        if (start >= 0 && end >= start) {
-          that.update(start, end)
-        }
-
-      },
-
-      fail: err => {
-        console.log('error')
+    db.collection('events').doc('test').get({
+      success: function (res) {
+        that.calcTime(res.data.Attendee)
       }
-    });
-    console.log("here")
-
+    })
   },
 
   /**
@@ -111,17 +96,22 @@ Page({
 
   },
 
-  update(start, end) {
-    console.log("updating...")
+  calcTime: function (arr) {
+    var localArr = []
     for (var i = 0; i < 24; i++) {
-      var value = 0
-      if (i >= start && i <= end) value = 1
-      var key = "times[" + i + "]"
-      this.setData({
-        [key]: value
-      })
+      localArr[i] = 0
     }
-    console.log(this.data)
+    for (var i in arr) {
+      this.update(arr[i], localArr)
+    }
+    this.setData({
+      times: localArr
+    })
+  },
+  update(arr, localArr) {
+    for (var i = 0; i < 24; i++) {
+      if (arr[i]) localArr[i]++
+    }
   },
 
 

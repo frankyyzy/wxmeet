@@ -153,13 +153,24 @@ Page({
   onSubmitTap: function() {
     this.getUser()
     this.updateInterval()
+    var that = this
     const db = wx.cloud.database()
     const _ = db.command
-    db.collection('events').doc('test').update({
+    // db.collection('events').doc('test').update({
+    //   data: {
+    //     Attendee: {
+    //       [this.data.user]: _.set((this.data.intervals))
+    //     }
+    //   }
+    // })
+    wx.cloud.callFunction({
+      name: 'updateEvent',
       data: {
-        Attendee: {
-          [this.data.user]: _.set((this.data.intervals))
-        }
+        id: that.data.user,
+        intervals: that.data.intervals
+      },
+      success: res => {
+        console.log('更新数据成功')
       }
     })
     wx.redirectTo({

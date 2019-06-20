@@ -30,7 +30,7 @@ Page({
     endTime: endTime,
     start: -1,
     end: -1,
-    intervals: []
+    intervals: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
 
   /**
@@ -200,6 +200,26 @@ Page({
         profilePic: this.data.profilePic,
       }
     })
+  },
+  mytouchstart: function (e) {
+    console.log(e.timeStamp + '- touch start')
+  },
+  //长按事件
+  mylongtap: function (e) {
+    console.log(e.timeStamp + '- long tap')
+  },
+  mytouchend: function (e) {
+    console.log(e.timeStamp + '- touch end')
+  },
+  mytap: function (e) {
+    var ID = parseInt(e.target.id)
+    var interv = []
+    interv = this.data.intervals
+    interv[ID] = 1 - interv[ID]
+    this.setData({
+      intervals: interv
+    })
+    console.log()
   }
 
 })

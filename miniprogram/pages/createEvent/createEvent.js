@@ -154,8 +154,8 @@ Page({
     this.getUser()
     this.updateInterval()
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
+    // const db = wx.cloud.database()
+    // const _ = db.command
     // db.collection('events').doc('test').update({
     //   data: {
     //     Attendee: {
@@ -164,7 +164,7 @@ Page({
     //   }
     // })
     wx.cloud.callFunction({
-      name: 'updateEvent',
+      name: 'updateevent',
       data: {
         id: that.data.user,
         intervals: that.data.intervals

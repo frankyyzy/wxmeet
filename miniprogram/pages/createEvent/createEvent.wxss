@@ -45,19 +45,26 @@ textarea {
   display: flex;
   justify-content: space-between;
 }
-.th,.td{
+.th{
   padding: 10px;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
-  width: 100%;
-}
-.th2{
   width:100%
-
 }
-.td1,.td2{
-  width: 50%;
+.td{
+  padding: 10px;
+  border-bottom: 1px solid #dadada;
+  border-right: 1px solid #dadada;
+  text-align: center;
+  width:50%
+}
+
+.tdblwhite{
+  background-color:#fff;
+}
+.tdblgreen{
+  background-color:#52962a;
 }
 .th{
   font-weight: 800;

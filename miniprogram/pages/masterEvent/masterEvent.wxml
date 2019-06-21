@@ -1,6 +1,13 @@
 <!--pages/group/group.wxml-->
 <view class='history-table-wrap'>
     <view class="table">
+       <view class="myToast" hidden="{{nullHouse}}">{{display}}
+
+       <view wx:for="{{numOfPics}}" wx:for-item="i">
+          <image class="profilepic" src="{{pics[i]}}"></image>
+       </view>
+      
+    </view>
       <view class="tr">
           <view class="th th1">小时</view>
           <view class="th th2">人数</view>
@@ -9,12 +16,17 @@
           <view class="td td1">{{i}}</view>
           <view style='background:{{color[i]}}' class="td td2" bindtouchstart='onTouchStart' bindtouchend='onTouchEnd' id ="{{i}}" >{{times[i]}}</view>
       </view>
+
+
+ 
+
+
     </view>
 
-    <view class="myToast" hidden="{{nullHouse}}">{{display}}</view>
 
 
-  <button type="primary" bindtap='onBackHomeTap'>回到首页</button>
+
+    <button type="primary" bindtap='onBackHomeTap'>回到首页</button>
     <button type="primary" bindtap='onEditTap'>修改</button>
     <button type="primary" bindtap='onEndTap'>结束</button>
 

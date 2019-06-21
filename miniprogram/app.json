@@ -1,8 +1,9 @@
 {
   "pages": [
+    "pages/masterEvent/masterEvent",
     "pages/profile/profile",
     "pages/createEvent/createEvent",
-    "pages/masterEvent/masterEvent",
+    
     "pages/selectTime/selectTime",
     "pages/guestEvent/guestEvent"
   ],

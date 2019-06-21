@@ -1,19 +1,19 @@
 // pages/group/group.js
-const opacity1 = 0.1;
-const opacity2 = 0.9;
-
 const app = getApp()
+const db = wx.cloud.database()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    event: [{}],
+    attendee: new Array(24),
     color: [],
     nullHouse: true,  //先设置隐藏
     display: "",
     times: app.globalData.times,
+    pics: [],
+    numOfPics: [0,1],
   },
 
   
@@ -21,6 +21,7 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+
     if (!wx.cloud) {
       wx.redirectTo({
         url: '../chooseLib/chooseLib',
@@ -38,13 +39,9 @@ Page({
   },
 
   setcolor: function(NumOfPeople){
-    console.log("setting color" +  NumOfPeople);
+ 
     var arr = []
-    console.log(this.data.times)
-
     for (var i = 0; i < this.data.times.length; i++) {
-
-      console.log("opacity" + (this.data.times[i] / NumOfPeople));
       arr[i] = "rgba(0, 151, 19," + (this.data.times[i] / NumOfPeople) + ")";
     }
     this.setData({
@@ -80,10 +77,12 @@ Page({
     var that = this
     db.collection('events').doc('test').get({
       success: function(res) {
-        that.calcTime(res.data.Attendee)
+        that.calcTime(res.data.Attendee);
+        that.updateAttendee(res.data.Attendee);
       }
     })
   },
+
 
   /**
    * Lifecycle function--Called when page hide
@@ -119,6 +118,30 @@ Page({
   onShareAppMessage: function() {
 
   },
+  updateAttendee: function (dict_id_to_scheduleArr) {
+    var attendeeArr = [[]];
+   
+  
+
+    for (var id in dict_id_to_scheduleArr){
+      var scheduleArr = dict_id_to_scheduleArr[id]
+     
+      for (var i = 0; i < 24; i++) {
+        if (scheduleArr[i]) {
+          if (attendeeArr[i]){
+            attendeeArr[i].push(id);
+          } else {
+            attendeeArr[i] = [id];
+          }
+        
+        }
+      }
+    }
+    
+    this.setData({
+      attendee: attendeeArr
+    })
+  },
 
   calcTime: function(arr) {
     var localArr = []
@@ -128,7 +151,6 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
-    console.log(Object.keys(arr).length)
     app.globalData.times = localArr
     this.setData({
       times: app.globalData.times
@@ -156,13 +178,46 @@ Page({
   },
   onTouchStart: function(e){
     var ID = parseInt(e.target.id)
-    // wx.showToast({
-    //   title: this.data.times[ID].toString(),
-    //  })
+
+    // set number of pictures to show
+    var numOfPicsToShow = this.data.times[ID]
     this.setData({
-      display: this.data.times[ID].toString() + " people are available",
-      nullHouse:false
+      numOfPics: Array(numOfPicsToShow).fill().map((v, i) => i)
     })
+    
+    // set the url for profile pics 
+    var picUrl = [];
+
+    for ( var key in this.data.attendee[ID]){
+      
+      var id = this.data.attendee[ID][key];
+      var that = this;
+
+
+      //get url from the user id 
+      db.collection('users').doc(id).get({
+        success: function (res) {
+          // res.data 包含该记录的数据
+          picUrl.push(res.data.profilePic)
+          console.log(id)
+          console.log(picUrl)
+          that.setData({
+            pics: picUrl
+          })
+          that.setData({
+            display: numOfPicsToShow.toString() + " people are available",
+            nullHouse: false
+          })
+
+        },
+
+        error: e =>{
+          console.log(e)
+        }
+      })
+
+    }
+
 
   },
   onTouchEnd: function () {

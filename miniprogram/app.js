@@ -26,7 +26,7 @@ App({
           success: function(res) {
             if (res.data.length == 0) {
               wx.redirectTo({
-                url: '../authorize/authorize', //授权页面
+                url: '/pages/authorize/authorize', //授权页面
               })
             } else {
               wx.getSetting({
@@ -34,12 +34,12 @@ App({
                   if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
                     wx.getUserInfo({
                       success: (res) => {
-                        console.log(res)
+                        // console.log(res)
                       }
                     })
                   } else { //未授权，跳到授权页面
                     wx.redirectTo({
-                      url: '../authorize/authorize', //授权页面
+                      url: '/pages/authorize/authorize', //授权页面
                     })
                   }
                 }

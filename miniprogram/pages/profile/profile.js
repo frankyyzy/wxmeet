@@ -1,32 +1,22 @@
 // pages/profile/profile.js
+const app = getApp()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-
+    SponsorList: [],
+    AttendingList: []
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
     var that = this;
-    // 判断是否已经授权
-    // wx.getSetting({
-    //   success: (res) => {
-    //     if (res.authSetting['scope.userInfo']) {//授权了，可以获取用户信息了
-    //       wx.getUserInfo({
-    //         success: (res) => {
-    //           console.log(res)
-    //         }
-    //       })
-    //     } else {//未授权，跳到授权页面
-    //       wx.redirectTo({
-    //         url: '../authorize/authorize',//授权页面
-    //       })
-    //     }
-    //   }
+    var db = wx.cloud.database()
+    // db.collection('users').doc(app.globalData.user).get({
+
     // })
   },
 
@@ -80,9 +70,8 @@ Page({
   },
 
   onCreateEventTap: function (){
-    // console.log("tap")
     var edit = false
-    wx.redirectTo({
+    wx.navigateTo({
       url: '../createEvent/createEvent?edit=' + edit,
     })
   },

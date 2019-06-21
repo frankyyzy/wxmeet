@@ -1,6 +1,4 @@
 // pages/group/group.js
-const opacity1 = 0.1;
-const opacity2 = 0.9;
 const app = getApp()
 Page({
 
@@ -37,7 +35,7 @@ Page({
 
     for (var i = 0; i < this.data.times.length; i++) {
 
-      console.log("opacity" + (this.data.times[i] / NumOfPeople));
+      // console.log("opacity" + (this.data.times[i] / NumOfPeople));
       arr[i] = "rgba(0, 151, 19," + (this.data.times[i] / NumOfPeople) + ")";
     }
     this.setData({

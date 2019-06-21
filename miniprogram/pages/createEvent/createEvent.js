@@ -3,7 +3,6 @@ const date = new Date()
 const day = []
 const startTime = []
 const endTime = []
-
 for (let i = 1; i<=7; i++) {
   day.push(i);
 }
@@ -47,11 +46,18 @@ Page({
         that.setUser()
       }
     })
-
-
     //详情见云开发手册command eq,lt,gt,in,and等
     //此处查询theAttrYouSearch中等于aaa的记录
-
+  },
+  updateTable: function(){
+    var that = this
+    const db = wx.cloud.database()
+    const _ = db.command
+    db.collection('events').doc('test').get({
+      success:function(res){
+        wx.setStorageSync('attendee', res.data.Attendee)
+      }
+    })
   },
   getUser: function(){
     // console.log('getUser')
@@ -156,15 +162,6 @@ Page({
     var that = this
     const db = wx.cloud.database()
     const _ = db.command
-    // db.collection('events').doc('test').update({
-    //   data: {
-    //     Attendee: {
-    //       // [this.data.user]: _.set((this.data.intervals))
-    //       id2: _.set((this.data.intervals))
-
-    //     }
-    //   }
-    // })
     wx.cloud.callFunction({
       name: 'updateEvent',
       data: {
@@ -172,7 +169,8 @@ Page({
         intervals: that.data.intervals
       },
       success: res => {
-        console.log('更新数据成功')
+        console.log("time"+res)
+        that.updateTable
         wx.redirectTo({
           url: '/pages/masterEvent/masterEvent',
         })

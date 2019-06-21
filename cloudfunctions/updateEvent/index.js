@@ -8,8 +8,8 @@ exports.main = async (event, context) => {
   try {
     return await db.collection('events').doc('test').update({
       data: {
-        Attendee: _.set({
-          [event.id]: (event.intervals)
+        Attendee: ({
+          [event.id]:_.set(event.intervals)
           })
         }
       })

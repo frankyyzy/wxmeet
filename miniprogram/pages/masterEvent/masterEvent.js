@@ -2,17 +2,18 @@
 const opacity1 = 0.1;
 const opacity2 = 0.9;
 
+const app = getApp()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    times: [],
     event: [{}],
     color: [],
     nullHouse: true,  //先设置隐藏
     display: "",
+    times: app.globalData.times,
   },
 
   
@@ -27,10 +28,9 @@ Page({
       return
     }
     const db = wx.cloud.database()
-    var start, end;
     var that = this
     this.getTime()
-    setInterval(function () {
+    setInterval(function() {
       that.getTime()
     }, 10000)
 
@@ -63,10 +63,9 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-    this.getTime()
   },
 
-  clear: function () {
+  clear: function() {
     var arr = []
     for (var i = 0; i < 24; i++) {
       arr[i] = 0;
@@ -80,7 +79,7 @@ Page({
     const db = wx.cloud.database()
     var that = this
     db.collection('events').doc('test').get({
-      success: function (res) {
+      success: function(res) {
         that.calcTime(res.data.Attendee)
       }
     })
@@ -121,7 +120,7 @@ Page({
 
   },
 
-  calcTime: function (arr) {
+  calcTime: function(arr) {
     var localArr = []
     for (var i = 0; i < 24; i++) {
       localArr[i] = 0
@@ -130,10 +129,12 @@ Page({
       this.update(arr[i], localArr)
     }
     console.log(Object.keys(arr).length)
+    app.globalData.times = localArr
     this.setData({
-      times: localArr
+      times: app.globalData.times
     })
     this.setcolor(Object.keys(arr).length)
+    wx.setStorageSync('times', app.globalData.times)
   },
 
   update(arr, localArr) {
@@ -143,12 +144,12 @@ Page({
   },
 
 
-  onBackHomeTap: function(){
+  onBackHomeTap: function() {
     wx.redirectTo({
       url: '/pages/profile/profile',
     })
   },
-  onEditTap: function () {
+  onEditTap: function() {
     wx.redirectTo({
       url: '/pages/createEvent/createEvent',
     })

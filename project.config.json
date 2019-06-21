@@ -6,13 +6,17 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"nodeModules": true
 	},
 	"appid": "wxd6397161949fd434",
 	"projectname": "wxmeetcloud",
 	"libVersion": "2.7.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
+	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
 	"condition": {
 		"search": {
 			"current": -1,

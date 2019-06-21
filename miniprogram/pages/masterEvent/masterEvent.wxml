@@ -11,6 +11,8 @@
       </view>
     </view>
 
+    <view class="myToast" hidden="{{nullHouse}}">{{display}}</view>
+
 
   <button type="primary" bindtap='onBackHomeTap'>回到首页</button>
     <button type="primary" bindtap='onEditTap'>修改</button>

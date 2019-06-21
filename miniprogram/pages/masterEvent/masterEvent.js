@@ -9,14 +9,15 @@ Page({
   data: {
     attendee: new Array(24),
     color: [],
-    nullHouse: true,  //先设置隐藏
+    nullHouse: true, //先设置隐藏
     display: "",
-    times: app.globalData.times,
     pics: [],
     numOfPics: [0,1],
+    times: wx.getStorageSync('times'),
+    timer: null
   },
 
-  
+
   /**
    * Lifecycle function--Called when page load
    */
@@ -28,14 +29,8 @@ Page({
       })
       return
     }
-    const db = wx.cloud.database()
-    var that = this
-    this.getTime()
-    setInterval(function() {
-      that.getTime()
-    }, 10000)
 
-    
+
   },
 
   setcolor: function(NumOfPeople){
@@ -60,6 +55,14 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+    var that = this
+    this.getTime()
+    this.setData({
+      timer: setInterval(function () {
+        that.getTime()
+      }, 10000)
+    })
+
   },
 
   clear: function() {
@@ -72,7 +75,7 @@ Page({
     })
   },
 
-  getTime: function () {
+  getTime: function() {
     const db = wx.cloud.database()
     var that = this
     db.collection('events').doc('test').get({
@@ -88,14 +91,14 @@ Page({
    * Lifecycle function--Called when page hide
    */
   onHide: function() {
-
+    clearInterval(this.data.timer)
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
   onUnload: function() {
-
+    clearInterval(this.data.timer)
   },
 
   /**
@@ -151,12 +154,14 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
-    app.globalData.times = localArr
+    console.log(Object.keys(arr).length)
+    // app.globalData.times = localArr
     this.setData({
-      times: app.globalData.times
+      times: localArr
     })
     this.setcolor(Object.keys(arr).length)
-    wx.setStorageSync('times', app.globalData.times)
+    wx.hideLoading()
+    // wx.setStorageSync('times', app.globalData.times)
   },
 
   update(arr, localArr) {
@@ -172,17 +177,20 @@ Page({
     })
   },
   onEditTap: function() {
-    wx.redirectTo({
-      url: '/pages/createEvent/createEvent',
+    var edit = true
+    wx.navigateTo({
+      url: '/pages/createEvent/createEvent?edit=' + edit,
     })
   },
-  onTouchStart: function(e){
+  onTouchStart: function(e) {
     var ID = parseInt(e.target.id)
 
     // set number of pictures to show
     var numOfPicsToShow = this.data.times[ID]
     this.setData({
-      numOfPics: Array(numOfPicsToShow).fill().map((v, i) => i)
+      numOfPics: Array(numOfPicsToShow).fill().map((v, i) => i),
+      display: this.data.times[ID].toString() + " people are available",
+      nullHouse: false
     })
     
     // set the url for profile pics 
@@ -220,7 +228,7 @@ Page({
 
 
   },
-  onTouchEnd: function () {
+  onTouchEnd: function() {
     wx.hideToast();
     this.setData({
       nullHouse: true

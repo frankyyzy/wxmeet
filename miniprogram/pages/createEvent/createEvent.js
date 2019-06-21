@@ -29,6 +29,7 @@ Page({
     endTime: endTime,
     start: -1,
     end: -1,
+    edit: false,
     intervals: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
 
@@ -37,6 +38,9 @@ Page({
    */
   onLoad: function(options) {
     let that = this
+    this.setData({
+      edit: options.edit
+    })
     wx.cloud.callFunction({
       name: 'login',
       complete: res => {
@@ -60,7 +64,7 @@ Page({
       }
     })
   },
-  calcTime: function (arr) {
+  calcTime: function(arr) {
     var localArr = []
     for (var i = 0; i < 24; i++) {
       localArr[i] = 0
@@ -68,8 +72,9 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
-    app.globalData.times = localArr
-    // console.log("global" + app.globalData.times)
+    // app.globalData.times = localArr
+    wx.setStorageSync('times', localArr)
+    // console.log("global" + localArr)
   },
   update(arr, localArr) {
     for (var i = 0; i < 24; i++) {
@@ -165,6 +170,9 @@ Page({
   },
 
   onSubmitTap: function() {
+    wx.showLoading({
+      title: '',
+    })
     this.getUser()
     this.updateInterval()
     var that = this
@@ -178,9 +186,16 @@ Page({
       },
       success: res => {
         // console.log("time" + res.data)
-        wx.redirectTo({
-          url: '/pages/masterEvent/masterEvent',
-        })
+        // this.updateTimes()
+        if (this.data.edit) {
+          wx.navigateBack({
+            delta: 1
+          })
+        } else {
+          wx.redirectTo({
+            url: '/pages/masterEvent/masterEvent',
+          })
+        }
       }
     })
 
@@ -208,17 +223,17 @@ Page({
       }
     })
   },
-  mytouchstart: function (e) {
+  mytouchstart: function(e) {
     console.log(e.timeStamp + '- touch start')
   },
   //长按事件
-  mylongtap: function (e) {
+  mylongtap: function(e) {
     console.log(e.timeStamp + '- long tap')
   },
-  mytouchend: function (e) {
+  mytouchend: function(e) {
     console.log(e.timeStamp + '- touch end')
   },
-  mytap: function (e) {
+  mytap: function(e) {
     var ID = parseInt(e.target.id)
     var interv = []
     interv = this.data.intervals

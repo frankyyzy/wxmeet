@@ -64,9 +64,10 @@ Page({
   },
 
   onCreateEventTap: function (){
-    console.log("tap")
+    // console.log("tap")
+    var edit = false
     wx.redirectTo({
-      url: '../createEvent/createEvent',
+      url: '../createEvent/createEvent?edit=' + edit,
     })
   },
 

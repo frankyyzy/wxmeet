@@ -40,8 +40,10 @@ textarea {
   width: 98%;
   margin-left: 1%;
 }
+.title{
+  display:flex;
+}
 .tr{
-  width:100%;
   display: flex;
   justify-content: space-between;
 }
@@ -50,14 +52,39 @@ textarea {
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
-  width:100%
+  background-color: #b66242;
+  font-size: 28rpx;
+  color: #330e0e;
 }
+
 .td{
   padding: 10px;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
-  width:50%
+  font-size: 20rpx;
+  color: #ec9480;
+}
+.td1{
+  width:49%;
+}
+.td2{
+  width:32%;
+}
+.td3{
+  width:25%;
+}
+.td4{
+  width:20%;
+}
+.td5{
+  width:16.66%;
+}
+.td6{
+  width:14.28%;
+}
+.td7{
+  width:12.5%;
 }
 
 .tdblwhite{
@@ -66,13 +93,4 @@ textarea {
 .tdblgreen{
   background-color:#52962a;
 }
-.th{
-  font-weight: 800;
-  background-color: #b66242;
-  font-size: 28rpx;
-  color: #330e0e;
-}
-.td{
-  font-size: 20rpx;
-  color: #ec9480;
-}
+

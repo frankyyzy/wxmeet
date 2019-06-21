@@ -3,7 +3,7 @@ App({
   globalData: {
     appid: 'wxd6397161949fd434',
     secret: 'ee5b16d9d571a666979d75d38ee27c2c',
-    userInfo:''
+    times: wx.getStorageSync('times')
   },
   onLaunch: function() {
     if (!wx.cloud) {
@@ -15,6 +15,12 @@ App({
       })
     }
 
-  }
-  
+    // this.globalData.times = wx.getStorageSync('attendee')
+    console.log(this.globalData.times)
+    // for(var i = 0; i < 24; i++) 
+    // this.globalData.times[i] = 
+    // wx.setStorageSync('times', this.globalData.times)
+    // this.updateTimes()
+  },
+
 })

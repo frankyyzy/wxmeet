@@ -1,12 +1,12 @@
 // pages/group/group.js
+const app = getApp()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    times: [],
-    event: [{}]
+    times: app.globalData.times,
   },
 
   /**
@@ -20,10 +20,9 @@ Page({
       return
     }
     const db = wx.cloud.database()
-    var start, end;
     var that = this
     this.getTime()
-    setInterval(function () {
+    setInterval(function() {
       that.getTime()
     }, 10000)
   },
@@ -39,10 +38,9 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-    this.getTime()
   },
 
-  clear: function () {
+  clear: function() {
     var arr = []
     for (var i = 0; i < 24; i++) {
       arr[i] = 0
@@ -51,11 +49,11 @@ Page({
       times: arr
     })
   },
-  getTime: function () {
+  getTime: function() {
     const db = wx.cloud.database()
     var that = this
     db.collection('events').doc('test').get({
-      success: function (res) {
+      success: function(res) {
         that.calcTime(res.data.Attendee)
       }
     })
@@ -96,7 +94,7 @@ Page({
 
   },
 
-  calcTime: function (arr) {
+  calcTime: function(arr) {
     var localArr = []
     for (var i = 0; i < 24; i++) {
       localArr[i] = 0
@@ -104,9 +102,11 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
+    app.globalData.times = localArr
     this.setData({
-      times: localArr
+      times: app.globalData.times
     })
+    wx.setStorageSync('times', app.globalData.times)
   },
   update(arr, localArr) {
     for (var i = 0; i < 24; i++) {
@@ -115,12 +115,12 @@ Page({
   },
 
 
-  onBackHomeTap: function(){
+  onBackHomeTap: function() {
     wx.redirectTo({
       url: '/pages/profile/profile',
     })
   },
-  onEditTap: function () {
+  onEditTap: function() {
     wx.redirectTo({
       url: '/pages/createEvent/createEvent',
     })

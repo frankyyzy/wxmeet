@@ -3,7 +3,7 @@ const date = new Date()
 const day = []
 const startTime = []
 const endTime = []
-for (let i = 1; i<=7; i++) {
+for (let i = 1; i <= 7; i++) {
   day.push(i);
 }
 
@@ -14,7 +14,7 @@ for (let i = 0; i <= 23; i++) {
 for (let i = 0; i <= 23; i++) {
   endTime.push(i)
 }
-
+const app = getApp()
 Page({
 
   /**
@@ -22,7 +22,7 @@ Page({
    */
   data: {
     user: '',
-    nickName:'',
+    nickName: '',
     profilePic: '',
     day: day,
     startTime: startTime,
@@ -48,28 +48,43 @@ Page({
     })
     //详情见云开发手册command eq,lt,gt,in,and等
     //此处查询theAttrYouSearch中等于aaa的记录
+    // this.updateTimes()
   },
-  updateTable: function(){
+  updateTimes: function() {
     var that = this
     const db = wx.cloud.database()
     const _ = db.command
     db.collection('events').doc('test').get({
-      success:function(res){
-        wx.setStorageSync('attendee', res.data.Attendee)
+      success: function(res) {
+        that.calcTime(res.data.Attendee)
       }
     })
   },
-  getUser: function(){
-    // console.log('getUser')
+  calcTime: function (arr) {
+    var localArr = []
+    for (var i = 0; i < 24; i++) {
+      localArr[i] = 0
+    }
+    for (var i in arr) {
+      this.update(arr[i], localArr)
+    }
+    app.globalData.times = localArr
+    // console.log("global" + app.globalData.times)
+  },
+  update(arr, localArr) {
+    for (var i = 0; i < 24; i++) {
+      if (arr[i]) localArr[i]++
+    }
+  },
+  getUser: function() {
     var that = this
     wx.getUserInfo({
-      success: function (res) {
+      success: function(res) {
         that.setData({
           nickName: res.userInfo.nickName,
           profilePic: res.userInfo.avatarUrl
         })
         that.updateUser()
-        // console.log("mydata" + that.data.nickName)
       }
     })
   },
@@ -78,18 +93,12 @@ Page({
     const db = wx.cloud.database()
     const _ = db.commond
     try {
-      db.collection("users").doc(that.data.user).get({
-        fail: function() {
-          console.log("fail" + that.data.user)
-          db.collection("users").add({
-            data: {
-              _id: that.data.user,
-              AttendEvent: 'test',
-              SponsorEvent: '',
-              nickName: '',
-              profilePic:''
-            }
-          })
+      db.collection("users").doc(that.data.user).set({
+        data: {
+          AttendEvent: 'test',
+          SponsorEvent: '',
+          nickName: '',
+          profilePic: ''
         }
       })
     } catch (e) {
@@ -107,8 +116,7 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
-  },
+  onShow: function() {},
 
   /**
    * Lifecycle function--Called when page hide
@@ -169,8 +177,7 @@ Page({
         intervals: that.data.intervals
       },
       success: res => {
-        console.log("time"+res)
-        that.updateTable
+        // console.log("time" + res.data)
         wx.redirectTo({
           url: '/pages/masterEvent/masterEvent',
         })
@@ -179,7 +186,7 @@ Page({
 
 
   },
-  updateInterval: function () {
+  updateInterval: function() {
     var arr = []
     for (var i = 0; i < 24; i++) {
       var value = false
@@ -190,7 +197,7 @@ Page({
       intervals: arr
     })
   },
-  updateUser: function(){
+  updateUser: function() {
     const db = wx.cloud.database()
     const _ = db.command
     db.collection('users').doc(this.data.user).update({

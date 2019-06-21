@@ -11,6 +11,8 @@ Page({
     times: [],
     event: [{}],
     color: [],
+    nullHouse: true,  //先设置隐藏
+    display: "",
   },
 
   
@@ -153,13 +155,20 @@ Page({
   },
   onTouchStart: function(e){
     var ID = parseInt(e.target.id)
-    wx.showToast({
-      title: this.data.times[ID].toString(),
-     })
+    // wx.showToast({
+    //   title: this.data.times[ID].toString(),
+    //  })
+    this.setData({
+      display: this.data.times[ID].toString() + " people are available",
+      nullHouse:false
+    })
 
   },
   onTouchEnd: function () {
     wx.hideToast();
+    this.setData({
+      nullHouse: true
+    })
   }
 
 })

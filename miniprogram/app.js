@@ -3,6 +3,7 @@ App({
   globalData: {
     appid: 'wxd6397161949fd434',
     secret: 'ee5b16d9d571a666979d75d38ee27c2c',
+    user: null,
     times: []
   },
   onLaunch: function() {
@@ -14,13 +15,42 @@ App({
         traceUser: true,
       })
     }
+    wx.cloud.callFunction({
+      name: 'login',
+      complete: res => {
+        this.globalData.user = res.result.openId
+        const db = wx.cloud.database()
+        db.collection('users').where({
+          _id: this.globalData.user
+        }).get({
+          success: function(res) {
+            if (res.data.length == 0) {
+              wx.redirectTo({
+                url: '../authorize/authorize', //授权页面
+              })
+            } else {
+              wx.getSetting({
+                success: (res) => {
+                  if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
+                    wx.getUserInfo({
+                      success: (res) => {
+                        console.log(res)
+                      }
+                    })
+                  } else { //未授权，跳到授权页面
+                    wx.redirectTo({
+                      url: '../authorize/authorize', //授权页面
+                    })
+                  }
+                }
+              })
+            }
+          }
+        })
+      }
+    })
 
-    // this.globalData.times = wx.getStorageSync('attendee')
-    // console.log(this.globalData.times)
-    // for(var i = 0; i < 24; i++) 
-    // this.globalData.times[i] = 0
-    // wx.setStorageSync('times', this.globalData.times)
-    // this.updateTimes()
   },
+
 
 })

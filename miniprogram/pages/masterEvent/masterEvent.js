@@ -1,7 +1,6 @@
 // pages/group/group.js
 const opacity1 = 0.1;
 const opacity2 = 0.9;
-
 const app = getApp()
 Page({
 
@@ -9,14 +8,13 @@ Page({
    * Page initial data
    */
   data: {
-    event: [{}],
     color: [],
-    nullHouse: true,  //先设置隐藏
+    nullHouse: true, //先设置隐藏
     display: "",
-    times: app.globalData.times,
+    times: wx.getStorageSync('times'),
   },
 
-  
+
   /**
    * Lifecycle function--Called when page load
    */
@@ -27,18 +25,12 @@ Page({
       })
       return
     }
-    const db = wx.cloud.database()
-    var that = this
-    this.getTime()
-    setInterval(function() {
-      that.getTime()
-    }, 10000)
+    // const db = wx.cloud.database()
 
-    
   },
 
-  setcolor: function(NumOfPeople){
-    console.log("setting color" +  NumOfPeople);
+  setcolor: function(NumOfPeople) {
+    console.log("setting color" + NumOfPeople);
     var arr = []
     console.log(this.data.times)
 
@@ -63,6 +55,14 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+    var that = this
+    this.getTime()
+    this.setData({
+      timer: setInterval(function () {
+        that.getTime()
+      }, 10000)
+    })
+
   },
 
   clear: function() {
@@ -75,7 +75,7 @@ Page({
     })
   },
 
-  getTime: function () {
+  getTime: function() {
     const db = wx.cloud.database()
     var that = this
     db.collection('events').doc('test').get({
@@ -89,7 +89,7 @@ Page({
    * Lifecycle function--Called when page hide
    */
   onHide: function() {
-
+    clearInterval(this.data.timer)
   },
 
   /**
@@ -129,12 +129,12 @@ Page({
       this.update(arr[i], localArr)
     }
     console.log(Object.keys(arr).length)
-    app.globalData.times = localArr
+    // app.globalData.times = localArr
     this.setData({
-      times: app.globalData.times
+      times: localArr
     })
     this.setcolor(Object.keys(arr).length)
-    wx.setStorageSync('times', app.globalData.times)
+    // wx.setStorageSync('times', app.globalData.times)
   },
 
   update(arr, localArr) {
@@ -150,22 +150,22 @@ Page({
     })
   },
   onEditTap: function() {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/createEvent/createEvent',
     })
   },
-  onTouchStart: function(e){
+  onTouchStart: function(e) {
     var ID = parseInt(e.target.id)
     // wx.showToast({
     //   title: this.data.times[ID].toString(),
     //  })
     this.setData({
       display: this.data.times[ID].toString() + " people are available",
-      nullHouse:false
+      nullHouse: false
     })
 
   },
-  onTouchEnd: function () {
+  onTouchEnd: function() {
     wx.hideToast();
     this.setData({
       nullHouse: true

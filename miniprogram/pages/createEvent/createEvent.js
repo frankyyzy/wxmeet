@@ -68,8 +68,9 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
-    app.globalData.times = localArr
-    // console.log("global" + app.globalData.times)
+    // app.globalData.times = localArr
+    wx.setStorageSync('times', localArr)
+    // console.log("global" + localArr)
   },
   update(arr, localArr) {
     for (var i = 0; i < 24; i++) {
@@ -178,6 +179,7 @@ Page({
       },
       success: res => {
         // console.log("time" + res.data)
+        // this.updateTimes()
         wx.redirectTo({
           url: '/pages/masterEvent/masterEvent',
         })

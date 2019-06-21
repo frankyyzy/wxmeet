@@ -86,15 +86,27 @@ Page({
     })
   },
 
-  updateInterval: function() {
-    var arr = []
-    for (var i = 0; i < 24; i++) {
-      var value = false
-      if (i >= this.data.start && i <= this.data.end) value = true
-      arr[i] = value
-    }
-    this.setData({
-      intervals: arr
+  onSubmitTap: function() {
+    wx.showLoading({
+      title: '',
+    })
+    this.updateUser()
+    var that = this
+    const db = wx.cloud.database()
+    const _ = db.command
+    wx.cloud.callFunction({
+      name: 'testupdate',
+      data: {
+        id: that.data.user,
+        dates: that.data.dates,
+        times: that.data.intervals,
+      },
+      success: res => {
+        console.log('更新数据成功')
+        wx.redirectTo({
+          url: '/pages/masterEvent/masterEvent',
+        })
+      }
     })
   },
   updateUser: function() {
@@ -113,7 +125,6 @@ Page({
     this.setData({
       dates:IDarray
     })
-    console.log(IDarray)
     var datechoos=[0,0,0,0,0,0,0,0]
     var total = IDarray.length
     for(var i = 0; i < IDarray.length;i++){
@@ -136,13 +147,12 @@ Page({
       this.setData({
         intervals: intervalss
       })
-      console.log(this.data.intervals)
     }
     
     
   },
   mytouchstart: function(e) {
-    console.log(e.timeStamp + '- touch start')
+    // console.log(e.timeStamp + '- touch start')
   },
   //长按事件
   mylongtap: function(e) {

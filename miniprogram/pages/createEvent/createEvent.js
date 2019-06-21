@@ -1,19 +1,4 @@
 // pages/profile/profile.js
-const date = new Date()
-const day = []
-const startTime = []
-const endTime = []
-for (let i = 1; i <= 7; i++) {
-  day.push(i);
-}
-
-for (let i = 0; i <= 23; i++) {
-  startTime.push(i)
-}
-
-for (let i = 0; i <= 23; i++) {
-  endTime.push(i)
-}
 const app = getApp()
 Page({
 
@@ -22,15 +7,15 @@ Page({
    */
   data: {
     user: '',
-    nickName: '',
+    nickName:'',
     profilePic: '',
-    day: day,
-    startTime: startTime,
-    endTime: endTime,
+    date: [ '小时','星期日','星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    dates: [],
+    datechoose: [0,0,0,0,0,0,0,0],
+    totaldate: 0,
     start: -1,
     end: -1,
-    edit: false,
-    intervals: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    intervals: []
   },
 
   /**
@@ -39,20 +24,10 @@ Page({
   onLoad: function(options) {
     let that = this
     this.setData({
-      edit: options.edit
+      edit: options.edit,
+      user: app.globalData.user
     })
-    wx.cloud.callFunction({
-      name: 'login',
-      complete: res => {
-        that.setData({
-          user: res.result.openId
-        })
-        that.setUser()
-      }
-    })
-    //详情见云开发手册command eq,lt,gt,in,and等
-    //此处查询theAttrYouSearch中等于aaa的记录
-    // this.updateTimes()
+    console.log("edit" + this.data.edit)
   },
   updateTimes: function() {
     var that = this
@@ -72,6 +47,9 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
+    this.setData({
+      user: app.globalData.user
+    })
     // app.globalData.times = localArr
     wx.setStorageSync('times', localArr)
     // console.log("global" + localArr)
@@ -81,36 +59,35 @@ Page({
       if (arr[i]) localArr[i]++
     }
   },
-  getUser: function() {
-    var that = this
-    wx.getUserInfo({
-      success: function(res) {
-        that.setData({
-          nickName: res.userInfo.nickName,
-          profilePic: res.userInfo.avatarUrl
-        })
-        that.updateUser()
-      }
-    })
-  },
-  setUser: function() {
-    let that = this
-    const db = wx.cloud.database()
-    const _ = db.commond
-    try {
-      db.collection("users").doc(that.data.user).set({
-        data: {
-          AttendEvent: 'test',
-          SponsorEvent: '',
-          nickName: '',
-          profilePic: ''
-        }
-      })
-    } catch (e) {
-      console.log(e)
-    }
-
-  },
+  // getUser: function() {
+  //   var that = this
+  //   wx.getUserInfo({
+  //     success: function(res) {
+  //       that.setData({
+  //         nickName: res.userInfo.nickName,
+  //         profilePic: res.userInfo.avatarUrl
+  //       })
+  //       that.updateUser()
+  //     }
+  //   })
+  // },
+  // setUser: function() {
+  //   let that = this
+  //   const db = wx.cloud.database()
+  //   const _ = db.commond
+  //   try {
+  //     db.collection("users").doc(that.data.user).set({
+  //       data: {
+  //         AttendEvent: 'test',
+  //         SponsorEvent: '',
+  //         nickName: '',
+  //         profilePic: ''
+  //       }
+  //     })
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // },
   /**
    * Lifecycle function--Called when page is initially rendered
    */
@@ -173,7 +150,7 @@ Page({
     wx.showLoading({
       title: '',
     })
-    this.getUser()
+    this.updateUser()
     this.updateInterval()
     var that = this
     const db = wx.cloud.database()
@@ -186,8 +163,7 @@ Page({
       },
       success: res => {
         // console.log("time" + res.data)
-        // this.updateTimes()
-        if (this.data.edit) {
+        if (this.data.edit == true) {
           wx.navigateBack({
             delta: 1
           })
@@ -215,13 +191,46 @@ Page({
   updateUser: function() {
     const db = wx.cloud.database()
     const _ = db.command
-    db.collection('users').doc(this.data.user).update({
+    db.collection('users').doc(app.globalData.user).update({
       data: {
-        AttendEvent: 'test',
-        nickName: this.data.nickName,
-        profilePic: this.data.profilePic,
+        AttendEvent: _.push(['test']),
+        // nickName: this.data.nickName,
+        // profilePic: this.data.profilePic,
       }
     })
+  },
+   checkboxChange: function (e) {
+    var IDarray = e.detail.value
+    this.setData({
+      dates:IDarray
+    })
+    console.log(IDarray)
+    var datechoos=[0,0,0,0,0,0,0,0]
+    var total = IDarray.length
+    for(var i = 0; i < IDarray.length;i++){
+      datechoos[parseInt(IDarray[i])+1] = 1;
+    }
+    if (total>0){
+      datechoos[0] = 1;
+    }
+    this.setData({
+      datechoose:datechoos,
+      totaldate:total
+    })  
+    var intervalss = [];
+    for(var i = 0; i < this.data.totaldate; i++) {
+      var interves = [];
+      for(var j = 0; j < 24; j++) {    
+        interves.push(false);
+      }
+      intervalss.push(interves);
+      this.setData({
+        intervals: intervalss
+      })
+      console.log(this.data.intervals)
+    }
+    
+    
   },
   mytouchstart: function(e) {
     console.log(e.timeStamp + '- touch start')
@@ -233,11 +242,24 @@ Page({
   mytouchend: function(e) {
     console.log(e.timeStamp + '- touch end')
   },
-  mytap: function(e) {
-    var ID = parseInt(e.target.id)
+  mytap: function (e) {
+    var Name = parseInt(e.target.id[0])
+    console.log(Name)
+    var idd = e.target.id
+    var ID = '';
+    for(let i = 1; i<idd.length;i++){
+      ID = ID +idd[i];
+    }
+    ID = parseInt(ID);
+    console.log(ID)
     var interv = []
     interv = this.data.intervals
-    interv[ID] = 1 - interv[ID]
+    if(!interv[Name][ID]){
+      interv[Name][ID] = true;
+    }
+    else{
+      interv[Name][ID] = false;
+    }
     this.setData({
       intervals: interv
     })

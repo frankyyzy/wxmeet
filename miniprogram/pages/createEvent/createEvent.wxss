@@ -31,7 +31,12 @@ textarea {
   margin: 30px;
   text-align: center;
 }
-
+.hori{
+  flex-direction: felx;
+}
+.datet{
+  width:50%;
+}
 /*table*/
 .table{
   border:1px solid #dadada;

@@ -27,7 +27,6 @@ Page({
       edit: options.edit,
       user: app.globalData.user
     })
-    console.log("edit" + this.data.edit)
   },
   updateTimes: function() {
     var that = this
@@ -39,58 +38,12 @@ Page({
       }
     })
   },
-  calcTime: function(arr) {
-    var localArr = []
-    for (var i = 0; i < 24; i++) {
-      localArr[i] = 0
-    }
-    for (var i in arr) {
-      this.update(arr[i], localArr)
-    }
-    this.setData({
-      user: app.globalData.user
-    })
-    // app.globalData.times = localArr
-    wx.setStorageSync('times', localArr)
-    // console.log("global" + localArr)
-  },
   update(arr, localArr) {
     for (var i = 0; i < 24; i++) {
       if (arr[i]) localArr[i]++
     }
   },
-  // getUser: function() {
-  //   var that = this
-  //   wx.getUserInfo({
-  //     success: function(res) {
-  //       that.setData({
-  //         nickName: res.userInfo.nickName,
-  //         profilePic: res.userInfo.avatarUrl
-  //       })
-  //       that.updateUser()
-  //     }
-  //   })
-  // },
-  // setUser: function() {
-  //   let that = this
-  //   const db = wx.cloud.database()
-  //   const _ = db.commond
-  //   try {
-  //     db.collection("users").doc(that.data.user).set({
-  //       data: {
-  //         AttendEvent: 'test',
-  //         SponsorEvent: '',
-  //         nickName: '',
-  //         profilePic: ''
-  //       }
-  //     })
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // },
-  /**
-   * Lifecycle function--Called when page is initially rendered
-   */
+
   onReady: function() {
 
   },
@@ -151,41 +104,22 @@ Page({
       title: '',
     })
     this.updateUser()
-    this.updateInterval()
     var that = this
     const db = wx.cloud.database()
     const _ = db.command
     wx.cloud.callFunction({
-      name: 'updateEvent',
+      name: 'testupdate',
       data: {
         id: that.data.user,
-        intervals: that.data.intervals
+        dates: that.data.dates,
+        times: that.data.intervals,
       },
       success: res => {
-        // console.log("time" + res.data)
-        if (this.data.edit == true) {
-          wx.navigateBack({
-            delta: 1
-          })
-        } else {
-          wx.redirectTo({
-            url: '/pages/masterEvent/masterEvent',
-          })
-        }
+        console.log('更新数据成功')
+        wx.redirectTo({
+          url: '/pages/masterEvent/masterEvent',
+        })
       }
-    })
-
-
-  },
-  updateInterval: function() {
-    var arr = []
-    for (var i = 0; i < 24; i++) {
-      var value = false
-      if (i >= this.data.start && i <= this.data.end) value = true
-      arr[i] = value
-    }
-    this.setData({
-      intervals: arr
     })
   },
   updateUser: function() {
@@ -204,7 +138,6 @@ Page({
     this.setData({
       dates:IDarray
     })
-    console.log(IDarray)
     var datechoos=[0,0,0,0,0,0,0,0]
     var total = IDarray.length
     for(var i = 0; i < IDarray.length;i++){
@@ -227,13 +160,12 @@ Page({
       this.setData({
         intervals: intervalss
       })
-      console.log(this.data.intervals)
     }
     
     
   },
   mytouchstart: function(e) {
-    console.log(e.timeStamp + '- touch start')
+    // console.log(e.timeStamp + '- touch start')
   },
   //长按事件
   mylongtap: function(e) {
@@ -263,7 +195,6 @@ Page({
     this.setData({
       intervals: interv
     })
-    console.log()
   }
 
 })

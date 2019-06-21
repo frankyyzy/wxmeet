@@ -166,7 +166,7 @@ Page({
     //   }
     // })
     wx.cloud.callFunction({
-      name: 'updateevent',
+      name: 'updateEvent',
       data: {
         id: that.data.user,
         intervals: that.data.intervals

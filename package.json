@@ -1,0 +1,25 @@
+{
+  "name": "wxmeet",
+  "version": "1.0.0",
+  "description": "这是云开发的快速启动指引，其中演示了如何上手使用云开发的三大基础能力：",
+  "main": "index.js",
+  "dependencies": {
+    "miniprogram-sm-crypto": "^0.0.6",
+    "vant-weapp": "^0.5.14",
+    "wx-server-sdk": "^0.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankyyzy/wxmeet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frankyyzy/wxmeet/issues"
+  },
+  "homepage": "https://github.com/frankyyzy/wxmeet#readme"
+}

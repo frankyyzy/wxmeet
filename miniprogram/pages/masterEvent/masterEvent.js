@@ -150,5 +150,16 @@ Page({
     wx.redirectTo({
       url: '/pages/createEvent/createEvent',
     })
+  },
+  onTouchStart: function(e){
+    var ID = parseInt(e.target.id)
+    wx.showToast({
+      title: this.data.times[ID].toString(),
+     })
+
+  },
+  onTouchEnd: function () {
+    wx.hideToast();
   }
+
 })

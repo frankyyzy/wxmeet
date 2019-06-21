@@ -12,11 +12,13 @@ Page({
     nullHouse: true, //先设置隐藏
     display: "",
     pics: [],
-    numOfPics: [0,1],
+    numOfPics: [],
     times: wx.getStorageSync('times'),
     timer: null,
     dates: [],
     Attendee: {},
+    numOfDays: [],
+    width_percent: 0,
   },
 
 
@@ -43,13 +45,23 @@ Page({
         that.data.Attendee = res.result.data[0].Attendee
         console.log("dates:" + that.data.dates)
         console.log(that.data.Attendee)
+
+        that.setColWidth();
       }, fail: function (res) {
+
         console.log(res)
       }
     })
 
+  },
 
+  setColWidth: function(){
 
+    console.log("setting:" + 100 / this.data.dates.length)
+  
+    this.setData({
+      width_percent: 100 / this.data.dates.length
+    }) 
   },
 
   setcolor: function(NumOfPeople){

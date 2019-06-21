@@ -28,10 +28,7 @@
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
-  width: 100%;
-}
-.th1,.th2,.td1,.td2{
-  width: 50%;
+ 
 }
 .th{
   font-weight: 800;

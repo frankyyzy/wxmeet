@@ -12,6 +12,7 @@ Page({
     nullHouse: true, //先设置隐藏
     display: "",
     times: wx.getStorageSync('times'),
+    timer: null
   },
 
 
@@ -25,7 +26,7 @@ Page({
       })
       return
     }
-    // const db = wx.cloud.database()
+
 
   },
 
@@ -96,7 +97,7 @@ Page({
    * Lifecycle function--Called when page unload
    */
   onUnload: function() {
-
+    clearInterval(this.data.timer)
   },
 
   /**
@@ -134,6 +135,7 @@ Page({
       times: localArr
     })
     this.setcolor(Object.keys(arr).length)
+    wx.hideLoading()
     // wx.setStorageSync('times', app.globalData.times)
   },
 
@@ -150,8 +152,9 @@ Page({
     })
   },
   onEditTap: function() {
+    var edit = true
     wx.navigateTo({
-      url: '/pages/createEvent/createEvent',
+      url: '/pages/createEvent/createEvent?edit=' + edit,
     })
   },
   onTouchStart: function(e) {

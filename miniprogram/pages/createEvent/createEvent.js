@@ -39,20 +39,10 @@ Page({
   onLoad: function(options) {
     let that = this
     this.setData({
-      edit: options.edit
+      edit: options.edit,
+      user: app.globalData.user
     })
-    wx.cloud.callFunction({
-      name: 'login',
-      complete: res => {
-        that.setData({
-          user: res.result.openId
-        })
-        that.setUser()
-      }
-    })
-    //详情见云开发手册command eq,lt,gt,in,and等
-    //此处查询theAttrYouSearch中等于aaa的记录
-    // this.updateTimes()
+    console.log("edit" + this.data.edit)
   },
   updateTimes: function() {
     var that = this
@@ -72,6 +62,9 @@ Page({
     for (var i in arr) {
       this.update(arr[i], localArr)
     }
+    this.setData({
+      user: app.globalData.user
+    })
     // app.globalData.times = localArr
     wx.setStorageSync('times', localArr)
     // console.log("global" + localArr)
@@ -81,36 +74,35 @@ Page({
       if (arr[i]) localArr[i]++
     }
   },
-  getUser: function() {
-    var that = this
-    wx.getUserInfo({
-      success: function(res) {
-        that.setData({
-          nickName: res.userInfo.nickName,
-          profilePic: res.userInfo.avatarUrl
-        })
-        that.updateUser()
-      }
-    })
-  },
-  setUser: function() {
-    let that = this
-    const db = wx.cloud.database()
-    const _ = db.commond
-    try {
-      db.collection("users").doc(that.data.user).set({
-        data: {
-          AttendEvent: 'test',
-          SponsorEvent: '',
-          nickName: '',
-          profilePic: ''
-        }
-      })
-    } catch (e) {
-      console.log(e)
-    }
-
-  },
+  // getUser: function() {
+  //   var that = this
+  //   wx.getUserInfo({
+  //     success: function(res) {
+  //       that.setData({
+  //         nickName: res.userInfo.nickName,
+  //         profilePic: res.userInfo.avatarUrl
+  //       })
+  //       that.updateUser()
+  //     }
+  //   })
+  // },
+  // setUser: function() {
+  //   let that = this
+  //   const db = wx.cloud.database()
+  //   const _ = db.commond
+  //   try {
+  //     db.collection("users").doc(that.data.user).set({
+  //       data: {
+  //         AttendEvent: 'test',
+  //         SponsorEvent: '',
+  //         nickName: '',
+  //         profilePic: ''
+  //       }
+  //     })
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // },
   /**
    * Lifecycle function--Called when page is initially rendered
    */
@@ -173,7 +165,7 @@ Page({
     wx.showLoading({
       title: '',
     })
-    this.getUser()
+    this.updateUser()
     this.updateInterval()
     var that = this
     const db = wx.cloud.database()
@@ -186,8 +178,7 @@ Page({
       },
       success: res => {
         // console.log("time" + res.data)
-        // this.updateTimes()
-        if (this.data.edit) {
+        if (this.data.edit == true) {
           wx.navigateBack({
             delta: 1
           })
@@ -215,11 +206,11 @@ Page({
   updateUser: function() {
     const db = wx.cloud.database()
     const _ = db.command
-    db.collection('users').doc(this.data.user).update({
+    db.collection('users').doc(app.globalData.user).update({
       data: {
-        AttendEvent: 'test',
-        nickName: this.data.nickName,
-        profilePic: this.data.profilePic,
+        AttendEvent: _.push(['test']),
+        // nickName: this.data.nickName,
+        // profilePic: this.data.profilePic,
       }
     })
   },

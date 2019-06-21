@@ -14,7 +14,9 @@ Page({
     pics: [],
     numOfPics: [0,1],
     times: wx.getStorageSync('times'),
-    timer: null
+    timer: null,
+    dates: [],
+    Attendee: {},
   },
 
 
@@ -29,6 +31,23 @@ Page({
       })
       return
     }
+
+    var that = this
+    wx.cloud.callFunction({
+      name: 'getEventTime',
+      data: {
+        eventID: 'test_event',
+      }, success: function (res) {
+        console.log(res.result.data[0])
+        that.data.dates = res.result.data[0].dates
+        that.data.Attendee = res.result.data[0].Attendee
+        console.log("dates:" + that.data.dates)
+        console.log(that.data.Attendee)
+      }, fail: function (res) {
+        console.log(res)
+      }
+    })
+
 
 
   },

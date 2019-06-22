@@ -72,7 +72,7 @@ Page({
   onCreateEventTap: function (){
     var edit = false
     wx.navigateTo({
-      url: '../createEvent/createEvent?edit=' + edit,
+      url: '../selectTime/selectTime?edit=' + edit,
     })
   },
 

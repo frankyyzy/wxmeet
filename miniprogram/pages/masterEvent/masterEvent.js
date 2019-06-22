@@ -1,24 +1,28 @@
 // pages/group/group.js
 const app = getApp()
 const db = wx.cloud.database()
+const totalNumOfHours = 24;
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    attendee: new Array(24),
+    attendee: new Array(totalNumOfHours),
     color: [],
     nullHouse: true, //先设置隐藏
     display: "",
     pics: [],
     numOfPics: [],
-    times: wx.getStorageSync('times'),
+    times: [[]],
+    // times: wx.getStorageSync('times'),
     timer: null,
     dates: [],
     Attendee: {},
-    numOfDays: [],
     width_percent: 0,
+    totaldate: 0,
+    date: ['小时', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
   },
 
 
@@ -40,28 +44,32 @@ Page({
       data: {
         eventID: 'test_event',
       }, success: function (res) {
-        console.log(res.result.data[0])
-        that.data.dates = res.result.data[0].dates
-        that.data.Attendee = res.result.data[0].Attendee
-        console.log("dates:" + that.data.dates)
+        
+        that.setData({
+          dates: res.result.data[0].dates,
+          Attendee: res.result.data[0].Attendee,
+          totaldate: res.result.data[0].dates.length
+        });
         console.log(that.data.Attendee)
+        that.setDateChoose();
 
-        that.setColWidth();
+
       }, fail: function (res) {
 
-        console.log(res)
+        console.log("error")
       }
     })
 
   },
 
-  setColWidth: function(){
-
-    console.log("setting:" + 100 / this.data.dates.length)
-  
-    this.setData({
-      width_percent: 100 / this.data.dates.length
-    }) 
+  setDateChoose: function(){
+    var dateToChoose = [1, 0, 0, 0, 0, 0, 0, 0];
+    for (var i in this.data.dates){
+      dateToChoose[parseInt(this.data.dates[i])+1] = 1;
+      this.setData({
+        datechoose: dateToChoose
+      })
+    }
   },
 
   setcolor: function(NumOfPeople){
@@ -87,10 +95,10 @@ Page({
    */
   onShow: function() {
     var that = this
-    this.getTime()
+    this.adjustTimeTable()
     this.setData({
       timer: setInterval(function () {
-        that.getTime()
+        that.adjustTimeTable()
       }, 10000)
     })
 
@@ -98,7 +106,7 @@ Page({
 
   clear: function() {
     var arr = []
-    for (var i = 0; i < 24; i++) {
+    for (var i = 0; i < totalNumOfHours; i++) {
       arr[i] = 0;
     }
     this.setData({
@@ -106,15 +114,21 @@ Page({
     })
   },
 
-  getTime: function() {
-    const db = wx.cloud.database()
-    var that = this
-    db.collection('events').doc('test').get({
-      success: function(res) {
-        that.calcTime(res.data.Attendee);
-        that.updateAttendee(res.data.Attendee);
-      }
-    })
+  adjustTimeTable: function() {
+    
+    var attendeeArr = this.data.Attendee;
+    console.log(attendeeArr);
+    
+    var timesToSet = new Array(totalNumOfHours);
+
+    for (var i = 0; i < timesToSet.length; i++) {
+      timesToSet[i] = new Array(this.data.totaldate).fill(0)
+    }
+  
+    for (var id in attendeeArr){
+        this.calcTime(timesToSet,attendeeArr[id]);
+    }
+
   },
 
 
@@ -152,52 +166,34 @@ Page({
   onShareAppMessage: function() {
 
   },
-  updateAttendee: function (dict_id_to_scheduleArr) {
-    var attendeeArr = [[]];
-   
-  
 
-    for (var id in dict_id_to_scheduleArr){
-      var scheduleArr = dict_id_to_scheduleArr[id]
-     
-      for (var i = 0; i < 24; i++) {
-        if (scheduleArr[i]) {
-          if (attendeeArr[i]){
-            attendeeArr[i].push(id);
-          } else {
-            attendeeArr[i] = [id];
-          }
-        
-        }
-      }
+  calcTime: function(timesToSet,multiDaySchedule) {
+    for (var dayindex=0;  dayindex< multiDaySchedule.length; dayindex++ ){
+      this.update(timesToSet,dayindex, multiDaySchedule[dayindex] )
     }
+    // var localArr = []
+    // for (var i = 0; i < totalNumOfHours; i++) {
+    //   localArr[i] = 0
+    // }
+    // for (var i in arr) {
+    //   this.update(arr[i], localArr)
+    // }
     
     this.setData({
-      attendee: attendeeArr
+      times: timesToSet
     })
-  },
-
-  calcTime: function(arr) {
-    var localArr = []
-    for (var i = 0; i < 24; i++) {
-      localArr[i] = 0
-    }
-    for (var i in arr) {
-      this.update(arr[i], localArr)
-    }
-    console.log(Object.keys(arr).length)
-    // app.globalData.times = localArr
-    this.setData({
-      times: localArr
-    })
-    this.setcolor(Object.keys(arr).length)
-    wx.hideLoading()
+    // this.setcolor(Object.keys(arr).length)
+    // wx.hideLoading()
     // wx.setStorageSync('times', app.globalData.times)
   },
 
-  update(arr, localArr) {
-    for (var i = 0; i < 24; i++) {
-      if (arr[i]) localArr[i]++
+  update(timesToSet,dayindex,singleDaySchedule) {
+    console.log(dayindex + " " + singleDaySchedule)
+
+    //update times array totalNumOfHours * totaldates
+   
+    for (var i = 0; i < totalNumOfHours; i++) {
+      if (singleDaySchedule[i]) timesToSet[i][dayindex]++
     }
   },
 
@@ -238,8 +234,6 @@ Page({
         success: function (res) {
           // res.data 包含该记录的数据
           picUrl.push(res.data.profilePic)
-          console.log(id)
-          console.log(picUrl)
           that.setData({
             pics: picUrl
           })
@@ -251,7 +245,7 @@ Page({
         },
 
         error: e =>{
-          console.log(e)
+          console.log("error")
         }
       })
 

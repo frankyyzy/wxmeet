@@ -34,7 +34,7 @@ App({
                   if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
                     wx.getUserInfo({
                       success: (res) => {
-                        console.log(res)
+                        // console.log(res)
                       }
                     })
                   } else { //未授权，跳到授权页面

@@ -6,6 +6,7 @@ Page({
    * Page initial data
    */
   data: {
+    user: "",
     SponsorList: [],
     AttendingList: []
   },
@@ -15,9 +16,21 @@ Page({
   onLoad: function (options) {
     var that = this;
     var db = wx.cloud.database()
-    // db.collection('users').doc(app.globalData.user).get({
-
-    // })
+    wx.cloud.callFunction({
+      name: 'login',
+      complete: res => {
+        that.setData({
+          user: res.result.openId
+        })
+        db.collection("users").where({
+          _id: that.data.user
+        }).get({
+          success: (res)=>{
+            console.log(res)
+          }
+        })
+        }
+    })
   },
 
   /**

@@ -1,11 +1,14 @@
 {
   "pages": [
+    
     "pages/profile/profile",
+    "pages/calender/calender",
     "pages/selectTime/selectTime",
     "pages/createEvent/createEvent",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent",
     "pages/authorize/authorize"
+
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -13,6 +16,12 @@
     "navigationBarTitleText": "别鸽我",
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
+  },
+  "plugins": {
+    "calendar": {
+      "version": "1.1.0",
+      "provider": "wx92c68dae5a8bb046"
+    }
   },
   "sitemapLocation": "sitemap.json"
 }

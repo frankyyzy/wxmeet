@@ -7,3 +7,5 @@
 <view>我加入的局</view>
 <button bindtap="onAttendingEventTap">Event2 Stub</button>
 
+<view>日历</view>
+<button bindtap="onCalenderTap">Event3 Stub</button>

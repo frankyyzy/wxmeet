@@ -1,0 +1,4 @@
+<!--pages/loading/loading.wxml-->
+<view class='header'>
+  <image src='/image/loading.jpg'></image>
+</view>

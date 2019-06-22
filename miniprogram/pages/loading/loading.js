@@ -1,19 +1,19 @@
-// pages/profile/profile.js
-const app = getApp()
+// pages/loading/loading.js
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    SponsorList: [],
-    AttendingList: []
+
   },
-  /*
+
+  /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    var that = this;
+    // wx.showLoading()
+    // console.log("url"+ this.route)
   },
 
   /**
@@ -63,31 +63,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  },
-
-  onCreateEventTap: function (){
-    var edit = false
-    wx.navigateTo({
-      url: '../selectTime/selectTime?edit=' + edit,
-    })
-  },
-
-  onSponserEventTap: function () {
-    wx.redirectTo({
-      url: '../masterEvent/masterEvent',
-    })
-  },
-
-  onAttendingEventTap: function () {
-    wx.redirectTo({
-      url: '../guestEvent/guestEvent',
-    })
-  },
-
-
-
-
-
-
-
+  }
 })

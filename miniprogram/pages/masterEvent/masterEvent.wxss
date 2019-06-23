@@ -19,32 +19,33 @@
   z-index: 0;
 }
 
-.title{
-  display:flex;
-}
-
 .tr{
   display: flex;
   justify-content: space-between;
 }
+
 .th{
   padding: 10px;
+  flex: 1 1 0;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
   background-color: #b66242;
   font-size: 28rpx;
   color: #330e0e;
+  display:flex;
 }
 
 .td{
   padding: 10px;
+  flex: 1 1 0;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
   font-size: 28rpx;
   /* color: #ec9480; */
 }
+
 .td1{
   width:49%;
 }

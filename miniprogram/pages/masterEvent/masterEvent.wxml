@@ -8,74 +8,19 @@
       </view>
     </view>
 
-
-    <view class="title">
-      <block wx:if="{{totaldate==1}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td1"> {{date[i]}}</view>
-          </block>
+    <view class="tr">
+      <block wx:for="{{8}}" wx:for-item="i">
+        <block wx:if="{{datechoose[i] == 1}}">
+          <view class="th"> {{date[i]}}</view>
         </block>
       </block>
-
-      <block wx:if="{{totaldate==2}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td2"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
-      <block wx:if="{{totaldate==3}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td3"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
-      <block wx:if="{{totaldate==4}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td4"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
-      <block wx:if="{{totaldate==5}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td5"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
-      <block wx:if="{{totaldate==6}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td6"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
-      <block wx:if="{{totaldate==7}}">
-        <block class="tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">
-          <block wx:if="{{datechoose[i] == 1}}">
-            <view class="th td7"> {{date[i]}}</view>
-          </block>
-        </block>
-      </block>
-
     </view>
 
 
-    <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
+    <view class="tr" wx:for="{{24}}" wx:for-item="i">
       <view class="td">{{i}}</view>
       <block wx:for="{{totaldate}}" wx:for-item="j">
-        <!-- <block wx:if="{{intervals[j][i] == 0}}">
-            <view class="td td1 tdblwhite" bindtouchstart="mytouchstart" bindtouchend="mytouchend" id="{{j}}{{i}}">{{intervals[j][i]}}</view>
-          </block> -->
-        <view class="td">
+        <view class="td" style="background: {{color[i][j]}};" bindtouchstart='onTouchStart' bindtouchend='onTouchEnd' data-i="{{i}}" data-j="{{j}}">
           {{times[i][j]}}
         </view>
       </block>
@@ -90,8 +35,6 @@
 
 
   </view>
-
-
 
 
   <button type="primary" bindtap='onBackHomeTap'>回到首页</button>

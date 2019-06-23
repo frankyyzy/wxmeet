@@ -9,11 +9,11 @@ Page({
    */
   data: {
     attendee: new Array(totalNumOfHours),
-    color: [],
+    color: [[]],
     nullHouse: true, //先设置隐藏
     display: "",
     pics: [],
-    numOfPics: [],
+    numOfPics: 0,
     times: [[]],
     // times: wx.getStorageSync('times'),
     timer: null,
@@ -50,7 +50,6 @@ Page({
           Attendee: res.result.data[0].Attendee,
           totaldate: res.result.data[0].dates.length
         });
-        console.log(that.data.Attendee)
         that.setDateChoose();
 
 
@@ -73,14 +72,19 @@ Page({
   },
 
   setcolor: function(NumOfPeople){
- 
-    var arr = []
-    for (var i = 0; i < this.data.times.length; i++) {
-      arr[i] = "rgba(0, 151, 19," + (this.data.times[i] / NumOfPeople) + ")";
+
+    //initialize 2d array
+    var arr = new Array(this.data.times.length).fill(0).map(() => new Array(this.data.times[0].length).fill(0));
+
+    for (var i = 0; i < this.data.times.length; i++){
+      for ( var j = 0 ; j < this.data.times[0].length; j++){
+        arr[i][j] = "rgba(0, 151, 19," + (this.data.times[i][j] / NumOfPeople) + ")";
+      }
     }
     this.setData({
       color: arr
     })
+
   },
 
   /** 
@@ -117,7 +121,6 @@ Page({
   adjustTimeTable: function() {
     
     var attendeeArr = this.data.Attendee;
-    console.log(attendeeArr);
     
     var timesToSet = new Array(totalNumOfHours);
 
@@ -128,6 +131,8 @@ Page({
     for (var id in attendeeArr){
         this.calcTime(timesToSet,attendeeArr[id]);
     }
+
+    this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
 
   },
 
@@ -182,16 +187,13 @@ Page({
     this.setData({
       times: timesToSet
     })
-    // this.setcolor(Object.keys(arr).length)
     // wx.hideLoading()
     // wx.setStorageSync('times', app.globalData.times)
   },
 
   update(timesToSet,dayindex,singleDaySchedule) {
-    console.log(dayindex + " " + singleDaySchedule)
 
     //update times array totalNumOfHours * totaldates
-   
     for (var i = 0; i < totalNumOfHours; i++) {
       if (singleDaySchedule[i]) timesToSet[i][dayindex]++
     }
@@ -209,52 +211,55 @@ Page({
       url: '/pages/createEvent/createEvent?edit=' + edit,
     })
   },
+
   onTouchStart: function(e) {
-    var ID = parseInt(e.target.id)
+    var i = parseInt(e.target.dataset.i)
+    var j = parseInt(e.target.dataset.j)
 
     // set number of pictures to show
-    var numOfPicsToShow = this.data.times[ID]
+    var numOfPicsToShow = this.data.times[i][j]
     this.setData({
-      numOfPics: Array(numOfPicsToShow).fill().map((v, i) => i),
-      display: this.data.times[ID].toString() + " people are available",
+      numOfPics: numOfPicsToShow,
+      display: this.data.times[i][j].toString() + " people are available",
       nullHouse: false
     })
     
     // set the url for profile pics 
     var picUrl = [];
+    console.log(this.data.Attendee)
 
-    for ( var key in this.data.attendee[ID]){
+    // for ( var key in this.data.Attendee[ID]){
       
-      var id = this.data.attendee[ID][key];
-      var that = this;
+    //   var id = this.data.attendee[ID][key];
+    //   var that = this;
 
 
-      //get url from the user id 
-      db.collection('users').doc(id).get({
-        success: function (res) {
-          // res.data 包含该记录的数据
-          picUrl.push(res.data.profilePic)
-          that.setData({
-            pics: picUrl
-          })
-          that.setData({
-            display: numOfPicsToShow.toString() + " people are available",
-            nullHouse: false
-          })
+    //   //get url from the user id 
+    //   db.collection('users').doc(id).get({
+    //     success: function (res) {
+    //       // res.data 包含该记录的数据
+    //       picUrl.push(res.data.profilePic)
+    //       that.setData({
+    //         pics: picUrl
+    //       })
+    //       that.setData({
+    //         display: numOfPicsToShow.toString() + " people are available",
+    //         nullHouse: false
+    //       })
 
-        },
+    //     },
 
-        error: e =>{
-          console.log("error")
-        }
-      })
+    //     error: e =>{
+    //       console.log("error")
+    //     }
+    //   })
 
-    }
+    // }
 
 
   },
   onTouchEnd: function() {
-    wx.hideToast();
+  
     this.setData({
       nullHouse: true
     })

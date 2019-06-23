@@ -1,13 +1,12 @@
 /* pages/group/group.wxss */
-.history-table-wrap{
-  position: absolute;
-  width: 668rpx;
-  left: 50%;
-  margin-left: -334rpx;
-  top: 70rpx;
-  overflow-y: scroll;
-  overflow-x: hidden;
+
+.title{
+  text-align: center;
+  font-size: 40rpx;
+  padding: 10rpx;
 }
+
+
 /* 表格代码   */
 .table{
   border:1px solid #dadada;
@@ -43,29 +42,6 @@
   border-right: 1px solid #dadada;
   text-align: center;
   font-size: 28rpx;
-  /* color: #ec9480; */
-}
-
-.td1{
-  width:49%;
-}
-.td2{
-  width:32%;
-}
-.td3{
-  width:25%;
-}
-.td4{
-  width:20%;
-}
-.td5{
-  width:16.66%;
-}
-.td6{
-  width:14.28%;
-}
-.td7{
-  width:12.5%;
 }
 
 

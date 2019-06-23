@@ -22,7 +22,8 @@ Page({
     dates: [],
     Attendee: {},
     width_percent: 0,
-    totaldate: 0
+    totaldate: 0,
+    eventName: "",
   },
 
 
@@ -45,11 +46,12 @@ Page({
         eventID: 'test_event',
       },
       success: function(res) {
-
+       
         that.setData({
           dates: res.result.data[0].dates,
           Attendee: res.result.data[0].Attendee,
-          totaldate: res.result.data[0].dates.length
+          totaldate: res.result.data[0].dates.length,
+          eventName: res.result.data[0].eventName,
         });
 
 

@@ -8,21 +8,22 @@ Page({
    * Page initial data
    */
   data: {
-    attendee: new Array(totalNumOfHours),
-    color: [[]],
+    color: [
+      []
+    ],
     nullHouse: true, //先设置隐藏
     display: "",
     pics: [],
     numOfPics: 0,
-    times: [[]],
-    // times: wx.getStorageSync('times'),
+    times: [
+      []
+    ],
     timer: null,
     dates: [],
     Attendee: {},
     width_percent: 0,
     totaldate: 0,
-    date: ['小时', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
+    eventName: "",
   },
 
 
@@ -43,17 +44,19 @@ Page({
       name: 'getEventTime',
       data: {
         eventID: 'test_event',
-      }, success: function (res) {
-        
+      },
+      success: function(res) {
+       
         that.setData({
           dates: res.result.data[0].dates,
           Attendee: res.result.data[0].Attendee,
-          totaldate: res.result.data[0].dates.length
+          totaldate: res.result.data[0].dates.length,
+          eventName: res.result.data[0].eventName,
         });
-        that.setDateChoose();
 
 
-      }, fail: function (res) {
+      },
+      fail: function(res) {
 
         console.log("error")
       }
@@ -61,24 +64,14 @@ Page({
 
   },
 
-  setDateChoose: function(){
-    var dateToChoose = [1, 0, 0, 0, 0, 0, 0, 0];
-    for (var i in this.data.dates){
-      dateToChoose[parseInt(this.data.dates[i])+1] = 1;
-      this.setData({
-        datechoose: dateToChoose
-      })
-    }
-  },
-
-  setcolor: function(NumOfPeople){
+  setcolor: function(NumOfPeople) {
 
 
     //initialize 2d array
     var arr = new Array(this.data.times.length).fill(0).map(() => new Array(this.data.times[0].length).fill(0));
 
-    for (var i = 0; i < this.data.times.length; i++){
-      for ( var j = 0 ; j < this.data.times[0].length; j++){
+    for (var i = 0; i < this.data.times.length; i++) {
+      for (var j = 0; j < this.data.times[0].length; j++) {
         arr[i][j] = "rgba(0, 151, 19," + (this.data.times[i][j] / NumOfPeople) + ")";
       }
     }
@@ -102,7 +95,7 @@ Page({
     var that = this
     this.adjustTimeTable()
     this.setData({
-      timer: setInterval(function () {
+      timer: setInterval(function() {
         that.adjustTimeTable()
       }, 10000)
     })
@@ -120,17 +113,17 @@ Page({
   },
 
   adjustTimeTable: function() {
-    
+
     var attendeeArr = this.data.Attendee;
-    
+
     var timesToSet = new Array(totalNumOfHours);
 
     for (var i = 0; i < timesToSet.length; i++) {
       timesToSet[i] = new Array(this.data.totaldate).fill(0)
     }
-  
-    for (var id in attendeeArr){
-        this.calcTime(timesToSet,attendeeArr[id]);
+
+    for (var id in attendeeArr) {
+      this.calcTime(timesToSet, attendeeArr[id]);
     }
 
     this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
@@ -159,58 +152,21 @@ Page({
 
   },
 
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom: function() {
-
-  },
-
-  /**
-   * Called when user click on the top right corner to share
-   */
-  onShareAppMessage: function() {
-
-  },
-
-  calcTime: function(timesToSet,multiDaySchedule) {
-    for (var dayindex=0;  dayindex< multiDaySchedule.length; dayindex++ ){
-      this.update(timesToSet,dayindex, multiDaySchedule[dayindex] )
+  calcTime: function(timesToSet, multiDaySchedule) {
+    for (var dayindex = 0; dayindex < multiDaySchedule.length; dayindex++) {
+      this.update(timesToSet, dayindex, multiDaySchedule[dayindex])
     }
-    // var localArr = []
-    // for (var i = 0; i < totalNumOfHours; i++) {
-    //   localArr[i] = 0
-    // }
-    // for (var i in arr) {
-    //   this.update(arr[i], localArr)
-    // }
-    
     this.setData({
       times: timesToSet
     })
-    // wx.hideLoading()
-    // wx.setStorageSync('times', app.globalData.times)
   },
 
-  update(timesToSet,dayindex,singleDaySchedule) {
+  update(timesToSet, dayindex, singleDaySchedule) {
 
     //update times array totalNumOfHours * totaldates
     for (var i = 0; i < totalNumOfHours; i++) {
       if (singleDaySchedule[i]) timesToSet[i][dayindex]++
     }
-  },
-
-
-  onBackHomeTap: function() {
-    wx.redirectTo({
-      url: '/pages/profile/profile',
-    })
-  },
-  onEditTap: function() {
-    var edit = true
-    wx.navigateTo({
-      url: '/pages/createEvent/createEvent?edit=' + edit,
-    })
   },
 
   onTouchStart: function(e) {
@@ -224,46 +180,63 @@ Page({
       display: this.data.times[i][j].toString() + " people are available",
       nullHouse: false
     })
-    
+
     // set the url for profile pics 
     var picUrl = [];
-    console.log(this.data.Attendee)
+    var attendeeID = [];
 
-    // for ( var key in this.data.Attendee[ID]){
-      
-    //   var id = this.data.attendee[ID][key];
-    //   var that = this;
+    var attendeeDict = this.data.Attendee;
 
+    for (var id in attendeeDict) {
 
-    //   //get url from the user id 
-    //   db.collection('users').doc(id).get({
-    //     success: function (res) {
-    //       // res.data 包含该记录的数据
-    //       picUrl.push(res.data.profilePic)
-    //       that.setData({
-    //         pics: picUrl
-    //       })
-    //       that.setData({
-    //         display: numOfPicsToShow.toString() + " people are available",
-    //         nullHouse: false
-    //       })
+      if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
+        if (attendeeDict[id][j][i]) {
+          attendeeID.push (id);
+        }
+      }
+    }
 
-    //     },
+    // get profile pics from id 
+    for (var id of attendeeID){
 
-    //     error: e =>{
-    //       console.log("error")
-    //     }
-    //   })
+      var that = this
+     //get url from the user id 
+      db.collection('users').doc(id).get({
+        success: function (res) {
+          // res.data 包含该记录的数据
+          picUrl.push(res.data.profilePic)
+          that.setData({
+            pics: picUrl
+          })
+              },
 
-    // }
-
+        error: e =>{
+          console.log("error")
+        }
+      })
+    }
 
   },
+
   onTouchEnd: function() {
-  
+
     this.setData({
       nullHouse: true
     })
+  },
+
+
+  onBackHomeTap: function() {
+    wx.redirectTo({
+      url: '/pages/profile/profile',
+    })
+  },
+  onEditTap: function() {
+    var edit = true
+    wx.navigateTo({
+      url: '/pages/createEvent/createEvent?edit=' + edit,
+    })
   }
+
 
 })

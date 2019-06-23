@@ -18,43 +18,74 @@
   position: relative;
   z-index: 0;
 }
+
 .tr{
-  width:100%;
   display: flex;
   justify-content: space-between;
 }
-.th,.td{
+
+.th{
   padding: 10px;
+  flex: 1 1 0;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
-  width: 100%;
-}
-.th1,.th2,.td1,.td2{
-  width: 50%;
-}
-.th{
-  font-weight: 800;
   background-color: #b66242;
   font-size: 28rpx;
   color: #330e0e;
-}
-.td{
-  font-size: 20rpx;
-  color: #ec9480;
+  display:flex;
 }
 
+.td{
+  padding: 10px;
+  flex: 1 1 0;
+  border-bottom: 1px solid #dadada;
+  border-right: 1px solid #dadada;
+  text-align: center;
+  font-size: 28rpx;
+  /* color: #ec9480; */
+}
+
+.td1{
+  width:49%;
+}
+.td2{
+  width:32%;
+}
+.td3{
+  width:25%;
+}
+.td4{
+  width:20%;
+}
+.td5{
+  width:16.66%;
+}
+.td6{
+  width:14.28%;
+}
+.td7{
+  width:12.5%;
+}
+
+
 .myToast{
-  width:240rpx;
+  position: absolute;
+  top: 20px;
+  left: 170rpx;
+  width:50%;
   line-height: 130rpx;
-  margin:80rpx 35%;
   border-radius:20rpx;
   background-color: rgb(114,113,113);
   color:rgb(255,255,255);
   font-size: 36rpx;
   text-align: center;
-  position: absolute;
   z-index: 100;
   opacity: 0.85;
-  top: 0;
+}
+  
+
+.profilepic{
+  width: 100rpx;
+  height: 100rpx;
 }

@@ -1,11 +1,10 @@
 {
   "pages": [
-    
+    "pages/masterEvent/masterEvent",
     "pages/profile/profile",
     "pages/calender/calender",
     "pages/selectTime/selectTime",
     "pages/createEvent/createEvent",
-    "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent",
     "pages/authorize/authorize"
 

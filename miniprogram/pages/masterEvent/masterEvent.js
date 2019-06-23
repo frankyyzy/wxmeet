@@ -1,16 +1,28 @@
 // pages/group/group.js
 const app = getApp()
+const db = wx.cloud.database()
+const totalNumOfHours = 24;
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    color: [],
+    attendee: new Array(totalNumOfHours),
+    color: [[]],
     nullHouse: true, //先设置隐藏
     display: "",
-    times: wx.getStorageSync('times'),
-    timer: null
+    pics: [],
+    numOfPics: 0,
+    times: [[]],
+    // times: wx.getStorageSync('times'),
+    timer: null,
+    dates: [],
+    Attendee: {},
+    width_percent: 0,
+    totaldate: 0,
+    date: ['小时', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
   },
 
 
@@ -18,6 +30,7 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+
     if (!wx.cloud) {
       wx.redirectTo({
         url: '../chooseLib/chooseLib',
@@ -25,22 +38,54 @@ Page({
       return
     }
 
+    var that = this
+    wx.cloud.callFunction({
+      name: 'getEventTime',
+      data: {
+        eventID: 'test_event',
+      }, success: function (res) {
+        
+        that.setData({
+          dates: res.result.data[0].dates,
+          Attendee: res.result.data[0].Attendee,
+          totaldate: res.result.data[0].dates.length
+        });
+        that.setDateChoose();
+
+
+      }, fail: function (res) {
+
+        console.log("error")
+      }
+    })
 
   },
 
-  setcolor: function(NumOfPeople) {
-    console.log("setting color" + NumOfPeople);
-    var arr = []
-    console.log(this.data.times)
+  setDateChoose: function(){
+    var dateToChoose = [1, 0, 0, 0, 0, 0, 0, 0];
+    for (var i in this.data.dates){
+      dateToChoose[parseInt(this.data.dates[i])+1] = 1;
+      this.setData({
+        datechoose: dateToChoose
+      })
+    }
+  },
 
-    for (var i = 0; i < this.data.times.length; i++) {
+  setcolor: function(NumOfPeople){
 
-      // console.log("opacity" + (this.data.times[i] / NumOfPeople));
-      arr[i] = "rgba(0, 151, 19," + (this.data.times[i] / NumOfPeople) + ")";
+
+    //initialize 2d array
+    var arr = new Array(this.data.times.length).fill(0).map(() => new Array(this.data.times[0].length).fill(0));
+
+    for (var i = 0; i < this.data.times.length; i++){
+      for ( var j = 0 ; j < this.data.times[0].length; j++){
+        arr[i][j] = "rgba(0, 151, 19," + (this.data.times[i][j] / NumOfPeople) + ")";
+      }
     }
     this.setData({
       color: arr
     })
+
   },
 
   /** 
@@ -55,10 +100,10 @@ Page({
    */
   onShow: function() {
     var that = this
-    this.getTime()
+    this.adjustTimeTable()
     this.setData({
       timer: setInterval(function () {
-        that.getTime()
+        that.adjustTimeTable()
       }, 10000)
     })
 
@@ -66,7 +111,7 @@ Page({
 
   clear: function() {
     var arr = []
-    for (var i = 0; i < 24; i++) {
+    for (var i = 0; i < totalNumOfHours; i++) {
       arr[i] = 0;
     }
     this.setData({
@@ -74,15 +119,24 @@ Page({
     })
   },
 
-  getTime: function() {
-    const db = wx.cloud.database()
-    var that = this
-    db.collection('events').doc('test').get({
-      success: function(res) {
-        that.calcTime(res.data.Attendee)
-      }
-    })
+  adjustTimeTable: function() {
+    
+    var attendeeArr = this.data.Attendee;
+    
+    var timesToSet = new Array(totalNumOfHours);
+
+    for (var i = 0; i < timesToSet.length; i++) {
+      timesToSet[i] = new Array(this.data.totaldate).fill(0)
+    }
+  
+    for (var id in attendeeArr){
+        this.calcTime(timesToSet,attendeeArr[id]);
+    }
+
+    this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
+
   },
+
 
   /**
    * Lifecycle function--Called when page hide
@@ -119,27 +173,30 @@ Page({
 
   },
 
-  calcTime: function(arr) {
-    var localArr = []
-    for (var i = 0; i < 24; i++) {
-      localArr[i] = 0
+  calcTime: function(timesToSet,multiDaySchedule) {
+    for (var dayindex=0;  dayindex< multiDaySchedule.length; dayindex++ ){
+      this.update(timesToSet,dayindex, multiDaySchedule[dayindex] )
     }
-    for (var i in arr) {
-      this.update(arr[i], localArr)
-    }
-    console.log(Object.keys(arr).length)
-    // app.globalData.times = localArr
+    // var localArr = []
+    // for (var i = 0; i < totalNumOfHours; i++) {
+    //   localArr[i] = 0
+    // }
+    // for (var i in arr) {
+    //   this.update(arr[i], localArr)
+    // }
+    
     this.setData({
-      times: localArr
+      times: timesToSet
     })
-    this.setcolor(Object.keys(arr).length)
-    wx.hideLoading()
+    // wx.hideLoading()
     // wx.setStorageSync('times', app.globalData.times)
   },
 
-  update(arr, localArr) {
-    for (var i = 0; i < 24; i++) {
-      if (arr[i]) localArr[i]++
+  update(timesToSet,dayindex,singleDaySchedule) {
+
+    //update times array totalNumOfHours * totaldates
+    for (var i = 0; i < totalNumOfHours; i++) {
+      if (singleDaySchedule[i]) timesToSet[i][dayindex]++
     }
   },
 
@@ -155,19 +212,55 @@ Page({
       url: '/pages/createEvent/createEvent?edit=' + edit,
     })
   },
+
   onTouchStart: function(e) {
-    var ID = parseInt(e.target.id)
-    // wx.showToast({
-    //   title: this.data.times[ID].toString(),
-    //  })
+    var i = parseInt(e.target.dataset.i)
+    var j = parseInt(e.target.dataset.j)
+
+    // set number of pictures to show
+    var numOfPicsToShow = this.data.times[i][j]
     this.setData({
-      display: this.data.times[ID].toString() + " people are available",
+      numOfPics: numOfPicsToShow,
+      display: this.data.times[i][j].toString() + " people are available",
       nullHouse: false
     })
+    
+    // set the url for profile pics 
+    var picUrl = [];
+    console.log(this.data.Attendee)
+
+    // for ( var key in this.data.Attendee[ID]){
+      
+    //   var id = this.data.attendee[ID][key];
+    //   var that = this;
+
+
+    //   //get url from the user id 
+    //   db.collection('users').doc(id).get({
+    //     success: function (res) {
+    //       // res.data 包含该记录的数据
+    //       picUrl.push(res.data.profilePic)
+    //       that.setData({
+    //         pics: picUrl
+    //       })
+    //       that.setData({
+    //         display: numOfPicsToShow.toString() + " people are available",
+    //         nullHouse: false
+    //       })
+
+    //     },
+
+    //     error: e =>{
+    //       console.log("error")
+    //     }
+    //   })
+
+    // }
+
 
   },
   onTouchEnd: function() {
-    wx.hideToast();
+  
     this.setData({
       nullHouse: true
     })

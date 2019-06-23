@@ -9,11 +9,15 @@
     </view>
 
     <view class="tr">
-      <block wx:for="{{8}}" wx:for-item="i">
-        <block wx:if="{{datechoose[i] == 1}}">
-          <view class="th"> {{date[i]}}</view>
-        </block>
+
+      <view class="th"> 小时</view>
+
+      <block wx:for="{{totaldate}}" wx:for-item="i">
+
+          <view class="th"> {{dates[i]}}</view>
+    
       </block>
+
     </view>
 
 
@@ -25,13 +29,6 @@
         </view>
       </block>
     </view>
-
-
-    <!-- 
-    <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
-      <view class="td td1" style='width:{{width_percent}}%'>{{i}}</view>
-      <view style='background:{{color[i]}};width:{{width_percent}}%' class="td td2" bindtouchstart='onTouchStart' bindtouchend='onTouchEnd' id="{{i}}">{{times[i]}}</view>
-    </view> -->
 
 
   </view>

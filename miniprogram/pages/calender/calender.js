@@ -11,8 +11,9 @@ Page({
     nextYear: '',
     nextMonth: '',
     nextMonthArr: [],
-    tIntervals:[],
-    nIntervals:[]
+    tIntervals: [],
+    nIntervals: [],
+    intervals: []
   },
 
   /**
@@ -25,6 +26,7 @@ Page({
     var nextMonthArr = this.getDateArr(nextM_start);
     var tIntervals = [];
     var nIntervals = [];
+    var intervals = [];
     this.setData({
       thisYear: new Date().getFullYear(),
       thisMonth: new Date().getMonth() + 1,
@@ -45,10 +47,15 @@ Page({
     var month = e.currentTarget.dataset.month;
     var tInterv = this.data.tIntervals;
     var nInterv = this.data.nIntervals;
+    var interv = this.data.intervals;
+    var currMonth = 0;
+    var thisMonth = new Date().getMonth() + 1;
     if (month == 'thisMonth') {
       var that = this.data.thisMonthArr;
+      currMonth = thisMonth;
     } else {
       var that = this.data.nextMonthArr;
+      currMonth = thisMonth +1;
     }
     //切换选中状态
     if (that[index][item].state == true) {
@@ -56,38 +63,88 @@ Page({
     } else if (that[index][item].state == false) {
       that[index][item].state = true;
     }
-  
-      if (month == 'thisMonth'){
-        var selected = parseInt(date) + parseInt(item);
-        var check = true
-        let tLength = tInterv.length
-        for(let i=0;i<tLength;i++){
-          if(tInterv[i] === selected){
-            check = false
-            tInterv.splice(i,i+1);
-          }
-        }
-        if(check){
-          tInterv.push(selected)
-        }
-        
+
+    if (month == 'thisMonth') {
+      var selected = parseInt(date) + parseInt(item);
+      var check = true
+      let tLength = tInterv.length
+      let curr =0;
+      if (selected < 10) {
+        curr = currMonth + "0" + selected.toString(10);
       }
-      else{
-        var check = true
-        let nLength = nInterv.length
-        var selected = parseInt(date);
-        for (let i = 0; i <nLength;i++) {
-          if (nInterv[i] === selected) {
-            check = false
-            nInterv.splice(i, i + 1);
-          }
-        }
-        if (check) {
-          nInterv.push(selected)
+      else {
+        curr = currMonth + selected.toString(10);
+      }
+      for (let i = 0; i < tLength; i++) {
+        if (tInterv[i] === curr) {
+          check = false
+          tInterv.splice(i, i + 1);
         }
       }
-      console.log(tInterv)
-      console.log(nInterv)
+      if (check) {
+        let once = true
+        let end = 0
+        let length = tInterv.length;
+        if (length === 0) { tInterv.push(curr); }
+        for (let i = 0; i < length; i++) {
+          if (once == true) {
+            if (parseInt(tInterv[i]) > parseInt(curr)) {
+              tInterv.splice(i, 0, curr)
+              once = false;
+            }
+            end += 1
+          }
+          if ((end >= length) && once) {
+            tInterv.push(curr)
+            once = true;
+            end = 0
+          }
+        }      
+      }
+
+    }
+    else {
+      var check = true
+      let nLength = nInterv.length
+      var selected = parseInt(date);
+      let curr = 0;
+      if (selected < 10) {
+        curr = currMonth + "0" + selected.toString(10);
+      }
+      else {
+        curr = currMonth + selected.toString(10);
+      }
+      for (let i = 0; i < nLength; i++) {
+        if (nInterv[i] === curr) {
+          check = false
+          nInterv.splice(i, i + 1);
+        }
+      }
+      if (check) {
+        let once = true
+        let end = 0
+        let length = nInterv.length;
+        if(length === 0) {nInterv.push(curr);}
+        for (let i = 0; i < length; i++) {
+          if(once == true) {
+            if (parseInt(nInterv[i]) > parseInt(curr)) {
+              nInterv.splice(i,0,curr)
+              once = false;
+            }
+            end+=1
+          }
+          if((end >= length) && once){
+            nInterv.push(curr)
+            once = true;
+            end = 0 
+          }
+        }      
+      }
+    }
+    //console.log(tInterv)
+    //console.log(nInterv)
+    interv = tInterv.concat(nInterv)
+    console.log(interv)
     //console.log(that);
     //根据月份设置数据
     if (month == 'thisMonth') {
@@ -99,10 +156,11 @@ Page({
         nextMonthArr: that,
       });
     }
-    
+
     this.setData({
       tIntervals: tInterv,
-      nIntervals: nInterv
+      nIntervals: nInterv,
+      intervals: interv
     })
   },
 

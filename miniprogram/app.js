@@ -37,7 +37,7 @@ App({
             }
             console.log(res.data)
             that.globalData.AttendEvent = res.data[0].AttendEvent
-            that.globalData.SponsorEvent = res.data[0].SponserEvent
+            that.globalData.SponsorEvent = res.data[0].SponsorEvent
             console.log(that.globalData)
             wx.getSetting({
               success: function(res) {

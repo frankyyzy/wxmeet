@@ -107,9 +107,9 @@ Page({
       success: res => {
         console.log(that.data.eventId)
         console.log('更新数据成功')
-        // wx.redirectTo({
-        //   url: '/pages/masterEvent/masterEvent',
-        // })
+        wx.redirectTo({
+          url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+        })
       }
     })
   },

@@ -24,6 +24,7 @@ Page({
     width_percent: 0,
     totaldate: 0,
     eventName: "",
+    eventId: '',
   },
 
 
@@ -40,10 +41,13 @@ Page({
     }
 
     var that = this
+    this.setData({
+      eventId: options.eventId,
+    })
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
-        eventID: 'test_event',
+        eventID: that.data.eventId,
       },
       success: function(res) {
        

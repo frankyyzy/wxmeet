@@ -18,9 +18,9 @@ App({
         traceUser: true,
       })
     }
-    wx.showLoading({
-      title: '',
-    })
+    // wx.showLoading({
+    //   title: '',
+    // })
     wx.cloud.callFunction({
       name: 'login',
       complete: res => {

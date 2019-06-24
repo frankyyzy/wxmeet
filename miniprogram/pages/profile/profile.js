@@ -91,6 +91,11 @@ Page({
     })
   },
 
+  onCalenderTap: function () {
+    wx.redirectTo({
+      url: '../calender/calender',
+    })
+  },
 
 
 

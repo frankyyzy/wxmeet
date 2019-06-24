@@ -6,6 +6,3 @@
 
 <view>我加入的局</view>
 <button bindtap="onAttendingEventTap">{{AttendEvent}}</button>
-
-<view>日历</view>
-<button bindtap="onCalenderTap">Event3 Stub</button>

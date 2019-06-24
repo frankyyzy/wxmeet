@@ -1,7 +1,8 @@
 <!--pages/calender/calender.wxml-->
 <text>pages/calender/calender.wxml</text>
 <!--pages/calendar/index.wxml-->
-<view class='tips'>日期可多选，不超过一个月</view>
+<textarea class='eventName'></textarea>
+<view class='tips'>请选择你心仪的日期</view>
 <scroll-view scroll-y class='scroll-view'>
   <view class='calendar'>
     <view class='year_month'>

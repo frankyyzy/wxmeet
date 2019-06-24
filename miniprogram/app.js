@@ -10,11 +10,6 @@ App({
   },
   onLaunch: function() {
     var that = this
-    // var pages = getCurrentPages()
-    // var currentPage = pages[pages.length-1]
-    // var url = currentPage.route
-    // var options = currentPage.options
-    // console.log('url' + this.route)
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -46,11 +41,11 @@ App({
                       that.updateUser(res.userInfo)
                       // console.log(res.userInfo)
                       wx.hideLoading()
-                      wx.redirectTo({
-                        url: '/pages/profile/profile', //授权页面
-                        // url: '/pages/authorize/authorize', //授权页面
+                      // wx.redirectTo({
+                      //   url: '/pages/profile/profile', //授权页面
+                      //   // url: '/pages/authorize/authorize', //授权页面
 
-                      })
+                      // })
                     }
                   })
                 } else { //未授权，跳到授权页面

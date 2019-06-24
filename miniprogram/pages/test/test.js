@@ -7,8 +7,7 @@ Page({
       color: 'white',
       background: '#AAD4F5'
     },
-    dayStyle: [{
-    }, ],
+    dayStyle: [{}],
     currentDate: "2019-06",
     size: 0
 
@@ -20,6 +19,7 @@ Page({
     var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     for (var i = 1; i <= lastDay; i++) {
       var col = 'grey'
+      // if (i === date.getDate()) col = 'red'
       if (i >= date.getDate()) col = 'black'
       preDate.push({
         month: 'current',
@@ -50,23 +50,22 @@ Page({
     let clickDay = event.detail.day
     var selectedDays = this.data.dayStyle
     // console.log(this.data.map)
-    if(selectedDays[clickDay-1].color === 'black'){
+    if (selectedDays[clickDay - 1].color === 'black') {
       if (this.data.size >= 7) {
         wx.showToast({
           title: '最多可选7天',
         })
         return
       }
-      selectedDays[clickDay-1] = {
+      selectedDays[clickDay - 1] = {
         month: 'current',
         day: clickDay,
         color: 'white',
         background: '#09B83E'
       }
       this.data.size++
-    }
-    else{
-      selectedDays[clickDay-1] = {
+    } else {
+      selectedDays[clickDay - 1] = {
         month: 'current',
         day: clickDay,
         color: 'black',

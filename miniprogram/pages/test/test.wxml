@@ -1,2 +1,2 @@
-<calendar calendar-style="calendar" cell-size="50" bindnextMonth="next" bindprevMonth= "prev" header-style="calendar-header"  board-style="calendar-board"
+<calendar calendar-style="calendar" cell-size="20" bindnextMonth="next" bindprevMonth= "prev" header-style="calendar-header"   board-style="calendar-board"
  days-color="{{dayStyle}}" start-date = "{{currentDate}}" binddayClick="dayClick" />

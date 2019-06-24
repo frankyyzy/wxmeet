@@ -6,14 +6,20 @@ Page({
    * Page initial data
    */
   data: {
-    SponsorList: [],
-    AttendingList: []
+    SponsorEvent: app.globalData.SponsorEvent,
+    AttendEvent: app.globalData.AttendEvent
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
     var that = this;
+    console.log(app.globalData.SponsorEvent)
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
+    })
+    
   },
 
   /**
@@ -73,6 +79,7 @@ Page({
   },
 
   onSponserEventTap: function () {
+    
     wx.redirectTo({
       url: '../masterEvent/masterEvent',
     })

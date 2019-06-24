@@ -1,12 +1,14 @@
 {
   "pages": [
+    "pages/test/test",
     "pages/loading/loading",
     "pages/profile/profile",
     "pages/selectTime/selectTime",
     "pages/createEvent/createEvent",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent",
-    "pages/authorize/authorize"
+    "pages/authorize/authorize",
+    "pages/selectTime/selectTime"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -15,5 +17,12 @@
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
   },
+  "plugins": {
+    "calendar": {
+      "version": "1.1.0",
+      "provider": "wx92c68dae5a8bb046"
+    }
+  },
+
   "sitemapLocation": "sitemap.json"
 }

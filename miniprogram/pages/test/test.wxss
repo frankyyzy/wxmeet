@@ -1,0 +1,12 @@
+.calendar {
+    background-color:white;  
+    padding-top: 10px; 
+}
+.calendar-header{
+  font-size: large;
+  /* color: #59518d; */
+}
+.calendar-board{
+  color: #c7cbe2;
+   font-weight: bold;
+}

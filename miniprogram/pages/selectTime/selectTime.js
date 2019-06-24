@@ -13,7 +13,8 @@ Page({
     start: -1,
     end: -1,
     edit: false,
-    intervals: []
+    intervals: [],
+    eventId:''
   },
 
   /**
@@ -22,7 +23,8 @@ Page({
   onLoad: function (options) {
     let that = this
     this.setData({
-      edit: options.edit,
+      //edit: options.edit,
+      eventId: options.eventId,
       user: app.globalData.user
     })
     // console.log("edit" + this.data.edit)
@@ -97,24 +99,27 @@ Page({
     wx.cloud.callFunction({
       name: 'testupdate',
       data: {
+        eventId: that.data.eventId,
         id: that.data.user,
         dates: that.data.dates,
         times: that.data.intervals,
       },
       success: res => {
+        console.log(that.data.eventId)
         console.log('更新数据成功')
-        wx.redirectTo({
-          url: '/pages/masterEvent/masterEvent',
-        })
+        // wx.redirectTo({
+        //   url: '/pages/masterEvent/masterEvent',
+        // })
       }
     })
   },
   updateUser: function () {
+    var that = this
     const db = wx.cloud.database()
     const _ = db.command
-    db.collection('users').doc(this.data.user).update({
+    db.collection('users').doc(that.data.user).update({
       data: {
-        AttendEvent: _.push(['test']),
+        AttendEvent: _.push(that.data.eventId),
         // nickName: this.data.nickName,
         // profilePic: this.data.profilePic,
       }

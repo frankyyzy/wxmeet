@@ -2,10 +2,10 @@
 <text>pages/profile/profile.wxml</text>
 <button type="primary" bindtap="onCreateEventTap">我要组局</button>
 <view>我组的局</view>
-<button bindtap="onSponserEventTap">Event1 Stub</button>
+<button bindtap="onSponserEventTap">{{SponsorEvent}}</button>
 
 <view>我加入的局</view>
-<button bindtap="onAttendingEventTap">Event2 Stub</button>
+<button bindtap="onAttendingEventTap">{{AttendEvent}}</button>
 
 <view>日历</view>
 <button bindtap="onCalenderTap">Event3 Stub</button>

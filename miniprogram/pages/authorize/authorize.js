@@ -27,16 +27,22 @@ Page({
         url: '../profile/profile',
       })
     }
+    else{
+      wx.showToast({
+        title: 'Goodbye',
+        icon: 'loading'
+      })
+    }
   },
   setUser: function(info) {
     let that = this
     const db = wx.cloud.database()
     const _ = db.commond
     try {
-      db.collection("users").doc(app.globalData.user).set({
+      db.collection("users").doc(app.globalData.user).update({
         data: {
-          nickName: info.nickName,
-          profilePic: info.avatarUrl
+          nickName:(info.nickName),
+          profilePic: (info.avatarUrl),
         }
       })
     } catch (e) {

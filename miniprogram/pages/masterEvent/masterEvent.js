@@ -32,6 +32,9 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+    wx.showLoading({
+      title: '',
+    })
 
     if (!wx.cloud) {
       wx.redirectTo({
@@ -50,13 +53,17 @@ Page({
         eventID: that.data.eventId,
       },
       success: function(res) {
-       
+        console.log("entering ")
+        
         that.setData({
           dates: res.result.data[0].dates,
           Attendee: res.result.data[0].Attendee,
           totaldate: res.result.data[0].dates.length,
           eventName: res.result.data[0].eventName,
         });
+
+        that.adjustTimeTable()
+        wx.hideLoading()
 
 
       },
@@ -96,13 +103,23 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+   console.log("showing")
+
     var that = this
     this.adjustTimeTable()
+    
+
     this.setData({
       timer: setInterval(function() {
+        wx.showLoading({
+          title: '',
+        })
+        //db call?
         that.adjustTimeTable()
+        wx.hideLoading()
       }, 10000)
     })
+    
 
   },
 
@@ -117,6 +134,8 @@ Page({
   },
 
   adjustTimeTable: function() {
+    
+    console.log("adjusting")
 
     var attendeeArr = this.data.Attendee;
 
@@ -131,7 +150,7 @@ Page({
     }
 
     this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
-
+    
   },
 
 

@@ -37,8 +37,28 @@
                return
              }
              console.log(res.data)
-             that.globalData.AttendEvent = res.data[0].AttendEvent
+
+
+             // n^2 solution, use hashmap for better performance
              that.globalData.SponsorEvent = res.data[0].SponsorEvent
+
+
+             var allEvents = res.data[0].AttendEvent;
+             var sponsorEventToSet = [];
+             for (var AllEventTuple in allEvents) {
+               var IsSponser = false;
+               for (var SponserEventTuple in that.globalData.SponsorEvent) {
+                 if (SponserEventTuple === AllEventTuple){
+                   IsSponser = true;
+                   break;
+                 }
+               }
+               if (!IsSponser){
+                 sponsorEventToSet.push(AllEventTuple);
+               }
+             }
+             that.globalData.AttendEvent = sponsorEventToSet;
+
              // console.log(that.globalData)
              wx.getSetting({
                success: function(res) {
@@ -50,7 +70,6 @@
                        wx.hideLoading()
                        wx.redirectTo({
                          url: '/pages/profile/profile', //授权页面
-                         // url: '/pages/authorize/authorize', //授权页面
 
                        })
                      },

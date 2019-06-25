@@ -14,7 +14,7 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    console.log(app.globalData.SponsorEvent)
+    // console.log(app.globalData.SponsorEvent)
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent

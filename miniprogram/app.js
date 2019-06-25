@@ -110,8 +110,8 @@
        data: {
          nickName: '',
          profilePic: '',
-         SponsorEvent: [],
-         AttendEvent: []
+         SponsorEvent: {},
+         AttendEvent: {}
        }
      })
      wx.redirectTo({

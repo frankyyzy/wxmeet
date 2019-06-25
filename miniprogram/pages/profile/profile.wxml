@@ -3,9 +3,9 @@
 <button type="primary" bindtap="onCreateEventTap">我要组局</button>
 <view>我组的局</view>
 <view wx:for="{{SponsorEvent}}" wx:for-item="value" id="{{index}}" bindtap="onSponserEventTap">
-  <button>{{value[1]}}</button>
+  <button>{{value[0]}}</button>
 </view>
 <view>我加入的局</view>
 <view wx:for="{{AttendEvent}}" wx:for-index="i" id="{{i}}" wx:for-item="value">
-  <button bindtap="onAttendingEventTap">{{value[1]}}</button>
+  <button bindtap="onAttendingEventTap">{{value.name}}</button>
 </view>

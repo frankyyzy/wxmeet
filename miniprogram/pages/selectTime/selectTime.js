@@ -135,7 +135,10 @@ Page({
     const _ = db.command
     db.collection('users').doc(that.data.user).update({
       data: {
-        AttendEvent: _.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
+        AttendEvent: {
+          [that.data.eventId]: _.set([that.data.eventName, that.data.createTime])
+        }
+        //_.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
       }
     })
   },

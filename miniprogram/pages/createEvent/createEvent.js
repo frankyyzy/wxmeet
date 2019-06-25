@@ -262,7 +262,9 @@ Page({
         })
         db.collection('users').doc(that.data.user).update({
           data: {
-            SponsorEvent: _.push([[res.result._id, that.data.value, createTime]]),
+            SponsorEvent:{
+              [res.result._id]: _.set([that.data.value, createTime])
+            }
           }
         })
         console.log(that.data.eventId)

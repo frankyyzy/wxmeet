@@ -37,7 +37,7 @@
            success: function(res) {
              if (res.data.length == 0) {
                that.setNewUser()
-               return
+               //return
              }
              console.log(res.data)
 
@@ -69,7 +69,6 @@
                    wx.getUserInfo({
                      success: function(res) {
                        that.updateUser(res.userInfo)
-                       // console.log(res.userInfo)
                        wx.hideLoading()
                        var turn = that.globalData.url
                        wx.redirectTo({
@@ -105,26 +104,31 @@
      }
    },
    setNewUser: function() {
-     const db = wx.cloud.database()
-     db.collection('users').doc(this.globalData.user).set({
+     wx.cloud.callFunction({
+       name: 'createUser',
        data: {
-         nickName: '',
-         profilePic: '',
-         SponsorEvent: {},
-         AttendEvent: {}
+         id: this.globalData.user,
+       },
+       success: res => {
+         console.log('创建用户成功！')
+         wx.redirectTo({
+           url: '/pages/authorize/authorize'
+         })
        }
-     })
-     wx.redirectTo({
-       url: '/pages/authorize/authorize'
      })
    },
    updateUser: function(info) {
-     const db = wx.cloud.database()
-    //  console.log(this.globalData.user)
-     db.collection('users').doc(this.globalData.user).update({
+     console.log(info.nickName)
+     console.log(this.globalData.user)
+     wx.cloud.callFunction({
+       name: 'updateUser',
        data: {
+         id: this.globalData.user,
          nickName: info.nickName,
-         profilePic: info.avatarUrl
+         profilePic: info.avatarUrl,
+       },
+       success: res => {
+         console.log('更新用户数据成功！')
        }
      })
    }

@@ -191,33 +191,7 @@ Page({
     this.data.touchE = [sx, sy]
   },
   mytouchend: function (e) {
-    var Name = parseInt(e.target.id[0])
-    var idd = e.target.id
-    var ID = '';
-    for (let i = 1; i < idd.length; i++) {
-      ID = ID + idd[i];
-    }
-    ID = parseInt(ID);
-    console.log(Name)
-    console.log(ID)
-    this.setData({
-      endi: ID,
-      endj: Name
-    })
-    for (let i = this.data.starti; i <= this.data.endi; i++) {
-      for (let j = this.data.startj; j <= this.data.endj; j++) {
-        var interv = this.data.intervals
-        if (!interv[j][i]) {
-          interv[j][i] = true;
-        }
-        else {
-          interv[j][i] = false;
-        }
-        this.setData({
-          intervals: interv
-        })
-      }
-    }
+    
   },
   mytap: function (e) {
     var Name = parseInt(e.target.id[0])

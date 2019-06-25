@@ -1,4 +1,5 @@
 // pages/profile/profile.js
+
 const app = getApp()
 Page({
 
@@ -13,20 +14,20 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    var that = this;
-    // console.log(app.globalData.SponsorEvent)
+    console.log("loading")
+
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
     })
 
-    
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
+
 
   },
 
@@ -35,6 +36,55 @@ Page({
    */
   onShow: function () {
 
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+    } else {
+      wx.cloud.init({
+        env: 'wxmeet-5taii',
+        traceUser: true,
+      })
+    }
+
+    var that = this;
+
+    const db = wx.cloud.database()
+    db.collection('users').where({
+      _id: app.globalData.user
+    }).get({
+      success: function (res) {
+        console.log(res.data)
+    
+        // n^2 solution, use hashmap for better performance
+        that.globalData.SponsorEvent = res.data[0].SponsorEvent
+
+
+        var allEvents = res.data[0].AttendEvent;
+        var sponsorEventToSet = [];
+        for (var AllEventTuple in allEvents) {
+          var IsSponser = false;
+          for (var SponserEventTuple in that.globalData.SponsorEvent) {
+            if (SponserEventTuple === AllEventTuple) {
+              IsSponser = true;
+              break;
+            }
+          }
+          if (!IsSponser) {
+            sponsorEventToSet.push(AllEventTuple);
+          }
+        }
+        that.globalData.AttendEvent = sponsorEventToSet;
+
+
+
+
+        that.setData({
+          SponsorEvent: app.globalData.SponsorEvent,
+          AttendEvent: app.globalData.AttendEvent
+        })
+
+      }
+    })
+   
   },
 
   /**

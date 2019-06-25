@@ -36,15 +36,6 @@ Page({
         _id: that.data.eventId
       }).get({
         success: function (res) {
-<<<<<<< HEAD
-          that.setData({
-            dates: res.data[0].dates
-          })
-          console.log(that.data)
-        }
-      })
-    console.log(that.data)
-=======
           var passdates = res.data[0].dates
           var curdates = ["小时"]
           var datechoos = [0]
@@ -72,7 +63,6 @@ Page({
           
         }
       })
->>>>>>> zhenxu
   },
 
   /**
@@ -187,26 +177,6 @@ Page({
       startj: Name
     })
 
-<<<<<<< HEAD
-
-  },
-  mytouchstart: function (e) {
-    var Name = parseInt(e.target.id[0])
-    var idd = e.target.id
-    var ID = '';
-    for (let i = 1; i < idd.length; i++) {
-      ID = ID + idd[i];
-    }
-    ID = parseInt(ID);
-    console.log(e.clientX)
-    console.log(ID)
-    this.setData({
-      starti: ID,
-      startj: Name
-    })
-
-=======
->>>>>>> zhenxu
   },
   //长按事件
   mytouchmove: function (e) {

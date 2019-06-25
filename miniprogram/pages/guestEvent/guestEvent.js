@@ -1,46 +1,179 @@
 // pages/guestEvent/guestEvent.js
+const app = getApp()
+const db = wx.cloud.database()
+const totalNumOfHours = 24;
 Page({
 
   /**
    * Page initial data
    */
   data: {
-
+    color: [
+      []
+    ],
+    nullHouse: true, //先设置隐藏
+    display: "",
+    pics: [],
+    numOfPics: 0,
+    times: [
+      []
+    ],
+    timer: null,
+    dates: [],
+    Attendee: {},
+    width_percent: 0,
+    totaldate: 0,
+    eventName: "",
+    eventId: '',
   },
+
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
+    wx.showLoading({
+      title: '',
+    })
+
+    if (!wx.cloud) {
+      wx.redirectTo({
+        url: '../chooseLib/chooseLib',
+      })
+      return
+    }
+
+    var that = this
+    this.setData({
+      eventId: options.eventId,
+    })
+   
+   
+    wx.cloud.callFunction({
+      name: 'getEventTime',
+      data: {
+        eventID: that.data.eventId,
+      },
+      success: function (res) {
+        console.log("entering ")
+
+        that.setData({
+          dates: res.result.data[0].dates,
+          Attendee: res.result.data[0].Attendee,
+          totaldate: res.result.data[0].dates.length,
+          eventName: res.result.data[0].eventName,
+        });
+
+        that.adjustTimeTable()
+        wx.hideLoading()
+
+
+      },
+      fail: function (res) {
+
+        console.log("error")
+      }
+    })
 
   },
 
-  /**
+  setcolor: function (NumOfPeople) {
+
+
+    //initialize 2d array
+    var arr = new Array(this.data.times.length).fill(0).map(() => new Array(this.data.times[0].length).fill(0));
+
+    for (var i = 0; i < this.data.times.length; i++) {
+      for (var j = 0; j < this.data.times[0].length; j++) {
+        arr[i][j] = "rgba(0, 151, 19," + (this.data.times[i][j] / NumOfPeople) + ")";
+      }
+    }
+    this.setData({
+      color: arr
+    })
+
+  },
+
+  /** 
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
 
   },
-
+  onShareAppMessage: function () {
+    let that = this
+    return ({
+      title: '分享' + that.data.eventName,
+      path: '/pages/loading/loading?url=/' + that.route + '&eventId=' + that.data.eventId
+    })
+  },
   /**
    * Lifecycle function--Called when page show
    */
   onShow: function () {
+    console.log("showing")
+
+    var that = this
+    this.adjustTimeTable()
+
+
+    this.setData({
+      timer: setInterval(function () {
+        wx.showLoading({
+          title: '',
+        })
+        //db call?
+        that.adjustTimeTable()
+        wx.hideLoading()
+      }, 10000)
+    })
+
 
   },
+
+  clear: function () {
+    var arr = []
+    for (var i = 0; i < totalNumOfHours; i++) {
+      arr[i] = 0;
+    }
+    this.setData({
+      times: arr
+    })
+  },
+
+  adjustTimeTable: function () {
+
+    console.log("adjusting")
+
+    var attendeeArr = this.data.Attendee;
+
+    var timesToSet = new Array(totalNumOfHours);
+
+    for (var i = 0; i < timesToSet.length; i++) {
+      timesToSet[i] = new Array(this.data.totaldate).fill(0)
+    }
+
+    for (var id in attendeeArr) {
+      this.calcTime(timesToSet, attendeeArr[id]);
+    }
+
+    this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
+
+  },
+
 
   /**
    * Lifecycle function--Called when page hide
    */
   onHide: function () {
-
+    clearInterval(this.data.timer)
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
   onUnload: function () {
-
+    clearInterval(this.data.timer)
   },
 
   /**
@@ -50,27 +183,92 @@ Page({
 
   },
 
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom: function () {
+  calcTime: function (timesToSet, multiDaySchedule) {
+    for (var dayindex = 0; dayindex < multiDaySchedule.length; dayindex++) {
+      this.update(timesToSet, dayindex, multiDaySchedule[dayindex])
+    }
+    this.setData({
+      times: timesToSet
+    })
+  },
+
+  update(timesToSet, dayindex, singleDaySchedule) {
+
+    //update times array totalNumOfHours * totaldates
+    for (var i = 0; i < totalNumOfHours; i++) {
+      if (singleDaySchedule[i]) timesToSet[i][dayindex]++
+    }
+  },
+
+  onTouchStart: function (e) {
+    var i = parseInt(e.target.dataset.i)
+    var j = parseInt(e.target.dataset.j)
+
+    // set number of pictures to show
+    var numOfPicsToShow = this.data.times[i][j]
+    this.setData({
+      numOfPics: numOfPicsToShow,
+      display: this.data.times[i][j].toString() + " people are available",
+      nullHouse: false
+    })
+
+    // set the url for profile pics 
+    var picUrl = [];
+    var attendeeID = [];
+
+    var attendeeDict = this.data.Attendee;
+
+    for (var id in attendeeDict) {
+
+      if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
+        if (attendeeDict[id][j][i]) {
+          attendeeID.push(id);
+        }
+      }
+    }
+
+    // get profile pics from id 
+    for (var id of attendeeID) {
+
+      var that = this
+      //get url from the user id 
+      db.collection('users').doc(id).get({
+        success: function (res) {
+          // res.data 包含该记录的数据
+          picUrl.push(res.data.profilePic)
+          that.setData({
+            pics: picUrl
+          })
+        },
+
+        error: e => {
+          console.log("error")
+        }
+      })
+    }
 
   },
 
-  /**
-   * Called when user click on the top right corner to share
-   */
-  onShareAppMessage: function () {
+  onTouchEnd: function () {
 
+    this.setData({
+      nullHouse: true
+    })
   },
+
+
   onBackHomeTap: function () {
     wx.redirectTo({
       url: '/pages/profile/profile',
     })
   },
   onEditTap: function () {
-    wx.redirectTo({
-      url: '/pages/selectTime/selectTime',
+    var edit = true
+    wx.navigateTo({
+      url: '/pages/selectTime/selectTime?eventId=' + this.data.eventId + "&eventName=" + this.data.eventName
+      //createTime not set
     })
   }
+
+
 })

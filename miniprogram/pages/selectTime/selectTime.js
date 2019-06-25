@@ -25,7 +25,6 @@ Page({
   onLoad: function (options) {
     let that = this
     this.setData({
-      //edit: options.edit,
       eventId: options.eventId,
       eventName: options.eventName,
       createTime: options.createTime,

@@ -1,11 +1,6 @@
 <!--pages/profile/profile.wxml-->
 <view class="hori">
   <view class="datet">
-    <checkbox-group bindchange="checkboxChange" data-checks="{{datachoose}}">
-      <label class="checkbox" wx:for="{{[0,1,2,3,4,5,6]}}" wx:for-item="i">
-        <view class="dateshow" id="{{i}}"><checkbox value="{{i}}"/>{{date[i+1]}}</view>
-      </label>
-    </checkbox-group>
   </view>
   <button type="primary" bindtap="onSubmitTap">确认时间</button>
 </view>
@@ -15,10 +10,15 @@
   <view class="table">
     <view class="title">
       <block wx:if="{{totaldate>=1}}">   
+<<<<<<< HEAD
         <block class = "tr" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:for-item="i">  
             <block wx:if="{{datechoose[i] == 1}}">
                 <view class="th td1"> {{date[i]}}</view>
             </block>
+=======
+        <block class = "tr" wx:for="{{totaldate}}" wx:for-item="i">  
+            <view class="th td1"> {{dates[i]}}</view>
+>>>>>>> zhenxu
         </block>
       </block>
     </view>
@@ -26,7 +26,7 @@
       
       <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
           <view class="td td1" >{{i}}</view>
-            <block wx:for="{{totaldate}}" wx:for-item="j">
+            <block wx:for="{{totaldate-1}}" wx:for-item="j">
               <block wx:if="{{intervals[j][i] == false}}">
                 <view class="td td1 tdblwhite" bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend" bindtap="mytap"  id = "{{j}}{{i}}">{{intervals[j][i]}}</view>
               </block>

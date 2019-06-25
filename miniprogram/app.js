@@ -34,8 +34,9 @@
            success: function(res) {
              if (res.data.length == 0) {
                that.setNewUser()
+               return
              }
-             // console.log(res.data)
+             console.log(res.data)
              that.globalData.AttendEvent = res.data[0].AttendEvent
              that.globalData.SponsorEvent = res.data[0].SponsorEvent
              // console.log(that.globalData)
@@ -81,6 +82,9 @@
          SponsorEvent: [],
          AttendEvent: []
        }
+     })
+     wx.redirectTo({
+       url: '/pages/authorize/authorize', //授权页面
      })
    },
    updateUser: function(info) {

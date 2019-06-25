@@ -19,6 +19,7 @@ Page({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
     })
+
     
   },
 
@@ -78,10 +79,12 @@ Page({
     })
   },
 
-  onSponserEventTap: function () {
-    
-    wx.redirectTo({
-      url: '../masterEvent/masterEvent',
+  onSponserEventTap: function (event) {
+    console.log(event)
+    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
+    console.log(eventId)
+    wx.navigateTo({
+      url: '../masterEvent/masterEvent?eventId='+eventId,
     })
   },
 

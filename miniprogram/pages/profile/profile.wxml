@@ -2,7 +2,10 @@
 <text>pages/profile/profile.wxml</text>
 <button type="primary" bindtap="onCreateEventTap">我要组局</button>
 <view>我组的局</view>
-<button bindtap="onSponserEventTap">{{SponsorEvent}}</button>
-
+<view wx:for="{{SponsorEvent}}" wx:for-item="value" id="{{index}}" bindtap="onSponserEventTap">
+  <button>{{value[1]}}</button>
+</view>
 <view>我加入的局</view>
-<button bindtap="onAttendingEventTap">{{AttendEvent}}</button>
+<view wx:for="{{AttendEvent}}" wx:for-index="i" id="{{i}}" wx:for-item="value">
+  <button bindtap="onAttendingEventTap">{{value[1]}}</button>
+</view>

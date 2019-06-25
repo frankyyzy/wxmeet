@@ -143,10 +143,4 @@ Page({
       url: '../guestEvent/guestEvent',
     })
   },
-
-
-
-
-
-
 })

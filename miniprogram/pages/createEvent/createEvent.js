@@ -246,27 +246,28 @@ Page({
     var that = this
     const db = wx.cloud.database()
     const _ = db.command
+    var createTime = new Date().getTime()
     wx.cloud.callFunction({
       name: 'creatEvent',
       data: {
         id: that.data.user,
         name: that.data.value,
         dates: that.data.intervals,
-        createDate: new Date().getTime(), 
+        createDate: createTime, 
       },
       success: res => {
         console.log('创建事件成功')
-        db.collection('users').doc(that.data.user).update({
-          data: {
-            SponsorEvent: _.push([res.result._id]),
-          }
-        })
         that.setData({
           eventId: res.result._id
         })
+        db.collection('users').doc(that.data.user).update({
+          data: {
+            SponsorEvent: _.push([[res.result._id, that.data.value, createTime]]),
+          }
+        })
         console.log(that.data.eventId)
         wx.redirectTo({
-          url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId,
+          url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
         })
       }
     })

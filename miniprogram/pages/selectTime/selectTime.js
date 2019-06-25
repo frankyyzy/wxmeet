@@ -14,7 +14,9 @@ Page({
     end: -1,
     edit: false,
     intervals: [],
-    eventId:''
+    eventId:'',
+    eventName:'',
+    createTime: -1,
   },
 
   /**
@@ -25,9 +27,11 @@ Page({
     this.setData({
       //edit: options.edit,
       eventId: options.eventId,
+      eventName: options.eventName,
+      createTime: options.createTime,
       user: app.globalData.user
     })
-    // console.log("edit" + this.data.edit)
+    console.log(that.data)
   },
 
   /**
@@ -119,7 +123,7 @@ Page({
     const _ = db.command
     db.collection('users').doc(that.data.user).update({
       data: {
-        AttendEvent: _.push(that.data.eventId),
+        AttendEvent: _.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
         // nickName: this.data.nickName,
         // profilePic: this.data.profilePic,
       }

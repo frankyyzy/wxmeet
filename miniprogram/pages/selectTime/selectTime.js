@@ -124,8 +124,6 @@ Page({
     db.collection('users').doc(that.data.user).update({
       data: {
         AttendEvent: _.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
-        // nickName: this.data.nickName,
-        // profilePic: this.data.profilePic,
       }
     })
   },

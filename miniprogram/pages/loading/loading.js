@@ -1,4 +1,5 @@
 // pages/loading/loading.js
+const app = getApp()
 Page({
 
   /**
@@ -12,6 +13,9 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
+    // console.log(options.url)
+
+
     // wx.showLoading()
     // console.log("url"+ this.route)
   },
@@ -26,9 +30,8 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function () {
-
-  },
+  onShow: function (res) {
+  }, 
 
   /**
    * Lifecycle function--Called when page hide

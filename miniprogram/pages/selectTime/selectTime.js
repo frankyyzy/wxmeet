@@ -5,6 +5,7 @@ Page({
    * Page initial data
    */
   data: {
+
     user: '',
     date: ['小时', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
     dates: [],
@@ -25,23 +26,24 @@ Page({
   onLoad: function (options) {
     let that = this
     that.setData({
-      eventId: options.eventId,
-      eventName: options.eventName,
-      createTime: options.createTime,
-      user: app.globalData.user,
-    })
+        eventId: options.eventId,
+        eventName: options.eventName,
+        createTime: options.createTime,
+        user: app.globalData.user
+      })
     const db = wx.cloud.database()
     const _ = db.command
     db.collection('events').where({
-      _id: that.data.eventId
-    }).get({
-      success: function(res){
-        that.setData({
-          dates: res.data[0].dates
-        })
-        console.log(that.data)
-      }
-    })
+        _id: that.data.eventId
+      }).get({
+        success: function (res) {
+          that.setData({
+            dates: res.data[0].dates
+          })
+          console.log(that.data)
+        }
+      })
+    console.log(that.data)
   },
 
   /**

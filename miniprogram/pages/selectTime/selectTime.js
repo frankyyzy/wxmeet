@@ -169,14 +169,55 @@ Page({
 
   },
   mytouchstart: function (e) {
-    // console.log(e.timeStamp + '- touch start')
+    var Name = parseInt(e.target.id[0])
+    var idd = e.target.id
+    var ID = '';
+    for (let i = 1; i < idd.length; i++) {
+      ID = ID + idd[i];
+    }
+    ID = parseInt(ID);
+    console.log(e.clientX)
+    console.log(ID)
+    this.setData({
+      starti: ID,
+      startj: Name
+    })
+
   },
   //长按事件
-  mylongtap: function (e) {
-    console.log(e.timeStamp + '- long tap')
+  mytouchmove: function (e) {
+    var sx = e.touches[0].pageX;
+    var sy = e.touches[0].pageY;
+    this.data.touchE = [sx, sy]
   },
   mytouchend: function (e) {
-    console.log(e.timeStamp + '- touch end')
+    var Name = parseInt(e.target.id[0])
+    var idd = e.target.id
+    var ID = '';
+    for (let i = 1; i < idd.length; i++) {
+      ID = ID + idd[i];
+    }
+    ID = parseInt(ID);
+    console.log(Name)
+    console.log(ID)
+    this.setData({
+      endi: ID,
+      endj: Name
+    })
+    for (let i = this.data.starti; i <= this.data.endi; i++) {
+      for (let j = this.data.startj; j <= this.data.endj; j++) {
+        var interv = this.data.intervals
+        if (!interv[j][i]) {
+          interv[j][i] = true;
+        }
+        else {
+          interv[j][i] = false;
+        }
+        this.setData({
+          intervals: interv
+        })
+      }
+    }
   },
   mytap: function (e) {
     var Name = parseInt(e.target.id[0])

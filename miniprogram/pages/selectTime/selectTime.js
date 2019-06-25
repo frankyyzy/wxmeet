@@ -24,13 +24,24 @@ Page({
    */
   onLoad: function (options) {
     let that = this
-    this.setData({
+    that.setData({
       eventId: options.eventId,
       eventName: options.eventName,
       createTime: options.createTime,
-      user: app.globalData.user
+      user: app.globalData.user,
     })
-    console.log(that.data)
+    const db = wx.cloud.database()
+    const _ = db.command
+    db.collection('events').where({
+      _id: that.data.eventId
+    }).get({
+      success: function(res){
+        that.setData({
+          dates: res.data[0].dates
+        })
+        console.log(that.data)
+      }
+    })
   },
 
   /**

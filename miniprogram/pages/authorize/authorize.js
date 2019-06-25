@@ -18,13 +18,13 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-
   },
   bindGetUserInfo: function(e) { //点击的“拒绝”或者“允许
+    var that = this
     if (e.detail.userInfo) { //点击了“允许”按钮，
       this.setUser(e.detail.userInfo)
       wx.redirectTo({
-        url: '../profile/profile',
+        url: that.globalData.url+'?eventId='+that.globalData.event
       })
     }
     else{

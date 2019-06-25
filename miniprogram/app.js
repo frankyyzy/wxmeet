@@ -4,13 +4,13 @@
      appid: 'wxd6397161949fd434',
      secret: 'ee5b16d9d571a666979d75d38ee27c2c',
      user: null,
+     eventId:null,
      AttendEvent: [],
      SponsorEvent: [],
+     url:'/pages/profile/profile',
      times: []
    },
-   onLaunch: function() {
-     var that = this
-
+   onLaunch: function(options) {
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
      } else {
@@ -19,10 +19,13 @@
          traceUser: true,
        })
      }
-     wx.showLoading({
-       title: '',
-     })
-
+     var that = this
+     wx.showLoading()
+     if (options.url) {
+       app.globalData.url = options.url
+       app.globalData.eventId = options.eventId
+       console.log('my id' + options.eventId)
+     }
      wx.cloud.callFunction({
        name: 'login',
        complete: res => {
@@ -48,8 +51,9 @@
                        that.updateUser(res.userInfo)
                        // console.log(res.userInfo)
                        wx.hideLoading()
+                       var turn = that.globalData.url
                        wx.redirectTo({
-                         url: '/pages/profile/profile', //授权页面
+                         url: turn+'?eventId='+that.globalData.eventId,
                          // url: '/pages/authorize/authorize', //授权页面
 
                        })
@@ -73,6 +77,13 @@
        }
      })
    },
+   onShow: function(options){
+     if(options.query.url && this.globalData.user != null){
+       wx.redirectTo({
+         url: options.query.url + '?eventId=' + options.query.eventId,
+       })
+     }
+   },
    setNewUser: function() {
      const db = wx.cloud.database()
      db.collection('users').doc(this.globalData.user).set({
@@ -84,12 +95,12 @@
        }
      })
      wx.redirectTo({
-       url: '/pages/authorize/authorize', //授权页面
+       url: '/pages/authorize/authorize'
      })
    },
    updateUser: function(info) {
      const db = wx.cloud.database()
-     console.log(this.globalData.user)
+    //  console.log(this.globalData.user)
      db.collection('users').doc(this.globalData.user).update({
        data: {
          nickName: info.nickName,

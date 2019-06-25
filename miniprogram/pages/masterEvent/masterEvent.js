@@ -44,6 +44,7 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
+    console.log('myId'+this.data.eventId)
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
@@ -91,7 +92,13 @@ Page({
   onReady: function() {
 
   },
-
+  onShareAppMessage: function(){
+    let that = this
+    return({
+      title: '分享'+ that.data.eventName,
+      path: '/pages/loading/loading?url=/'+ that.route +'&eventId=' + that.data.eventId
+    })
+  },
   /**
    * Lifecycle function--Called when page show
    */

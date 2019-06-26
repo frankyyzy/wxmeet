@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 <!--pages/profile/profile.wxml-->
 <view bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend"bindtap = "testposition">
   <view class="hori">
     <button type="primary" bindtap="onSubmitTap">确认时间</button>
+=======
+
+<view class="hori">
+  <view class="datet">
+>>>>>>> master
   </view>
 
 

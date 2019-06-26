@@ -244,8 +244,6 @@ Page({
       title: '',
     })
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
     var createTime = new Date().getTime()
     wx.cloud.callFunction({
       name: 'creatEvent',
@@ -260,12 +258,19 @@ Page({
         that.setData({
           eventId: res.result._id
         })
-        db.collection('users').doc(that.data.user).update({
+
+        wx.cloud.callFunction({
+          name: 'updateSponsorEvent',
           data: {
-            SponsorEvent: _.push([[res.result._id, that.data.value, createTime]]),
+            id: that.data.user,
+            eventId: res.result._id,
+            eventName: that.data.value,
+            createTime: createTime
+          },
+          success: res => {
+            console.log('新增用户创建事件！')
           }
         })
-        console.log(that.data.eventId)
         wx.redirectTo({
           url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
         })

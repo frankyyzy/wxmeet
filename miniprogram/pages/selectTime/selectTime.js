@@ -5,8 +5,8 @@ Page({
    * Page initial data
    */
   data: {
+
     user: '',
-    date: ['小时', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
     dates: [],
     datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
     totaldate: 0,
@@ -24,14 +24,45 @@ Page({
    */
   onLoad: function (options) {
     let that = this
-    this.setData({
-      //edit: options.edit,
-      eventId: options.eventId,
-      eventName: options.eventName,
-      createTime: options.createTime,
-      user: app.globalData.user
-    })
-    console.log(that.data)
+    that.setData({
+        eventId: options.eventId,
+        eventName: options.eventName,
+        createTime: options.createTime,
+        user: app.globalData.user
+      })
+    const db = wx.cloud.database()
+    const _ = db.command
+    db.collection('events').where({
+        _id: that.data.eventId
+      }).get({
+        success: function (res) {
+          var passdates = res.data[0].dates
+          var curdates = ["小时"]
+          var datechoos = [0]
+          for(let i = 0; i<passdates.length;i++) {
+            curdates.push(passdates[i])
+            datechoos.push(i+1)
+          }
+          var total = curdates.length
+          that.setData({
+            dates: curdates,
+            totaldate: total,
+            datechoose: datechoos
+          })
+          var intervalss = [];
+          for (var i = 0; i < that.data.totaldate; i++) {
+            var interves = [];
+            for (var j = 0; j < 24; j++) {
+              interves.push(false);
+            }
+            intervalss.push(interves);
+            that.setData({
+              intervals: intervalss
+            })
+          }
+          
+        }
+      })
   },
 
   /**
@@ -119,54 +150,44 @@ Page({
   },
   updateUser: function () {
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
-    db.collection('users').doc(that.data.user).update({
+    wx.cloud.callFunction({
+      name: 'updateAttendEvent',
       data: {
-        AttendEvent: _.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
+        id: that.data.user,
+        eventId: that.data.eventId,
+        eventName: that.data.eventName,
+        createTime: that.data.createTime
+      },
+      success: res => {
+        console.log('新增用户参与事件！')
       }
     })
   },
-  checkboxChange: function (e) {
-    var IDarray = e.detail.value
-    this.setData({
-      dates: IDarray
-    })
-    var datechoos = [0, 0, 0, 0, 0, 0, 0, 0]
-    var total = IDarray.length
-    for (var i = 0; i < IDarray.length; i++) {
-      datechoos[parseInt(IDarray[i]) + 1] = 1;
-    }
-    if (total > 0) {
-      datechoos[0] = 1;
-    }
-    this.setData({
-      datechoose: datechoos,
-      totaldate: total
-    })
-    var intervalss = [];
-    for (var i = 0; i < this.data.totaldate; i++) {
-      var interves = [];
-      for (var j = 0; j < 24; j++) {
-        interves.push(false);
-      }
-      intervalss.push(interves);
-      this.setData({
-        intervals: intervalss
-      })
-    }
 
-
-  },
   mytouchstart: function (e) {
-    // console.log(e.timeStamp + '- touch start')
+    var Name = parseInt(e.target.id[0])
+    var idd = e.target.id
+    var ID = '';
+    for (let i = 1; i < idd.length; i++) {
+      ID = ID + idd[i];
+    }
+    ID = parseInt(ID);
+    console.log(e.clientX)
+    console.log(ID)
+    this.setData({
+      starti: ID,
+      startj: Name
+    })
+
   },
   //长按事件
-  mylongtap: function (e) {
-    console.log(e.timeStamp + '- long tap')
+  mytouchmove: function (e) {
+    var sx = e.touches[0].pageX;
+    var sy = e.touches[0].pageY;
+    this.data.touchE = [sx, sy]
   },
   mytouchend: function (e) {
-    console.log(e.timeStamp + '- touch end')
+    
   },
   mytap: function (e) {
     var Name = parseInt(e.target.id[0])

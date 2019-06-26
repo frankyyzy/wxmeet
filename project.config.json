@@ -35,12 +35,20 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": -1,
 					"name": "db guide",
-					"pathName": "pages/databaseGuide/databaseGuide"
+					"pathName": "pages/databaseGuide/databaseGuide",
+					"query": ""
+				},
+				{
+					"id": 1,
+					"name": "share",
+					"pathName": "pages/profile/profile",
+					"query": "share=true&eventId=6dfb26295d1305720117f4a42954e54e",
+					"scene": 1008
 				}
 			]
 		}

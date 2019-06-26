@@ -33,6 +33,7 @@
        complete: res => {
          that.globalData.user = res.result.openId
          that.setSponsorAndAttendEvent()
+         
 
          if (options.query.share) {
            if (that.globalData.user === options.query.sponserId) {
@@ -79,14 +80,29 @@
      const db = wx.cloud.database()
      db.collection('users').doc(that.globalData.user).get({
        fail: function() {
+         
          that.setNewUser()
        },
        success: function(res) {
+         
          var SponsorEvent = res.data.SponsorEvent
+         
          var AttendEvent = {}
          for (var id in res.data.AttendEvent) {
-           if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
+
+           console.log(SponsorEvent[id])
+           if (!SponsorEvent[id]) {
+             console.log("here")
+             console.log(id)
+             console.log(AttendEvent)
+             console.log(res.data)
+             AttendEvent[id] = res.data.AttendEvent[id]
+             console.log("set correct")
+           }
+
          }
+         console.log("outa here")
+
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
          wx.getSetting({

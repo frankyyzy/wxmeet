@@ -33,12 +33,13 @@
        complete: res => {
          that.globalData.user = res.result.openId
          that.setSponsorAndAttendEvent()
+         
 
          if (options.query.share) {
            if (that.globalData.user === options.query.sponserId) {
              that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
            } else {
-             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId //  otherwise go to selectTime
+             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime//  otherwise go to selectTime
            }
          }
        }
@@ -64,7 +65,7 @@
 
          } else {
 
-           this.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId
+           that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime
 
          }
        }
@@ -79,14 +80,29 @@
      const db = wx.cloud.database()
      db.collection('users').doc(that.globalData.user).get({
        fail: function() {
+         
          that.setNewUser()
        },
        success: function(res) {
+         
          var SponsorEvent = res.data.SponsorEvent
+         
          var AttendEvent = {}
          for (var id in res.data.AttendEvent) {
-           if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
+
+           console.log(SponsorEvent[id])
+           if (!SponsorEvent[id]) {
+             console.log("here")
+             console.log(id)
+             console.log(AttendEvent)
+             console.log(res.data)
+             AttendEvent[id] = res.data.AttendEvent[id]
+             console.log("set correct")
+           }
+
          }
+         console.log("outa here")
+
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
          wx.getSetting({
@@ -137,7 +153,7 @@
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {
-         id: that.globalData.user,
+         id: this.globalData.user,
          nickName: info.nickName,
          profilePic: info.avatarUrl,
        },

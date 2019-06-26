@@ -26,6 +26,7 @@ Page({
     eventName: "",
     eventId: '',
     sponser: "",
+    createDate: -1,
   },
 
 
@@ -63,6 +64,7 @@ Page({
           totaldate: res.result.data[0].dates.length,
           eventName: res.result.data[0].eventName,
           sponser: res.result.data[0].Sponser,
+          createDate: res.result.data[0].createDate,
         });
         console.log(that.data.sponser)
 
@@ -106,7 +108,7 @@ Page({
     let that = this
     return({
       title: '分享'+ that.data.eventName,
-      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser,
+      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate,
     })
   },
   /**

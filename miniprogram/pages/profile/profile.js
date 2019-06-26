@@ -1,6 +1,8 @@
 // pages/profile/profile.js
 
 const app = getApp()
+const db = wx.cloud.database()
+const _ = db.command
 Page({
 
   /**
@@ -130,10 +132,9 @@ Page({
   },
 
   onSponserEventTap: function(event) {
-    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
-    console.log(eventId)
+    let id = event.currentTarget.id
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + eventId,
+      url: '../masterEvent/masterEvent?eventId=' + id,
     })
   },
 
@@ -144,31 +145,32 @@ Page({
   },
   onLongPress: function(event) {
     let that = this
-    let index = parseInt(event.currentTarget.id)
-    let eventId = this.data.SponsorEvent[index][0]
+    let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
-    console.log(that.data.SponsorEvent[(index)])
+    
+    console.log(id)
     wx.showModal({
       title: '提示',
       content: '确定要删除此事件吗？',
       success: function(res) {
         if (res.confirm) {
-          console.log('yes')
-          sponsorE.splice(index, 1)
+          delete sponsorE[id]
           that.setData({
             SponsorEvent: sponsorE
           })
-          wx.cloud.callFunction({
-            name:'deleteEventUser',
-            data:{
-              tuple:that.data.SponsorEvent[(index)]
-            },
-            success: function(res){
-              console.log(res)
+          db.collection('events').doc(id).get({
+            success: function (res) {
+              var Attendeelist = res.data.Attendee
+              wx.cloud.callFunction({
+                name: 'deleteEventUser',
+                data: {
+                  eventId: (id),
+                  Attendee: Attendeelist
+                }
+              })
             }
           })
         } else {
-          console.log('nah')
         }
       }
     })

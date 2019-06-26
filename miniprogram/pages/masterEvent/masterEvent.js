@@ -47,7 +47,7 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
-    console.log('myId'+this.data.eventId)
+    console.log('myId' + this.data.eventId)
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
@@ -55,7 +55,7 @@ Page({
       },
       success: function(res) {
         console.log("entering ")
-        
+
         that.setData({
           dates: res.result.data[0].dates,
           Attendee: res.result.data[0].Attendee,
@@ -99,22 +99,22 @@ Page({
   onReady: function() {
 
   },
-  onShareAppMessage: function(){
+  onShareAppMessage: function() {
     let that = this
-    return({
-      title: '分享'+ that.data.eventName,
-      path: '/pages/loading/loading?url=/'+ that.route +'&eventId=' + that.data.eventId
+    return ({
+      title: '分享' + that.data.eventName,
+      path: '/pages/loading/loading?url=/' + that.route + '&eventId=' + that.data.eventId
     })
   },
   /**
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-   console.log("showing")
+    console.log("showing")
 
     var that = this
     this.adjustTimeTable()
-    
+
 
     this.setData({
       timer: setInterval(function() {
@@ -126,7 +126,7 @@ Page({
         wx.hideLoading()
       }, 10000)
     })
-    
+
 
   },
 
@@ -141,7 +141,7 @@ Page({
   },
 
   adjustTimeTable: function() {
-    
+
     console.log("adjusting")
 
     var attendeeArr = this.data.Attendee;
@@ -157,7 +157,7 @@ Page({
     }
 
     this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
-    
+
   },
 
 
@@ -221,26 +221,26 @@ Page({
 
       if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
         if (attendeeDict[id][j][i]) {
-          attendeeID.push (id);
+          attendeeID.push(id);
         }
       }
     }
 
     // get profile pics from id 
-    for (var id of attendeeID){
+    for (var id of attendeeID) {
 
       var that = this
-     //get url from the user id 
+      //get url from the user id 
       db.collection('users').doc(id).get({
-        success: function (res) {
+        success: function(res) {
           // res.data 包含该记录的数据
           picUrl.push(res.data.profilePic)
           that.setData({
             pics: picUrl
           })
-              },
+        },
 
-        error: e =>{
+        error: e => {
           console.log("error")
         }
       })

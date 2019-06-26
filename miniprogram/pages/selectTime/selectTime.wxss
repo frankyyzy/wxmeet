@@ -27,6 +27,10 @@ textarea {
   padding-right: 30rpx;
 }
 
+.fixedPosition {
+  position:absolute;
+}
+
 .intro {
   margin: 30px;
   text-align: center;
@@ -54,7 +58,7 @@ textarea {
   justify-content: space-between;
 }
 .th{
-  padding: 5px;
+  padding: 4.9px;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
@@ -64,7 +68,7 @@ textarea {
 }
 
 .td{
-  padding: 5px;
+  padding: 4.9px;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;

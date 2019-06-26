@@ -24,7 +24,7 @@ Page({
     if (e.detail.userInfo) { //点击了“允许”按钮，
       this.setUser(e.detail.userInfo)
       wx.redirectTo({
-        url: that.globalData.url+'?eventId='+that.globalData.event
+        url: app.globalData.url+'?eventId='+app.globalData.event
       })
     }
     else{

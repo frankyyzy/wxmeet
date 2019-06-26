@@ -118,12 +118,13 @@
      })
    },
    updateUser: function(info) {
+     var that = this
      console.log(info.nickName)
-     console.log(this.globalData.user)
+     console.log(that.globalData.user)
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {
-         id: this.globalData.user,
+         id: that.globalData.user,
          nickName: info.nickName,
          profilePic: info.avatarUrl,
        },

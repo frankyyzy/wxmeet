@@ -96,6 +96,7 @@ Page({
       url: '../guestEvent/guestEvent',
     })
   },
+
   onLongPress: function(event) {
     let that = this
     let id = event.currentTarget.id
@@ -141,7 +142,7 @@ Page({
         var SponsorEvent = res.data.SponsorEvent
         var AttendEvent = {}
         for (var id in res.data.AttendEvent) {
-          if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
+          if (!SponsorEvent[id]) AttendEvent[id] = res.data.AttendEvent[id]
         }
         app.globalData.SponsorEvent = SponsorEvent
         app.globalData.AttendEvent = AttendEvent

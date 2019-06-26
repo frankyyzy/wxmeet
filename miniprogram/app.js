@@ -4,10 +4,10 @@
      appid: 'wxd6397161949fd434',
      secret: 'ee5b16d9d571a666979d75d38ee27c2c',
      user: null,
-     eventId:null,
+     eventId: null,
      AttendEvent: [],
      SponsorEvent: [],
-     url:'/pages/profile/profile',
+     url: '/pages/profile/profile',
      times: []
    },
    onLaunch: function(options) {
@@ -31,38 +31,19 @@
        complete: res => {
          this.globalData.user = res.result.openId
          const db = wx.cloud.database()
-         db.collection('users').where({
-           _id: this.globalData.user
-         }).get({
+         db.collection('users').doc(that.globalData.user).get({
            success: function(res) {
              if (res.data.length == 0) {
                that.setNewUser()
                return
              }
-             console.log(res.data)
-
-
-             // n^2 solution, use hashmap for better performance
-             that.globalData.SponsorEvent = res.data[0].SponsorEvent
-
-
-             var allEvents = res.data[0].AttendEvent;
-             var sponsorEventToSet = [];
-             for (var AllEventTuple in allEvents) {
-               var IsSponser = false;
-               for (var SponserEventTuple in that.globalData.SponsorEvent) {
-                 if (SponserEventTuple === AllEventTuple){
-                   IsSponser = true;
-                   break;
-                 }
-               }
-               if (!IsSponser){
-                 sponsorEventToSet.push(AllEventTuple);
-               }
+             var SponsorEvent = res.data.SponsorEvent
+             var AttendEvent = {}
+             for (var id in res.data.AttendEvent) {
+               if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
              }
-             that.globalData.AttendEvent = sponsorEventToSet;
-
-             // console.log(that.globalData)
+             that.globalData.SponsorEvent = SponsorEvent
+             that.globalData.AttendEvent = AttendEvent
              wx.getSetting({
                success: function(res) {
                  if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
@@ -72,7 +53,7 @@
                        wx.hideLoading()
                        var turn = that.globalData.url
                        wx.redirectTo({
-                         url: turn+'?eventId='+that.globalData.eventId,
+                         url: turn + '?eventId=' + that.globalData.eventId,
                          // url: '/pages/authorize/authorize', //授权页面
 
                        })
@@ -96,8 +77,8 @@
        }
      })
    },
-   onShow: function(options){
-     if(options.query.url && this.globalData.user != null){
+   onShow: function(options) {
+     if (options.query.url && this.globalData.user != null) {
        wx.redirectTo({
          url: options.query.url + '?eventId=' + options.query.eventId,
        })

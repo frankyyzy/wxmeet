@@ -10,14 +10,14 @@ Page({
    */
   data: {
     SponsorEvent: app.globalData.SponsorEvent,
-    AttendEvent: app.globalData.AttendEvent
+    AttendEvent: app.globalData.AttendEvent,
+    timer:null
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
     console.log("loading")
-
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
@@ -46,39 +46,25 @@ Page({
         traceUser: true,
       })
     }
+    this.onUpdateEvents()
+
+  },
+
+  onUpdateEvents: function(){
 
     var that = this;
-
     const db = wx.cloud.database()
-    db.collection('users').where({
-      _id: app.globalData.user
-    }).get({
-      success: function(res) {
+    db.collection('users').doc(app.globalData.user).get({
+      success: function (res) {
         console.log(res.data)
 
-        // n^2 solution, use hashmap for better performance
-        that.globalData.SponsorEvent = res.data[0].SponsorEvent
-
-
-        var allEvents = res.data[0].AttendEvent;
-        var sponsorEventToSet = [];
-        for (var AllEventTuple in allEvents) {
-          var IsSponser = false;
-          for (var SponserEventTuple in that.globalData.SponsorEvent) {
-            if (SponserEventTuple === AllEventTuple) {
-              IsSponser = true;
-              break;
-            }
-          }
-          if (!IsSponser) {
-            sponsorEventToSet.push(AllEventTuple);
-          }
+        var SponsorEvent = res.data.SponsorEvent
+        var AttendEvent = {}
+        for (var id in res.data.AttendEvent) {
+          if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
         }
-        that.globalData.AttendEvent = sponsorEventToSet;
-
-
-
-
+        app.globalData.SponsorEvent = SponsorEvent
+        app.globalData.AttendEvent = AttendEvent
         that.setData({
           SponsorEvent: app.globalData.SponsorEvent,
           AttendEvent: app.globalData.AttendEvent
@@ -86,9 +72,7 @@ Page({
 
       }
     })
-
   },
-
   /**
    * Lifecycle function--Called when page hide
    */

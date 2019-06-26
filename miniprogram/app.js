@@ -39,7 +39,7 @@
            if (that.globalData.user === options.query.sponserId) {
              that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
            } else {
-             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId //  otherwise go to selectTime
+             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime//  otherwise go to selectTime
            }
          }
        }
@@ -65,7 +65,7 @@
 
          } else {
 
-           this.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId
+           that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime
 
          }
        }
@@ -150,7 +150,6 @@
      })
    },
    updateUser: function(info) {
-
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {

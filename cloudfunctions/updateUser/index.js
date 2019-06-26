@@ -9,7 +9,7 @@ exports.main = async (event, context) => {
     return await db.collection('users').doc(event.id).update({
       data: {
         nickName: _.set(event.nickName),
-        profilePic: _.set(event.profilePic)
+        profilePic: _.set(event.profilePic),
       }
     })
   } catch (e) {

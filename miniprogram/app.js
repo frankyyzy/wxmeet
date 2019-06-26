@@ -4,13 +4,19 @@
      appid: 'wxd6397161949fd434',
      secret: 'ee5b16d9d571a666979d75d38ee27c2c',
      user: null,
-     eventId:null,
      AttendEvent: [],
      SponsorEvent: [],
-     url:'/pages/profile/profile',
-     times: []
+     url: '/pages/profile/profile', //used in app.js and authorize.js, initial url to go to, include the eventID param
+     userSet: false
    },
+
+
+   // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
+
+     wx.showLoading()
+
+     //cloud ability init
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
      } else {
@@ -19,95 +25,105 @@
          traceUser: true,
        })
      }
+
+     //perform login and authorization
      var that = this
-     wx.showLoading()
-     if (options.url) {
-       app.globalData.url = options.url
-       app.globalData.eventId = options.eventId
-       console.log('my id' + options.eventId)
-     }
      wx.cloud.callFunction({
        name: 'login',
        complete: res => {
-         this.globalData.user = res.result.openId
-         const db = wx.cloud.database()
-         db.collection('users').where({
-           _id: this.globalData.user
-         }).get({
-           success: function(res) {
-             if (res.data.length == 0) {
-               that.setNewUser()
-               //return
-             }
-             console.log(res.data)
+         that.globalData.user = res.result.openId
+         that.setSponsorAndAttendEvent()
 
-
-             // n^2 solution, use hashmap for better performance
-             that.globalData.SponsorEvent = res.data[0].SponsorEvent
-
-
-             var allEvents = res.data[0].AttendEvent;
-             var sponsorEventToSet = [];
-             for (var AllEventTuple in allEvents) {
-               var IsSponser = false;
-               for (var SponserEventTuple in that.globalData.SponsorEvent) {
-                 if (SponserEventTuple === AllEventTuple){
-                   IsSponser = true;
-                   break;
-                 }
-               }
-               if (!IsSponser){
-                 sponsorEventToSet.push(AllEventTuple);
-               }
-             }
-             that.globalData.AttendEvent = sponsorEventToSet;
-
-             // console.log(that.globalData)
-             wx.getSetting({
-               success: function(res) {
-                 if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
-                   wx.getUserInfo({
-                     success: function(res) {
-                       that.updateUser(res.userInfo)
-                       wx.hideLoading()
-                       var turn = that.globalData.url
-                       wx.redirectTo({
-                         url: turn+'?eventId='+that.globalData.eventId,
-                         // url: '/pages/authorize/authorize', //授权页面
-
-                       })
-                     },
-                     fail: function() {
-                       console.log("fail")
-                     }
-                   })
-                 } else { //未授权，跳到授权页面
-                   wx.redirectTo({
-                     url: '/pages/authorize/authorize', //授权页面
-                   })
-                 }
-               },
-               fail: function() {
-                 console.log("fail1")
-               }
-             })
+         if (options.query.share) {
+           if (that.globalData.user === options.query.sponserId) {
+             that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+           } else {
+             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId //  otherwise go to selectTime
            }
-         })
+         }
        }
      })
+
    },
-   onShow: function(options){
-     if(options.query.url && this.globalData.user != null){
+
+
+   // implement redirection for reopening the app
+   onShow: function(options) {
+
+     if (this.globalData.userSet) {
+
+       this.setSponsorAndAttendEvent();
+
+
+       console.log(options)
+       console.log(this.globalData)
+
+       if (options.query.share) {
+         if (this.globalData.user === options.query.sponserId) {
+           this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+
+         } else {
+
+           this.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId
+
+         }
+       }
        wx.redirectTo({
-         url: options.query.url + '?eventId=' + options.query.eventId,
+         url: this.globalData.url
        })
      }
    },
+
+   setSponsorAndAttendEvent: function() {
+     var that = this;
+     const db = wx.cloud.database()
+     db.collection('users').doc(that.globalData.user).get({
+       fail: function() {
+         that.setNewUser()
+       },
+       success: function(res) {
+         var SponsorEvent = res.data.SponsorEvent
+         var AttendEvent = {}
+         for (var id in res.data.AttendEvent) {
+           if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
+         }
+         that.globalData.SponsorEvent = SponsorEvent
+         that.globalData.AttendEvent = AttendEvent
+         wx.getSetting({
+           success: function(res) {
+             if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
+               wx.getUserInfo({
+                 success: function(res) {
+                   that.updateUser(res.userInfo)
+                   that.globalData.userSet = true
+                   wx.redirectTo({
+                     url: that.globalData.url
+                   })
+                 },
+                 fail: function() {
+                   console.log("fail")
+                 }
+               })
+             } else { //未授权，跳到授权页面
+               wx.redirectTo({
+                 url: '/pages/authorize/authorize', //授权页面
+               })
+             }
+           },
+           fail: function() {
+             console.log("can't get setting")
+           }
+         })
+       },
+     })
+   },
+
    setNewUser: function() {
+     let that = this
      wx.cloud.callFunction({
        name: 'createUser',
        data: {
-         id: this.globalData.user,
+         id: that.globalData.user,
        },
        success: res => {
          console.log('创建用户成功！')
@@ -118,9 +134,6 @@
      })
    },
    updateUser: function(info) {
-     var that = this
-     console.log(info.nickName)
-     console.log(that.globalData.user)
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {

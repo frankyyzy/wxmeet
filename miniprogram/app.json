@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/loading/loading",
+    "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",
     "pages/test/test",
     "pages/profile/profile",

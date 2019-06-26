@@ -11,13 +11,12 @@ Page({
   data: {
     SponsorEvent: app.globalData.SponsorEvent,
     AttendEvent: app.globalData.AttendEvent,
-    timer:null
+    timer: null
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
-    console.log("loading")
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
@@ -118,7 +117,7 @@ Page({
   onSponserEventTap: function(event) {
     let id = event.currentTarget.id
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + id,
+      url: '../testSwipe/testSwipe?eventId=' + id,
     })
   },
 

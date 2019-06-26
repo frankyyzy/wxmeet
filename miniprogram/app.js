@@ -24,7 +24,7 @@
      if (options.url) {
        app.globalData.url = options.url
        app.globalData.eventId = options.eventId
-       console.log('my id' + options.eventId)
+      //  console.log('my id' + options.eventId)
      }
      wx.cloud.callFunction({
        name: 'login',
@@ -54,8 +54,6 @@
                        var turn = that.globalData.url
                        wx.redirectTo({
                          url: turn + '?eventId=' + that.globalData.eventId,
-                         // url: '/pages/authorize/authorize', //授权页面
-
                        })
                      },
                      fail: function() {

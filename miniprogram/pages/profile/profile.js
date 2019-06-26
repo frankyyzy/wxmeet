@@ -144,7 +144,7 @@ Page({
         }
       }
     })
-  }
+  },
 
 
   setSponsorAndAttendEvent: function() {
@@ -154,10 +154,10 @@ Page({
       _id: app.globalData.user
     }).get({
       success: function(res) {
+        console.log(res)
 
         // n^2 solution, use hashmap for better performance
         app.globalData.SponsorEvent = res.data[0].SponsorEvent
-
 
         var allEvents = res.data[0].AttendEvent;
         var sponsorEventToSet = [];

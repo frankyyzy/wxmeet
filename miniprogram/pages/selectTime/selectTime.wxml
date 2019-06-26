@@ -1,5 +1,5 @@
 <!--pages/profile/profile.wxml-->
-<scroll-view scroll-y class="fixedPosition" bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtap = "testposition">
+<view bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend"bindtap = "testposition">
   <view class="hori">
     <button type="primary" bindtap="onSubmitTap">确认时间</button>
   </view>
@@ -28,4 +28,4 @@
             </view>
         </view>
   </view>
-</scroll-view>
+</view>

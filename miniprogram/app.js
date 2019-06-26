@@ -11,6 +11,7 @@
      times: []
    },
    onLaunch: function(options) {
+    //  console.log("hi")
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
      } else {
@@ -20,23 +21,24 @@
        })
      }
      var that = this
-     wx.showLoading()
+    //  wx.showLoading()
      if (options.url) {
-       app.globalData.url = options.url
-       app.globalData.eventId = options.eventId
-      //  console.log('my id' + options.eventId)
+       that.globalData.url = options.url
+       that.globalData.eventId = options.eventId
+       console.log('my id' + options.eventId)
      }
      wx.cloud.callFunction({
        name: 'login',
        complete: res => {
-         this.globalData.user = res.result.openId
+         that.globalData.user = res.result.openId
+         console.log(that.globalData.user)
+
          const db = wx.cloud.database()
          db.collection('users').doc(that.globalData.user).get({
+           fail: function() {
+             that.setNewUser()
+           },
            success: function(res) {
-             if (res.data.length == 0) {
-               that.setNewUser()
-               return
-             }
              var SponsorEvent = res.data.SponsorEvent
              var AttendEvent = {}
              for (var id in res.data.AttendEvent) {
@@ -52,12 +54,9 @@
                        that.updateUser(res.userInfo)
                        wx.hideLoading()
                        var turn = that.globalData.url
-                       wx.redirectTo({
-                         url: turn + '?eventId=' + that.globalData.eventId,
-                       })
-                     },
-                     fail: function() {
-                       console.log("fail")
+                      //  wx.redirectTo({
+                      //    url: turn + '?eventId=' + that.globalData.eventId,
+                      //  })
                      }
                    })
                  } else { //未授权，跳到授权页面
@@ -83,10 +82,11 @@
      }
    },
    setNewUser: function() {
+     let that = this
      wx.cloud.callFunction({
        name: 'createUser',
        data: {
-         id: this.globalData.user,
+         id: that.globalData.user,
        },
        success: res => {
          console.log('创建用户成功！')

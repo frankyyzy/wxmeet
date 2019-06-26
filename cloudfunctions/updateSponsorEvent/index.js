@@ -8,8 +8,9 @@ exports.main = async (event, context) => {
   try {
     return await db.collection('users').doc(event.id).update({
       data: {
-        nickName: _.set(event.nickName),
-        profilePic: _.set(event.profilePic),
+        SponsorEvent: {
+          [event.eventId]: _.set([event.eventName, event.createTime])
+        }
       }
     })
   } catch (e) {

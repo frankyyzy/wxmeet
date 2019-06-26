@@ -62,7 +62,6 @@ Page({
           totaldate: res.result.data[0].dates.length,
           eventName: res.result.data[0].eventName,
         });
-        console.log(that.data.sponser)
 
         that.adjustTimeTable()
         wx.hideLoading()
@@ -104,7 +103,7 @@ Page({
     let that = this
     return({
       title: '分享'+ that.data.eventName,
-      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser,
+      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "sponserId=" + that.data.sponser
     })
   },
   /**

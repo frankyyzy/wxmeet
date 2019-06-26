@@ -37,7 +37,7 @@
            success: function(res) {
              if (res.data.length == 0) {
                that.setNewUser()
-               //return
+               return
              }
              console.log(res.data)
 

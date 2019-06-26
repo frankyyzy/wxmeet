@@ -24,6 +24,7 @@ Page({
     starty: 0,
     endx: 0,
     endy: 0,
+    buttom: false,
   },
 
   /**
@@ -179,13 +180,19 @@ Page({
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
     var intervalls = this.data.intervals
-    
-    this.setData({
-      touchIntervals:intervalls,
-      startx: sx,
-      starty: sy,
-    })
-    
+    if (sy < 0.065 * this.data.windowHeight) {
+      this.setData({
+        buttom: true,
+      })
+    }
+    else{
+      this.setData({
+        touchIntervals:intervalls,
+        startx: sx,
+        starty: sy,
+        buttom: false,
+      })
+    }
 
 
   },
@@ -222,34 +229,35 @@ Page({
 
   },
   mytouchend: function (e) {
-    
-    var intervalls = this.data.intervals
-    var startxx = this.data.startx;
-    var startyy = this.data.starty;
-    var endxx = this.data.endx;
-    var endyy = this.data.endy;
-    var n = this.data.totaldate;
-    var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
-    var endj = parseInt(n * endxx / (0.98 * this.data.windowWidth)) - 1;
-    var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    var endi = parseInt((endyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    console.log(starti)
-    console.log(endi)
-    console.log(startj)
-    console.log(endj)
-    for (var i = starti; i <= endi; i++) {
-      for (var j = startj; j <= endj; j++) {
-        if (!intervalls[j][i]) {
-          intervalls[j][i] = true;
-        }
-        else {
-          intervalls[j][i] = false;
+    if(!this.data.buttom) {
+      var intervalls = this.data.intervals
+      var startxx = this.data.startx;
+      var startyy = this.data.starty;
+      var endxx = this.data.endx;
+      var endyy = this.data.endy;
+      var n = this.data.totaldate;
+      var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
+      var endj = parseInt(n * endxx / (0.98 * this.data.windowWidth)) - 1;
+      var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+      var endi = parseInt((endyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+      console.log(starti)
+      console.log(endi)
+      console.log(startj)
+      console.log(endj)
+      for (var i = starti; i <= endi; i++) {
+        for (var j = startj; j <= endj; j++) {
+          if (!intervalls[j][i]) {
+            intervalls[j][i] = true;
+          }
+          else {
+            intervalls[j][i] = false;
+          }
         }
       }
+      this.setData({
+        intervals: intervalls,
+      })
     }
-    this.setData({
-      intervals: intervalls,
-    })
   },
   mytap: function (e) {
     var Name = parseInt(e.target.id[0])

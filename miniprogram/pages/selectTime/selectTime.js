@@ -150,14 +150,16 @@ Page({
   },
   updateUser: function () {
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
-    db.collection('users').doc(that.data.user).update({
+    wx.cloud.callFunction({
+      name: 'updateAttendEvent',
       data: {
-        AttendEvent: {
-          [that.data.eventId]: _.set([that.data.eventName, that.data.createTime])
-        }
-        //_.push([[that.data.eventId, that.data.eventName, that.data.createTime]]),
+        id: that.data.user,
+        eventId: that.data.eventId,
+        eventName: that.data.eventName,
+        createTime: that.data.createTime
+      },
+      success: res => {
+        console.log('新增用户参与事件！')
       }
     })
   },

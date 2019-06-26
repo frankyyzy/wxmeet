@@ -10,14 +10,13 @@ Page({
    */
   data: {
     SponsorEvent: app.globalData.SponsorEvent,
-    AttendEvent: app.globalData.AttendEvent
+    AttendEvent: app.globalData.AttendEvent,
+    timer: null
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
-    console.log("loading")
-
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
@@ -37,17 +36,8 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-
-    this.setSponsorAndAttendEvent();
-
-
-    this.setData({
-      SponsorEvent: app.globalData.SponsorEvent,
-      AttendEvent: app.globalData.AttendEvent
-    })
-
+    this.onUpdateEvents()
   },
-
   /**
    * Lifecycle function--Called when page hide
    */
@@ -67,14 +57,7 @@ Page({
    */
   onPullDownRefresh: function() {
 
-    this.setSponsorAndAttendEvent();
-
-
-    this.setData({
-      SponsorEvent: app.globalData.SponsorEvent,
-      AttendEvent: app.globalData.AttendEvent
-    })
-
+    this.onUpdateEvents();
 
   },
 
@@ -101,7 +84,7 @@ Page({
 
   onSponserEventTap: function(event) {
     console.log(event)
-    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
+    let eventId = event.currentTarget.id
     console.log(eventId)
     wx.navigateTo({
       url: '../masterEvent/masterEvent?eventId=' + eventId,
@@ -147,39 +130,28 @@ Page({
   },
 
 
-  setSponsorAndAttendEvent: function() {
+  onUpdateEvents: function(){
+
     var that = this;
     const db = wx.cloud.database()
-    db.collection('users').where({
-      _id: app.globalData.user
-    }).get({
-      success: function(res) {
-        console.log(res)
+    db.collection('users').doc(app.globalData.user).get({
+      success: function (res) {
+        console.log(res.data)
 
-        // n^2 solution, use hashmap for better performance
-        app.globalData.SponsorEvent = res.data[0].SponsorEvent
-
-        var allEvents = res.data[0].AttendEvent;
-        var sponsorEventToSet = [];
-        for (var AllEventTuple in allEvents) {
-          var IsSponser = false;
-          for (var SponserEventTuple in app.globalData.SponsorEvent) {
-            if (SponserEventTuple === AllEventTuple) {
-              IsSponser = true;
-              break;
-            }
-          }
-          if (!IsSponser) {
-            sponsorEventToSet.push(AllEventTuple);
-          }
+        var SponsorEvent = res.data.SponsorEvent
+        var AttendEvent = {}
+        for (var id in res.data.AttendEvent) {
+          if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
         }
-        app.globalData.AttendEvent = sponsorEventToSet;
+        app.globalData.SponsorEvent = SponsorEvent
+        app.globalData.AttendEvent = AttendEvent
+        that.setData({
+          SponsorEvent: app.globalData.SponsorEvent,
+          AttendEvent: app.globalData.AttendEvent
+        })
 
-      },
-      fail: function(res) {
-        console.log("error");
       }
     })
-  },
+  }
 
 })

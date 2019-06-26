@@ -6,7 +6,8 @@
      user: null,
      AttendEvent: [],
      SponsorEvent: [],
-     url: '/pages/profile/profile' //used in app.js and authorize.js, initial url to go to, include the eventID param
+     url: '/pages/profile/profile', //used in app.js and authorize.js, initial url to go to, include the eventID param
+     userSet: false
    },
 
 
@@ -31,7 +32,7 @@
        name: 'login',
        complete: res => {
          that.globalData.user = res.result.openId
-         that.setSponsorAndAttendEvent();
+         that.setSponsorAndAttendEvent()
 
          if (options.query.share) {
            if (that.globalData.user === options.query.sponserId) {
@@ -40,13 +41,61 @@
              that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId //  otherwise go to selectTime
            }
          }
+       }
+     })
 
+   },
+
+
+   // implement redirection for reopening the app
+   onShow: function(options) {
+
+     if (this.globalData.userSet) {
+
+       this.setSponsorAndAttendEvent();
+
+
+       console.log(options)
+       console.log(this.globalData)
+
+       if (options.query.share) {
+         if (this.globalData.user === options.query.sponserId) {
+           this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+
+         } else {
+
+           this.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId
+
+         }
+       }
+       wx.redirectTo({
+         url: this.globalData.url
+       })
+     }
+   },
+
+   setSponsorAndAttendEvent: function() {
+     var that = this;
+     const db = wx.cloud.database()
+     db.collection('users').doc(that.globalData.user).get({
+       fail: function() {
+         that.setNewUser()
+       },
+       success: function(res) {
+         var SponsorEvent = res.data.SponsorEvent
+         var AttendEvent = {}
+         for (var id in res.data.AttendEvent) {
+           if (!SponsorEvent[id]) AttendEvent[id] = res.data.Attendee[id]
+         }
+         that.globalData.SponsorEvent = SponsorEvent
+         that.globalData.AttendEvent = AttendEvent
          wx.getSetting({
            success: function(res) {
              if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
                wx.getUserInfo({
                  success: function(res) {
                    that.updateUser(res.userInfo)
+                   that.globalData.userSet = true
                    wx.redirectTo({
                      url: that.globalData.url
                    })
@@ -65,86 +114,16 @@
              console.log("can't get setting")
            }
          })
-       }
-     })
-
-   },
-
-
-   // implement redirection for reopening the app
-   onShow: function(options) {
-   
-
-     if (this.globalData.user != null) {
-
-       this.setSponsorAndAttendEvent();
-
-
-       console.log(options)
-       console.log(this.globalData)
-
-       if (options.query.share) {
-         if (this.globalData.user === options.query.sponserId) {
-           this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
-
-         } else {
-
-           this.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId
-
-         }
-       }
-     }
-
-     wx.redirectTo({
-       url: this.globalData.url
-     })
-
-   },
-
-   setSponsorAndAttendEvent: function() {
-     var that = this;
-     const db = wx.cloud.database()
-     db.collection('users').where({
-       _id: that.globalData.user
-     }).get({
-       success: function(res) {
-         if (res.data.length == 0) {
-           that.setNewUser()
-           return
-         }
-
-         // n^2 solution, use hashmap for better performance
-         that.globalData.SponsorEvent = res.data[0].SponsorEvent
-
-
-         var allEvents = res.data[0].AttendEvent;
-         var sponsorEventToSet = [];
-         for (var AllEventTuple in allEvents) {
-           var IsSponser = false;
-           for (var SponserEventTuple in that.globalData.SponsorEvent) {
-             if (SponserEventTuple === AllEventTuple) {
-               IsSponser = true;
-               break;
-             }
-           }
-           if (!IsSponser) {
-             sponsorEventToSet.push(AllEventTuple);
-           }
-         }
-         that.globalData.AttendEvent = sponsorEventToSet;
-
        },
-       fail: function(res){
-         console.log("error");
-       }
      })
    },
 
    setNewUser: function() {
+     let that = this
      wx.cloud.callFunction({
        name: 'createUser',
        data: {
-         id: this.globalData.user,
+         id: that.globalData.user,
        },
        success: res => {
          console.log('创建用户成功！')
@@ -155,7 +134,7 @@
      })
    },
    updateUser: function(info) {
-  
+
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {

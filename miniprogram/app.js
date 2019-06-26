@@ -100,10 +100,15 @@
 
    // implement redirection for reopening the app
    onShow: function(options) {
+   
 
      if (this.globalData.user != null) {
 
-       setSponsorAndAttendEvent();
+       this.setSponsorAndAttendEvent();
+
+
+       console.log(options)
+       console.log(this.globalData)
 
        if (options.query.share) {
          if (this.globalData.user === options.query.sponserId) {
@@ -127,7 +132,7 @@
      var that = this;
      const db = wx.cloud.database()
      db.collection('users').where({
-       _id: this.globalData.user
+       _id: that.globalData.user
      }).get({
        success: function(res) {
          if (res.data.length == 0) {
@@ -176,8 +181,7 @@
      })
    },
    updateUser: function(info) {
-     console.log(info.nickName)
-     console.log(this.globalData.user)
+  
      wx.cloud.callFunction({
        name: 'updateUser',
        data: {

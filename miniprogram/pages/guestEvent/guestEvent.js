@@ -266,7 +266,7 @@ Page({
     var edit = true
     wx.navigateTo({
       url: '/pages/selectTime/selectTime?eventId=' + this.data.eventId + "&eventName=" + this.data.eventName
-      //createTime not set yet
+      //createTime not set
     })
   }
 

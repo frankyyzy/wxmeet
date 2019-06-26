@@ -38,53 +38,12 @@ Page({
    */
   onShow: function() {
 
-    if (!wx.cloud) {
-      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
-    } else {
-      wx.cloud.init({
-        env: 'wxmeet-5taii',
-        traceUser: true,
-      })
-    }
-
-    var that = this;
-
-    const db = wx.cloud.database()
-    db.collection('users').where({
-      _id: app.globalData.user
-    }).get({
-      success: function(res) {
-        console.log(res.data)
-
-        // n^2 solution, use hashmap for better performance
-        that.globalData.SponsorEvent = res.data[0].SponsorEvent
+    this.setSponsorAndAttendEvent();
 
 
-        var allEvents = res.data[0].AttendEvent;
-        var sponsorEventToSet = [];
-        for (var AllEventTuple in allEvents) {
-          var IsSponser = false;
-          for (var SponserEventTuple in that.globalData.SponsorEvent) {
-            if (SponserEventTuple === AllEventTuple) {
-              IsSponser = true;
-              break;
-            }
-          }
-          if (!IsSponser) {
-            sponsorEventToSet.push(AllEventTuple);
-          }
-        }
-        that.globalData.AttendEvent = sponsorEventToSet;
-
-
-
-
-        that.setData({
-          SponsorEvent: app.globalData.SponsorEvent,
-          AttendEvent: app.globalData.AttendEvent
-        })
-
-      }
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
     })
 
   },
@@ -107,6 +66,15 @@ Page({
    * Page event handler function--Called when user drop down
    */
   onPullDownRefresh: function() {
+
+    this.setSponsorAndAttendEvent();
+
+
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
+    })
+
 
   },
 
@@ -132,9 +100,11 @@ Page({
   },
 
   onSponserEventTap: function(event) {
-    let id = event.currentTarget.id
+    console.log(event)
+    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
+    console.log(eventId)
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + id,
+      url: '../masterEvent/masterEvent?eventId=' + eventId,
     })
   },
 
@@ -205,5 +175,11 @@ Page({
         }
         app.globalData.AttendEvent = sponsorEventToSet;
 
+      },
+      fail: function(res) {
+        console.log("error");
+      }
+    })
+  },
 
 })

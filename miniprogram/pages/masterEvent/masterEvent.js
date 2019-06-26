@@ -25,6 +25,7 @@ Page({
     totaldate: 0,
     eventName: "",
     eventId: '',
+    sponser: "",
   },
 
 
@@ -47,20 +48,21 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
-    console.log('myId' + this.data.eventId)
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
         eventID: that.data.eventId,
       },
       success: function(res) {
-        console.log("entering ")
-
+       
+        
+        
         that.setData({
           dates: res.result.data[0].dates,
           Attendee: res.result.data[0].Attendee,
           totaldate: res.result.data[0].dates.length,
           eventName: res.result.data[0].eventName,
+          sponser: res.result.data[0].Sponser,
         });
         console.log(that.data.sponser)
 
@@ -111,7 +113,7 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-    console.log("showing")
+   
 
     var that = this
     this.adjustTimeTable()
@@ -142,8 +144,7 @@ Page({
   },
 
   adjustTimeTable: function() {
-
-    console.log("adjusting")
+    
 
     var attendeeArr = this.data.Attendee;
 

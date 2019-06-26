@@ -13,7 +13,7 @@ Page({
   /*
    * Lifecycle function--Called when page load
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     console.log("loading")
 
     this.setData({
@@ -26,7 +26,7 @@ Page({
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function () {
+  onReady: function() {
 
 
   },
@@ -34,35 +34,102 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function () {
+  onShow: function() {
 
-    if (!wx.cloud) {
-      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
-    } else {
-      wx.cloud.init({
-        env: 'wxmeet-5taii',
-        traceUser: true,
-      })
-    }
+    this.setSponsorAndAttendEvent();
 
+
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
+    })
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide: function() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page unload
+   */
+  onUnload: function() {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh: function() {
+
+    this.setSponsorAndAttendEvent();
+
+
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
+    })
+
+
+  },
+
+  /**
+   * Called when page reach bottom
+   */
+  onReachBottom: function() {
+
+  },
+
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage: function() {
+
+  },
+
+  onCreateEventTap: function() {
+    var edit = false
+    wx.navigateTo({
+      url: '../createEvent/createEvent?edit=' + edit,
+    })
+  },
+
+  onSponserEventTap: function(event) {
+    console.log(event)
+    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
+    console.log(eventId)
+    wx.navigateTo({
+      url: '../masterEvent/masterEvent?eventId=' + eventId,
+    })
+  },
+
+  onAttendingEventTap: function() {
+    wx.redirectTo({
+      url: '../guestEvent/guestEvent',
+    })
+  },
+
+
+  setSponsorAndAttendEvent: function() {
     var that = this;
-
     const db = wx.cloud.database()
     db.collection('users').where({
       _id: app.globalData.user
     }).get({
-      success: function (res) {
-        console.log(res.data)
-    
+      success: function(res) {
+
         // n^2 solution, use hashmap for better performance
-        that.globalData.SponsorEvent = res.data[0].SponsorEvent
+        app.globalData.SponsorEvent = res.data[0].SponsorEvent
 
 
         var allEvents = res.data[0].AttendEvent;
         var sponsorEventToSet = [];
         for (var AllEventTuple in allEvents) {
           var IsSponser = false;
-          for (var SponserEventTuple in that.globalData.SponsorEvent) {
+          for (var SponserEventTuple in app.globalData.SponsorEvent) {
             if (SponserEventTuple === AllEventTuple) {
               IsSponser = true;
               break;
@@ -72,81 +139,13 @@ Page({
             sponsorEventToSet.push(AllEventTuple);
           }
         }
-        that.globalData.AttendEvent = sponsorEventToSet;
+        app.globalData.AttendEvent = sponsorEventToSet;
 
-
-
-
-        that.setData({
-          SponsorEvent: app.globalData.SponsorEvent,
-          AttendEvent: app.globalData.AttendEvent
-        })
-
+      },
+      fail: function(res) {
+        console.log("error");
       }
     })
-   
   },
-
-  /**
-   * Lifecycle function--Called when page hide
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page unload
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * Page event handler function--Called when user drop down
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * Called when user click on the top right corner to share
-   */
-  onShareAppMessage: function () {
-
-  },
-
-  onCreateEventTap: function (){
-    var edit = false
-    wx.navigateTo({
-      url: '../createEvent/createEvent?edit=' + edit,
-    })
-  },
-
-  onSponserEventTap: function (event) {
-    console.log(event)
-    let eventId = this.data.SponsorEvent[parseInt(event.currentTarget.id)][0]
-    console.log(eventId)
-    wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId='+eventId,
-    })
-  },
-
-  onAttendingEventTap: function () {
-    wx.redirectTo({
-      url: '../guestEvent/guestEvent',
-    })
-  },
-
-
-
-
-
 
 })

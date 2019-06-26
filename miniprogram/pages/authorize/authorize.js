@@ -21,6 +21,7 @@ Page({
   },
   bindGetUserInfo: function(e) { //点击的“拒绝”或者“允许
     var that = this
+
     if (e.detail.userInfo) { //点击了“允许”按钮，
       this.setUser(e.detail.userInfo)
       wx.redirectTo({
@@ -37,17 +38,16 @@ Page({
   },
   setUser: function(info) {
     let that = this
-    const db = wx.cloud.database()
-    const _ = db.commond
-    try {
-      db.collection("users").doc(app.globalData.user).update({
-        data: {
-          nickName:(info.nickName),
-          profilePic: (info.avatarUrl),
-        }
-      })
-    } catch (e) {
-      console.log(e)
-    }
+    wx.cloud.callFunction({
+      name: 'updateUser',
+      data: {
+        id: app.globalData.user,
+        nickName: info.nickName,
+        profilePic: info.avatarUrl,
+      },
+      success: res => {
+        console.log('更新用户数据成功！')
+      }
+    })
   }
 })

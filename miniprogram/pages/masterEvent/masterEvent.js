@@ -48,7 +48,6 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
-
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
@@ -102,7 +101,7 @@ Page({
   onReady: function() {
 
   },
-  onShareAppMessage: function(){
+  onShareAppMessage: function() {
     let that = this
     return({
       title: '分享'+ that.data.eventName,
@@ -117,7 +116,7 @@ Page({
 
     var that = this
     this.adjustTimeTable()
-    
+
 
     this.setData({
       timer: setInterval(function() {
@@ -129,7 +128,7 @@ Page({
         wx.hideLoading()
       }, 10000)
     })
-    
+
 
   },
 
@@ -159,7 +158,7 @@ Page({
     }
 
     this.setcolor(Object.keys(attendeeArr).length) // pass in total number of people 
-    
+
   },
 
 
@@ -223,18 +222,18 @@ Page({
 
       if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
         if (attendeeDict[id][j][i]) {
-          attendeeID.push (id);
+          attendeeID.push(id);
         }
       }
     }
 
     // get profile pics from id 
-    for (var id of attendeeID){
+    for (var id of attendeeID) {
 
       var that = this
-     //get url from the user id 
+      //get url from the user id 
       db.collection('users').doc(id).get({
-        success: function (res) {
+        success: function(res) {
           // res.data 包含该记录的数据
           picUrl.push(res.data.profilePic)
           that.setData({
@@ -242,7 +241,7 @@ Page({
           })
         },
 
-        error: e =>{
+        error: e => {
           console.log("error")
         }
       })
@@ -268,6 +267,24 @@ Page({
     wx.navigateTo({
       url: '/pages/createEvent/createEvent?edit=' + edit,
     })
+  },
+  onEndTap: function() {
+    // wx.cloud.callFunction({
+    //   name: 'removeEvent',
+    //   data: {
+    //     eventId: that.data.eventId,
+    //     id: that.data.user,
+    //     dates: that.data.dates,
+    //     times: that.data.intervals,
+    //   },
+    //   success: res => {
+    //     console.log(that.data.eventId)
+    //     console.log('更新数据成功')
+    //     wx.redirectTo({
+    //       url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+    //     })
+    //   }
+    // })
   }
 
 

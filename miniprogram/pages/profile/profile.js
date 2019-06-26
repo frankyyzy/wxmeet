@@ -1,6 +1,8 @@
 // pages/profile/profile.js
 
 const app = getApp()
+const db = wx.cloud.database()
+const _ = db.command
 Page({
 
   /**
@@ -111,6 +113,38 @@ Page({
       url: '../guestEvent/guestEvent',
     })
   },
+  onLongPress: function(event) {
+    let that = this
+    let id = event.currentTarget.id
+    var sponsorE = this.data.SponsorEvent
+    
+    console.log(id)
+    wx.showModal({
+      title: '提示',
+      content: '确定要删除此事件吗？',
+      success: function(res) {
+        if (res.confirm) {
+          delete sponsorE[id]
+          that.setData({
+            SponsorEvent: sponsorE
+          })
+          db.collection('events').doc(id).get({
+            success: function (res) {
+              var Attendeelist = res.data.Attendee
+              wx.cloud.callFunction({
+                name: 'deleteEventUser',
+                data: {
+                  eventId: (id),
+                  Attendee: Attendeelist
+                }
+              })
+            }
+          })
+        } else {
+        }
+      }
+    })
+  }
 
 
   setSponsorAndAttendEvent: function() {

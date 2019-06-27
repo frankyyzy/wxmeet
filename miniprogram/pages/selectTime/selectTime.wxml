@@ -1,5 +1,5 @@
 <!--pages/profile/profile.wxml-->
-<view bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend"bindtap = "testposition">
+<scroll-view scrool-y='false' bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend">
   <view class="hori">
     <button type="primary" catchtap="onSubmitTap">确认时间</button>
   </view>
@@ -19,13 +19,17 @@
             <view class="td td1" >{{i}}</view>
               <block wx:for="{{totaldate-1}}" wx:for-item="j">
                 <block wx:if="{{intervals[j][i] == false}}">
-                 <view class="td td1 tdblwhite" bindtap="mytap"  id = "{{j}}{{i}}">{{intervals[j][i]}}</view>
+                 <view class="td td1 tdblwhite" id = "{{j}}{{i}}">
+                 <!-- {{intervals[j][i]}} -->
+                 </view>
                 </block>
                 <block wx:else>
-                  <view class="td td1 tdblgreen" bindtap="mytap"  id = "{{j}}{{i}}">{{intervals[j][i]}}</view>
+                  <view class="td td1 tdblgreen" id = "{{j}}{{i}}">
+                  <!-- {{intervals[j][i]}} -->
+                  </view>
                 </block>
               </block>
             </view>
         </view>
   </view>
-</view>
+</scroll-view>

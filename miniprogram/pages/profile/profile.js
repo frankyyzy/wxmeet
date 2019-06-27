@@ -115,6 +115,8 @@ Page({
           db.collection('events').doc(id).get({
             success: function(res) {
               var Attendeelist = res.data.Attendee
+              Attendeelist[res.data.Sponser] = {}
+              console.log(Attendeelist)
               wx.cloud.callFunction({
                 name: 'deleteEventUser',
                 data: {

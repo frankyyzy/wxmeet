@@ -82,3 +82,8 @@
   border-bottom: #FFFFFF 1px solid;
   color: #888888;
 }
+swiper{
+  /* text-align: center; */
+  width: 100%;
+  height: 1000rpx;
+}

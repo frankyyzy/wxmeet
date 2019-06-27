@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/loading/loading",
     "pages/profile/profile",
     "pages/selectTime/selectTime",
-    "pages/loading/loading",
     "pages/test/test",
     "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",

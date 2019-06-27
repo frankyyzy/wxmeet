@@ -108,9 +108,9 @@
                    success: function(res) {
                      that.updateUser(res.userInfo)
                      that.globalData.userSet = true
-                    //  wx.redirectTo({
-                    //    url: that.globalData.url
-                    //  })
+                     wx.redirectTo({
+                       url: that.globalData.url
+                     })
                    },
                    fail: function() {
                      console.log("fail")

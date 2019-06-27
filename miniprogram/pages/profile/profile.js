@@ -101,7 +101,7 @@ Page({
     let that = this
     let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
-    
+
     console.log(id)
     wx.showModal({
       title: '提示',
@@ -113,7 +113,7 @@ Page({
             SponsorEvent: sponsorE
           })
           db.collection('events').doc(id).get({
-            success: function (res) {
+            success: function(res) {
               var Attendeelist = res.data.Attendee
               wx.cloud.callFunction({
                 name: 'deleteEventUser',
@@ -124,19 +124,18 @@ Page({
               })
             }
           })
-        } else {
-        }
+        } else {}
       }
     })
   },
 
 
-  onUpdateEvents: function(){
+  onUpdateEvents: function() {
 
     var that = this;
     const db = wx.cloud.database()
     db.collection('users').doc(app.globalData.user).get({
-      success: function (res) {
+      success: function(res) {
         console.log(res.data)
 
         var SponsorEvent = res.data.SponsorEvent

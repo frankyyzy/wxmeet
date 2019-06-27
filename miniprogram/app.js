@@ -105,6 +105,7 @@
 
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
+         if(that.globalData.userSet) return
          wx.getSetting({
            success: function(res) {
              if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了

@@ -67,7 +67,5 @@
       </view>
     </swiper-item>
   </swiper>
-  <view class='btmview'>
-    <button type="primary" bindtap='onSubmitTap'>确认提交</button>
-  </view>
 </scroll-view>
+<button type="primary" bindtap='onSubmitTap'>确认提交</button>

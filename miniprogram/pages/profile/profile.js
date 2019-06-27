@@ -58,6 +58,7 @@ Page({
   onPullDownRefresh: function() {
 
     this.onUpdateEvents();
+   
 
   },
 
@@ -137,7 +138,7 @@ Page({
     const db = wx.cloud.database()
     db.collection('users').doc(app.globalData.user).get({
       success: function (res) {
-        console.log(res.data)
+       
 
         var SponsorEvent = res.data.SponsorEvent
         var AttendEvent = {}
@@ -150,7 +151,11 @@ Page({
           SponsorEvent: app.globalData.SponsorEvent,
           AttendEvent: app.globalData.AttendEvent
         })
+        wx.stopPullDownRefresh();
 
+      },
+      fail: function (res) {
+        console.log("can't get user from db")
       }
     })
   }

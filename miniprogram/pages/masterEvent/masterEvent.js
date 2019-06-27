@@ -266,9 +266,10 @@ Page({
     })
   },
   onEditTap: function() {
-    var edit = true
+    //var edit = true
+    var that = this
     wx.navigateTo({
-      url: '/pages/createEvent/createEvent?edit=' + edit,
+      url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.eventName + '&createTime=' + that.data.createDate,
     })
   },
   onEndTap: function() {

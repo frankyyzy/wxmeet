@@ -31,17 +31,20 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    let that = this
-    that.setData({
-        eventId: options.eventId,
-        eventName: options.eventName,
-        createTime: options.createTime,
-        user: app.globalData.user
-      })
-    const db = wx.cloud.database()
-    const _ = db.command
+    wx.clearStorageSync()
+    console.log("Hello1")
     var value = wx.getStorageSync('time');
-    if(!value){
+    if (!value) {
+      console.log("Hello2")
+      let that = this
+      that.setData({
+          eventId: options.eventId,
+          eventName: options.eventName,
+          createTime: options.createTime,
+          user: app.globalData.user
+        })
+      const db = wx.cloud.database()
+      const _ = db.command
       db.collection('events').where({
           _id: that.data.eventId
         }).get({
@@ -90,10 +93,13 @@ Page({
         }
       
       })
+      wx.setStorageSync('time', that.data.intervals)
     }
     else{
+      console.log("Hello3")
+      let that = this
       that.setData({
-        intervals: vale,
+        intervals: value,
       })
     }
   },

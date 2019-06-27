@@ -14,7 +14,7 @@
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-     wx.showLoading()
+    //  wx.showLoading()
     var that = this
      //cloud ability init
      if (!wx.cloud) {
@@ -107,9 +107,9 @@
                    success: function(res) {
                      that.updateUser(res.userInfo)
                      that.globalData.userSet = true
-                     wx.redirectTo({
-                       url: that.globalData.url
-                     })
+                    //  wx.redirectTo({
+                    //    url: that.globalData.url
+                    //  })
                    },
                    fail: function() {
                      console.log("fail")

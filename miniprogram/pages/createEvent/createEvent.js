@@ -169,7 +169,7 @@ Page({
         }
       }
     }
-    
+    console.log(size)
     //console.log(tInterv)
     //console.log(nInterv)
     interv = tInterv.concat(nInterv)
@@ -189,7 +189,8 @@ Page({
     this.setData({
       tIntervals: tInterv,
       nIntervals: nInterv,
-      intervals: interv
+      intervals: interv,
+      size: size
     })
   },
 
@@ -264,6 +265,14 @@ Page({
     if(this.data.value == ''){
       wx.showToast({
         title: 'dumb shit',
+      })
+      return
+    }
+    // test
+    if(this.data.size >=7){
+      wx.showToast({
+        title:'more than 7',
+        duration: 2000
       })
       return
     }

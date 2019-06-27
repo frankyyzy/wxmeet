@@ -14,7 +14,7 @@
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-     wx.showLoading()
+    //  wx.showLoading()
 
      //cloud ability init
      if (!wx.cloud) {
@@ -25,7 +25,13 @@
          traceUser: true,
        })
      }
-
+     if (options.query.share) {
+       if (that.globalData.user === options.query.sponserId) {
+         that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+       } else {
+         that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime //  otherwise go to selectTime
+       }
+     }
      //perform login and authorization
      var that = this
      wx.cloud.callFunction({
@@ -33,15 +39,6 @@
        complete: res => {
          that.globalData.user = res.result.openId
          that.setSponsorAndAttendEvent()
-         
-
-         if (options.query.share) {
-           if (that.globalData.user === options.query.sponserId) {
-             that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
-           } else {
-             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime//  otherwise go to selectTime
-           }
-         }
        }
      })
 
@@ -50,7 +47,7 @@
 
    // implement redirection for reopening the app
    onShow: function(options) {
-
+    //  console.log(options)
      if (this.globalData.userSet) {
 
        this.setSponsorAndAttendEvent();
@@ -64,14 +61,13 @@
            this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
 
          } else {
-
            that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime
 
          }
+         wx.redirectTo({
+           url: this.globalData.url
+         })
        }
-       wx.redirectTo({
-         url: this.globalData.url
-       })
      }
    },
 
@@ -80,13 +76,12 @@
      const db = wx.cloud.database()
      db.collection('users').doc(that.globalData.user).get({
        fail: function() {
-         
          that.setNewUser()
        },
        success: function(res) {
-         
+
          var SponsorEvent = res.data.SponsorEvent
-         
+
          var AttendEvent = {}
          for (var id in res.data.AttendEvent) {
 
@@ -105,31 +100,33 @@
 
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
-         wx.getSetting({
-           success: function(res) {
-             if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
-               wx.getUserInfo({
-                 success: function(res) {
-                   that.updateUser(res.userInfo)
-                   that.globalData.userSet = true
-                   wx.redirectTo({
-                     url: that.globalData.url
-                   })
-                 },
-                 fail: function() {
-                   console.log("fail")
-                 }
-               })
-             } else { //未授权，跳到授权页面
-               wx.redirectTo({
-                 url: '/pages/authorize/authorize', //授权页面
-               })
+         if (that.globalData.userSet == false) {
+           wx.getSetting({
+             success: function(res) {
+               if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
+                 wx.getUserInfo({
+                   success: function(res) {
+                     that.updateUser(res.userInfo)
+                     that.globalData.userSet = true
+                    //  wx.redirectTo({
+                    //    url: that.globalData.url
+                    //  })
+                   },
+                   fail: function() {
+                     console.log("fail")
+                   }
+                 })
+               } else { //未授权，跳到授权页面
+                 wx.redirectTo({
+                   url: '/pages/authorize/authorize', //授权页面
+                 })
+               }
+             },
+             fail: function() {
+               console.log("can't get setting")
              }
-           },
-           fail: function() {
-             console.log("can't get setting")
-           }
-         })
+           })
+         }
        },
      })
    },

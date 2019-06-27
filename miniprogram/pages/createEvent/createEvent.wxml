@@ -1,6 +1,4 @@
-<!--pages/calender/calender.wxml-->
-<text>pages/createEvent/createEvent</text>
-<!--pages/calendar/index.wxml-->
+<view class='tips'>请输入事件名称</view>
 <textarea class='eventName' bindinput='bindinput'></textarea>
 <view class='tips'>请选择你心仪的日期</view>
 <scroll-view scroll-y class='scroll-view'>

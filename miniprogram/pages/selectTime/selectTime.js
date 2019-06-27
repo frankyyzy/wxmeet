@@ -202,14 +202,14 @@ Page({
     }
     this.data.arr = arr
     // }
-    // var that = this
-    // // this.setData({
-    // //   timer: setInterval(function (){
-    // //     that.setData({
-    // //       intervals: that.data.intervals
-    // //     })
-    // //   },500)
-    // // })
+    var that = this
+    // this.setData({
+    //   timer: setInterval(function (){
+    //     that.setData({
+    //       intervals: that.data.intervals
+    //     })
+    //   },100)
+    // })
 
 
   },
@@ -238,7 +238,7 @@ Page({
     // for (var j = startj; j <= endj; j++) {
       for (var i = starti; i <= endi; i++) {
         if (this.data.arr[i] == false) {
-          // intervalls[j][i] = !intervalls[j][i]
+          // this.data.intervals[startj][i] = !this.data.intervals[startj][i]
           var index = 'intervals[' + this.data.startj + '][' + i + ']'
           console.log('here')
           this.setData({
@@ -253,7 +253,7 @@ Page({
     // this.data.intervals = intervalls
   },
   mytouchend: function(e) {
-    // clearInterval(this.data.timer)
+    clearInterval(this.data.timer)
     console.log("i have ended")
     if (!this.data.buttom) {
       var intervalls = this.data.intervals

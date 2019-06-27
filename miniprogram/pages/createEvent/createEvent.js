@@ -22,7 +22,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     let that = this
     this.setData({
       user: app.globalData.user
@@ -34,7 +34,6 @@ Page({
     var tIntervals = [];
     var nIntervals = [];
     var intervals = [];
-    var value = '';
     this.setData({
       thisYear: new Date().getFullYear(),
       thisMonth: new Date().getMonth() + 1,
@@ -44,7 +43,7 @@ Page({
       nextMonthArr: nextMonthArr
     })
   },
-  select_date: function (e) {
+  select_date: function(e) {
     //如果点击项为空百项目，不继续执行
     var date = e.currentTarget.dataset.date;
     if (date == '' || date <= 0) {
@@ -79,8 +78,7 @@ Page({
       let curr = 0;
       if (selected < 10) {
         curr = currMonth + "0" + selected.toString(10);
-      }
-      else {
+      } else {
         curr = currMonth + selected.toString(10);
       }
       for (let i = 0; i < tLength; i++) {
@@ -93,7 +91,9 @@ Page({
         let once = true
         let end = 0
         let length = tInterv.length;
-        if (length === 0) { tInterv.push(curr); }
+        if (length === 0) {
+          tInterv.push(curr);
+        }
         for (let i = 0; i < length; i++) {
           if (once == true) {
             if (parseInt(tInterv[i]) > parseInt(curr)) {
@@ -110,16 +110,14 @@ Page({
         }
       }
 
-    }
-    else {
+    } else {
       var check = true
       let nLength = nInterv.length
       var selected = parseInt(date);
       let curr = 0;
       if (selected < 10) {
         curr = currMonth + "0" + selected.toString(10);
-      }
-      else {
+      } else {
         curr = currMonth + selected.toString(10);
       }
       for (let i = 0; i < nLength; i++) {
@@ -132,7 +130,9 @@ Page({
         let once = true
         let end = 0
         let length = nInterv.length;
-        if (length === 0) { nInterv.push(curr); }
+        if (length === 0) {
+          nInterv.push(curr);
+        }
         for (let i = 0; i < length; i++) {
           if (once == true) {
             if (parseInt(nInterv[i]) > parseInt(curr)) {
@@ -172,9 +172,9 @@ Page({
     })
   },
 
-  bindinput(event){
+  bindinput(event) {
     this.setData({
-    value: event.detail.value
+      value: event.detail.value
     })
   },
   //根据指定年月获得当月天数
@@ -239,7 +239,13 @@ Page({
     //console.log(monthArray);
     return monthArray;
   },
-  onSubmitTap: function () {
+  onSubmitTap: function() {
+    if(this.data.value == ''){
+      wx.showToast({
+        title: 'dumb shit',
+      })
+      return
+    }
     wx.showLoading({
       title: '',
     })
@@ -251,7 +257,7 @@ Page({
         id: that.data.user,
         name: that.data.value,
         dates: that.data.intervals,
-        createDate: createTime, 
+        createDate: createTime,
       },
       success: res => {
         console.log('创建事件成功')
@@ -278,4 +284,3 @@ Page({
     })
   },
 })
-

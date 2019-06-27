@@ -14,8 +14,8 @@
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-    //  wx.showLoading()
-
+     wx.showLoading()
+    var that = this
      //cloud ability init
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -33,7 +33,6 @@
        }
      }
      //perform login and authorization
-     var that = this
      wx.cloud.callFunction({
        name: 'login',
        complete: res => {

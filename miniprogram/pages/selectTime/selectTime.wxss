@@ -1,5 +1,5 @@
 /* pages/profile/profile.wxss */
-textarea {
+.textarea {
   width: 700rpx;
   padding: 25rpx 0;
 }

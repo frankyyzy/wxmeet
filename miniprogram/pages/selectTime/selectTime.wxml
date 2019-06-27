@@ -1,6 +1,10 @@
 <!--pages/profile/profile.wxml-->
-<scroll-view  bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend">
-  
+<scroll-view scrool-y='false' bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend">
+  <view class="hori">
+    <button type="primary" catchtap="onSubmitTap">确认时间</button>
+  </view>
+
+
   <view bindtap = "touchAndDrag">
     <view class="table">
       <view class="title">
@@ -27,8 +31,5 @@
               </block>
             </view>
         </view>
-  </view>
-  <view class="hori">
-    <button class="buttonsize" catchtap="onSubmitTap">确认时间</button>
   </view>
 </scroll-view>

@@ -22,6 +22,7 @@ Page({
     touchIntervals: [],
     startx: 0,
     starty: 0,
+    startj: 0,
     endx: 0,
     endy: 0,
     buttom: false,
@@ -179,8 +180,11 @@ Page({
   },
 
   mytouchstart: function(e) {
-    // var sx = e.touches[0].pageX;
-    // var sy = e.touches[0].pageY;
+    var sx = e.touches[0].pageX;
+    var sy = e.touches[0].pageY;
+    var n = this.data.totaldate;
+
+    this.data.startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
     // var intervalls = this.data.intervals
     // if (sy < 0.065 * this.data.windowHeight) {
     //   this.setData({
@@ -192,9 +196,11 @@ Page({
     //     starty: sy,
     //     buttom: false,
     //   })
-      var arr = []
-      for (var i = 0; i < 24; i++) arr[i] = false
-      this.data.arr = arr
+    var arr = []
+    for (var i = 0; i < 24; i++) {
+      arr[i] = false
+    }
+    this.data.arr = arr
     // }
     // var that = this
     // // this.setData({
@@ -209,7 +215,6 @@ Page({
   },
   //长按事件
   mytouchmove: function(e) {
-    try{
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
     // this.setData({
@@ -220,8 +225,8 @@ Page({
     // var intervalls = this.data.intervals;
     // var startxx = this.data.startx;
     // var startyy = this.data.starty;
-      var startxx = sx;
-      var startyy = sy;
+    var startxx = sx;
+    var startyy = sy;
     var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
     var endj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
     var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
@@ -230,31 +235,25 @@ Page({
     console.log("endi" + endi)
     console.log("startj" + startj)
     console.log("endj" + endj)
-    // if (starti != endi) {
-        for (var j = startj; j <= endj; j++) {
+    // for (var j = startj; j <= endj; j++) {
       for (var i = starti; i <= endi; i++) {
-          if (this.data.arr[i] == false) {
-            // intervalls[j][i] = !intervalls[j][i]
-            var index = 'intervals[' + j + ']['+ i+']'
-            console.log('here')
-            this.setData({
-              [index]: !this.data.intervals[j][i],
-            })
-            this.data.arr[i] = true
-          }
+        if (this.data.arr[i] == false) {
+          // intervalls[j][i] = !intervalls[j][i]
+          var index = 'intervals[' + this.data.startj + '][' + i + ']'
+          console.log('here')
+          this.setData({
+            [index]: !this.data.intervals[this.data.startj][i],
+          })
+          this.data.arr[i] = true
         }
+      // }
       // }
     }
     // }
     // this.data.intervals = intervalls
-
-    }
-    catch(e){
-      console.log(e)
-    }
   },
   mytouchend: function(e) {
-    clearInterval(this.data.timer)
+    // clearInterval(this.data.timer)
     console.log("i have ended")
     if (!this.data.buttom) {
       var intervalls = this.data.intervals

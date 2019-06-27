@@ -169,14 +169,7 @@ Page({
         }
       }
     }
-    console.log(size)
-    if(size >=7){
-      cosnole.log('*******')
-      wx.showToast({
-        title: '最多只能选择7天',
-        duration:2000
-      })
-    }
+    
     //console.log(tInterv)
     //console.log(nInterv)
     interv = tInterv.concat(nInterv)

@@ -16,7 +16,8 @@ Page({
     intervals: [],
     eventId: '',
     user: '',
-    value: ''
+    value: '',
+    size: -1
   },
 
   /**
@@ -56,6 +57,7 @@ Page({
     var nInterv = this.data.nIntervals;
     var interv = this.data.intervals;
     var currMonth = 0;
+    var size = this.data.size;
     var thisMonth = new Date().getMonth() + 1;
     if (month == 'thisMonth') {
       var that = this.data.thisMonthArr;
@@ -76,15 +78,23 @@ Page({
       var check = true
       let tLength = tInterv.length
       let curr = 0;
+      //补0
       if (selected < 10) {
         curr = currMonth + "0" + selected.toString(10);
       } else {
         curr = currMonth + selected.toString(10);
       }
+      //
       for (let i = 0; i < tLength; i++) {
         if (tInterv[i] === curr) {
           check = false
-          tInterv.splice(i, i + 1);
+          var index = i
+          if (index > -1) {
+            tInterv.splice(index, 1)
+          }
+          //var del = tInterv.splice(i, i + 1);
+          //console.log(del)
+          size = size-1;
         }
       }
       if (check) {
@@ -93,17 +103,20 @@ Page({
         let length = tInterv.length;
         if (length === 0) {
           tInterv.push(curr);
+          size = size+1;
         }
         for (let i = 0; i < length; i++) {
           if (once == true) {
             if (parseInt(tInterv[i]) > parseInt(curr)) {
               tInterv.splice(i, 0, curr)
+              size = size+1;
               once = false;
             }
             end += 1
           }
           if ((end >= length) && once) {
             tInterv.push(curr)
+            size = size+1;
             once = true;
             end = 0
           }
@@ -121,9 +134,13 @@ Page({
         curr = currMonth + selected.toString(10);
       }
       for (let i = 0; i < nLength; i++) {
-        if (nInterv[i] === curr) {
+        if (nInterv[i] === curr && check) {
           check = false
-          nInterv.splice(i, i + 1);
+          var index = i
+          if(index > -1){
+            nInterv.splice(index,1)
+          }
+          size =size-1;
         }
       }
       if (check) {
@@ -132,12 +149,14 @@ Page({
         let length = nInterv.length;
         if (length === 0) {
           nInterv.push(curr);
+          size =size+1;
         }
         for (let i = 0; i < length; i++) {
           if (once == true) {
             if (parseInt(nInterv[i]) > parseInt(curr)) {
               nInterv.splice(i, 0, curr)
               once = false;
+              size=size+1;
             }
             end += 1
           }
@@ -145,10 +164,12 @@ Page({
             nInterv.push(curr)
             once = true;
             end = 0
+            size=size+1;
           }
         }
       }
     }
+    console.log(size)
     //console.log(tInterv)
     //console.log(nInterv)
     interv = tInterv.concat(nInterv)
@@ -168,7 +189,8 @@ Page({
     this.setData({
       tIntervals: tInterv,
       nIntervals: nInterv,
-      intervals: interv
+      intervals: interv,
+      size: size
     })
   },
 
@@ -243,6 +265,14 @@ Page({
     if(this.data.value == ''){
       wx.showToast({
         title: 'dumb shit',
+      })
+      return
+    }
+    // test
+    if(this.data.size >=7){
+      wx.showToast({
+        title:'more than 7',
+        duration: 2000
       })
       return
     }

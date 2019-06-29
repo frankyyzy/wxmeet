@@ -84,17 +84,17 @@ Page({
   },
 
   onSponserEventTap: function(event) {
-    console.log(event)
     let eventId = event.currentTarget.id
-    console.log(eventId)
     wx.navigateTo({
       url: '../masterEvent/masterEvent?eventId=' + eventId,
     })
   },
 
-  onAttendingEventTap: function() {
+  onAttendingEventTap: function(event) {
+    let eventId = event.currentTarget.id
+
     wx.redirectTo({
-      url: '../guestEvent/guestEvent',
+      url: '../masterEvent/masterEvent?eventId=' + eventId,
     })
   },
 
@@ -103,7 +103,6 @@ Page({
     let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
 
-    console.log(id)
     wx.showModal({
       title: '提示',
       content: '确定要删除此事件吗？',
@@ -117,7 +116,6 @@ Page({
             success: function(res) {
               var Attendeelist = res.data.Attendee
               Attendeelist[res.data.Sponser] = {}
-              console.log(Attendeelist)
               wx.cloud.callFunction({
                 name: 'deleteEventUser',
                 data: {
@@ -156,7 +154,6 @@ Page({
 
       },
       fail: function (res) {
-        console.log("can't get user from db")
       }
     })
   }

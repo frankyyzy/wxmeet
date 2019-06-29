@@ -66,7 +66,6 @@ Page({
           sponser: res.result.data[0].Sponser,
           createDate: res.result.data[0].createDate,
         });
-        console.log(that.data.sponser)
 
         that.adjustTimeTable()
         wx.hideLoading()

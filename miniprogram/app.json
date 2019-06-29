@@ -1,10 +1,10 @@
 {
   "pages": [
-    "pages/createEvent/createEvent",
     "pages/loading/loading",
-    "pages/profile/profile",
     "pages/selectTime/selectTime",
     "pages/test/test",
+    "pages/createEvent/createEvent",
+    "pages/profile/profile",
     "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent",

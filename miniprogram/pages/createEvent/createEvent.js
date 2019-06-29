@@ -169,11 +169,9 @@ Page({
         }
       }
     }
-    console.log(size)
     //console.log(tInterv)
     //console.log(nInterv)
     interv = tInterv.concat(nInterv)
-    console.log(interv)
     //console.log(that);
     //根据月份设置数据
     if (month == 'thisMonth') {
@@ -290,7 +288,6 @@ Page({
         createDate: createTime,
       },
       success: res => {
-        console.log('创建事件成功')
         that.setData({
           eventId: res.result._id
         })
@@ -304,7 +301,6 @@ Page({
             createTime: createTime
           },
           success: res => {
-            console.log('新增用户创建事件！')
           }
         })
         wx.redirectTo({

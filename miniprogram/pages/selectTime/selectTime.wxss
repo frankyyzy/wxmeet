@@ -78,10 +78,10 @@
 .td1{
   width:49%;
 }
-.tdblwhite{
+/* .tdblwhite{
   background-color:#fff;
-}
-.tdblgreen{
+} */
+/* .tdblgreen{
   background-color:#52962a;
-}
+} */
 

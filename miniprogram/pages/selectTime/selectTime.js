@@ -1,5 +1,7 @@
 // pages/profile/profile.js
 const app = getApp()
+const green = "green"
+const white = "white"
 Page({
   /**
    * Page initial data
@@ -22,12 +24,20 @@ Page({
     touchIntervals: [],
     startx: 0,
     starty: 0,
-    startj: 0,
+    startj: -1,
+    starti: -1,
+    lasti: -1,
+    lastj: -1,
     endx: 0,
     endy: 0,
     buttom: false,
-    arr: [],
-    timer: null
+    select: "white",
+    color: [
+      []
+    ],
+    previousColor: [
+      []
+    ]
   },
 
   /**
@@ -39,7 +49,9 @@ Page({
       eventId: options.eventId,
       eventName: options.eventName,
       createTime: options.createTime,
-      user: app.globalData.user
+      user: app.globalData.user,
+      // x:30,
+      // y:30
     })
     const db = wx.cloud.database()
     const _ = db.command
@@ -61,25 +73,33 @@ Page({
           datechoose: datechoos
         })
         var intervalss = [];
+        var color = [
+          []
+        ];
+        for (var j = 0; j < that.data.totaldate - 1; j++) {
+          color[j] = []
+          for (var i = 0; i < 24; i++) {
+            color[j][i] = white
+          }
+        }
         for (var i = 0; i < that.data.totaldate - 1; i++) {
           var interves = [];
           for (var j = 0; j < 24; j++) {
             interves.push(false);
+            // color[i][j]=("rgba(0,255,0,100)")
           }
           intervalss.push(interves);
-          that.setData({
-            intervals: intervalss
-          })
         }
-
+        console.log(color)
+        that.setData({
+          intervals: intervalss,
+          color: color
+        })
       }
     })
     wx.getSystemInfo({
       success: function(res) {
-        console.log(res);
         // 屏幕宽度、高度
-        console.log('height=' + res.windowHeight);
-        console.log('width=' + res.windowWidth);
         // 高度,宽度 单位为px
         that.setData({
           windowHeight:  res.windowHeight,
@@ -120,9 +140,9 @@ Page({
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function() {
+  // onPullDownRefresh: function() {
 
-  },
+  // },
 
   /**
    * Called when page reach bottom
@@ -156,7 +176,6 @@ Page({
       },
       success: res => {
         // console.log(that.data.eventId)
-        console.log('更新数据成功')
         wx.redirectTo({
           url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
         })
@@ -173,9 +192,7 @@ Page({
         eventName: that.data.eventName,
         createTime: that.data.createTime
       },
-      success: res => {
-        console.log('新增用户参与事件！')
-      }
+      success: res => {}
     })
   },
 
@@ -185,6 +202,30 @@ Page({
     var n = this.data.totaldate;
 
     this.data.startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+    this.data.starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+    this.data.lastj = this.data.startj
+    this.data.lasti = this.data.starti
+    this.data.previousColor = JSON.parse(JSON.stringify(this.data.color))
+    // var arr = [
+    //   []
+    // ]
+    // for (var j = 0; j < this.data.totaldate - 1; j++) {
+    //   arr[j] = []
+    //   for (var i = 0; i < 24; i++) {
+    //     arr[j][i] = false
+    //   }
+    // }
+    // this.data.arr = arr
+    var color = 'color[' + this.data.startj + '][' + this.data.starti + ']'
+    this.setData({
+      [color]: (this.data.color[this.data.startj][this.data.starti] == green) ? white : green
+    })
+    this.data.select = this.data.color[this.data.startj][this.data.starti]
+    // this.data.arr[this.data.startj][this.data.starti] = true
+    // if (this.data.first) {
+    //   this.data.arr = arr
+    //   this.data.first = false
+    // } 
     // var intervalls = this.data.intervals
     // if (sy < 0.065 * this.data.windowHeight) {
     //   this.setData({
@@ -196,13 +237,8 @@ Page({
     //     starty: sy,
     //     buttom: false,
     //   })
-    var arr = []
-    for (var i = 0; i < 24; i++) {
-      arr[i] = false
-    }
-    this.data.arr = arr
     // }
-    var that = this
+    // var that = this
     // this.setData({
     //   timer: setInterval(function (){
     //     that.setData({
@@ -211,86 +247,171 @@ Page({
     //   },100)
     // })
 
-
   },
-  //长按事件
-  mytouchmove: function(e) {
+  onChange: function(e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
-    // this.setData({
-    //   endx: sx,
-    //   endy: sy,
-    // })
+
     var n = this.data.totaldate;
-    // var intervalls = this.data.intervals;
-    // var startxx = this.data.startx;
-    // var startyy = this.data.starty;
-    var startxx = sx;
-    var startyy = sy;
-    var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
-    var endj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
-    var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    var endi = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    console.log("starti" + starti)
-    console.log("endi" + endi)
-    console.log("startj" + startj)
-    console.log("endj" + endj)
-    // for (var j = startj; j <= endj; j++) {
-      for (var i = starti; i <= endi; i++) {
-        if (this.data.arr[i] == false) {
-          // this.data.intervals[startj][i] = !this.data.intervals[startj][i]
-          var index = 'intervals[' + this.data.startj + '][' + i + ']'
-          console.log('here')
-          this.setData({
-            [index]: !this.data.intervals[this.data.startj][i],
-          })
-          this.data.arr[i] = true
-        }
-      // }
+    var startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+    var starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+    var otherside = false
+    if (this.data.lasti > this.data.starti && starti < this.data.starti) {
+      console.log('here')
+
+      for (var i = this.data.lasti; i > this.data.starti; i--) {
+        var color = 'color[' + startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.previousColor[startj][i]
+        })
+      }
+      otherside = true
+    } else if (this.data.lasti < this.data.starti && starti > this.data.starti) {
+      console.log('where')
+      for (var i = this.data.lasti; i < this.data.starti; i++) {
+        var color = 'color[' + startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.previousColor[startj][i]
+        })
+      }
+      otherside = true
+
+    }
+    if (starti > this.data.lasti && starti > this.data.starti) {
+      for (var i = this.data.lasti; i <= starti; i++) {
+        if (otherside && i < this.data.starti) continue
+        var color = 'color[' + startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.select
+        })
+      }
+    } else if (starti < this.data.lasti && starti > this.data.starti) {
+      for (var i = this.data.lasti; i >= starti; i--) {
+        var color = 'color[' + startj + '][' + i + ']'
+        console.log(this.data.previousColor)
+        this.setData({
+          [color]: this.data.previousColor[startj][i]
+        })
+      }
+    } else if (starti < this.data.lasti && starti < this.data.starti) {
+      for (var i = this.data.lasti; i >= starti; i--) {
+        if (otherside && i > this.data.starti) continue
+        var color = 'color[' + startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.select
+        })
+      }
+    } else if (starti > this.data.lasti && starti < this.data.starti) {
+      for (var i = this.data.lasti; i <= starti; i++) {
+        var color = 'color[' + startj + '][' + i + ']'
+        console.log(this.data.previousColor)
+        this.setData({
+          [color]: this.data.previousColor[startj][i]
+        })
+      }
+    }
+    this.data.lasti = starti
+
+  },
+  //   if (this.data.arr[starti] == false) {
+  //     var index = 'intervals[' + startj + '][' + starti + ']'
+  //     var color = 'color[' + startj + '][' + starti + ']'
+  //     this.setData({
+  //       [index]: !this.data.intervals[startj][starti],
+  //       [color]: (this.data.color[startj][starti] == "green") ? "white" : "green"
+  //     })
+  //     this.data.arr[starti] = true
+  //   }
+  // },
+  //长按事件
+  mytouchmove: function(e) {
+    // console.log(e)
+    if (this.data.first) {
+      var sx = e.touches[0].pageX;
+      var sy = e.touches[0].pageY;
+      var n = this.data.totaldate;
+
+      this.data.startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+      this.data.starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+      var arr = []
+      for (var i = 0; i < 24; i++) {
+        arr[i] = false
+      }
+      this.data.arr = arr
+      this.data.first = false
+    } else {
+      var sx = e.touches[0].pageX;
+      var sy = e.touches[0].pageY;
+      // this.setData({
+      //   endx: sx,
+      //   endy: sy,
+      // })
+      var n = this.data.totaldate;
+      // var intervalls = this.data.intervals;
+      // var startxx = this.data.startx;
+      // var startyy = this.data.starty;
+      // var startxx = sx;
+      // var startyy = sy;
+      var startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+      // var endj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+      var starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+      // var endi = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+      // var x = 'posx['+ 0 + ']'
+      // var y = 'posy[' + starti + ']'
+      this.setData({
+        x: sx,
+        y: sy
+
+      })
+      // console.log("starti" + starti)
+      // console.log("endi" + endi)
+      // console.log("startj" + startj)
+      // console.log("endj" + endj)
+      // for (var j = this.dstartj; j <= endj; j++) {
+      // for (var i = starti; i <= endi; i++) {
+      //   if (this.data.arr[starti] == false) {
+      //     // this.data.intervals[this.data.startj][starti] = !this.data.intervals[this.data.startj][starti]
+      //     var index = 'intervals[' + this.data.startj + '][' + starti + ']'
+      //     // var index = 'intervals[' + this.data.startj + '][' + endi + ']'
+
+      //     this.setData({
+      //       [index]: !this.data.intervals[this.data.startj][starti],
+      //     })
+      //     this.data.arr[starti] = true
+      //   }
       // }
     }
+
+    // this.setData({
+    //   intervals: this.data.intervals
+    // })
+    // }
+    // }
+    // }
     // }
     // this.data.intervals = intervalls
   },
   mytouchend: function(e) {
-    clearInterval(this.data.timer)
-    console.log("i have ended")
-    if (!this.data.buttom) {
-      var intervalls = this.data.intervals
-      var startxx = this.data.startx;
-      var startyy = this.data.starty;
-      var endxx = this.data.endx;
-      var endyy = this.data.endy;
-      var n = this.data.totaldate;
-      var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
-      var endj = parseInt(n * endxx / (0.98 * this.data.windowWidth)) - 1;
-      var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-      var endi = parseInt((endyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-      // for (var i = starti; i <= endi; i++) {
-      //   for (var j = startj; j <= endj; j++) {
-      //   if (!intervalls[j][i]) {
-      //     intervalls[j][i] = true;
-      //   }
-      //   else {
-      //     intervalls[j][i] = false;
-      //   }
-      // }
-      // }
-      // this.setData({
-      //   intervals: intervalls,
-      // })
+    for(var j = 0; j < this.data.totaldate-1; j++){
+      for(var i = 0; i < 24; i++){
+        if(this.data.color[j][i] == green){
+          this.data.intervals[j][i] = true
+        }
+        else{
+          this.data.intervals[j][i] = false
+        }
+      }
     }
+    
   },
   mytap: function(e) {
     var Name = parseInt(e.target.id[0])
-    console.log(Name)
     var idd = e.target.id
     var ID = '';
     for (let i = 1; i < idd.length; i++) {
       ID = ID + idd[i];
     }
     ID = parseInt(ID);
-    console.log(ID)
     var interv = []
     interv = this.data.intervals
     if (!interv[Name][ID]) {
@@ -305,8 +426,6 @@ Page({
   testposition: function(e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
-    console.log(sx)
-    console.log(sy)
   }
 
 })

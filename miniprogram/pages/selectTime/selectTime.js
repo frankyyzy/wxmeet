@@ -248,6 +248,154 @@ Page({
     // })
 
   },
+  onSelect: function(e) {
+    var sx = e.touches[0].pageX;
+    var sy = e.touches[0].pageY;
+    // console.log("hi")
+    var n = this.data.totaldate;
+    var startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+    var starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+    var otherside = false
+
+    // console.log("now"+startj)
+    // console.log("last"+this.data.lastj)
+    // if (this.data.lasti > this.data.starti && starti < this.data.starti) {
+    //   // console.log('here')
+    //   for (var i = this.data.lasti; i > this.data.starti; i--) {
+    //     var color = 'color[' + this.data.startj + '][' + i + ']'
+    //     this.setData({
+    //       [color]: this.data.previousColor[this.data.startj][i]
+    //     })
+    //   }
+    //   otherside = true
+    // } else if (this.data.lasti < this.data.starti && starti > this.data.starti) {
+    //   console.log('where')
+    //   for (var i = this.data.lasti; i < this.data.starti; i++) {
+    //     var color = 'color[' + this.data.startj + '][' + i + ']'
+    //     this.setData({
+    //       [color]: this.data.previousColor[this.data.startj][i]
+    //     })
+    //   }
+    //   otherside = true
+
+    // }
+    //swipe down, after the initial i
+    // if (starti > this.data.lasti && starti > this.data.starti) {
+      for (var j = 0; j < this.data.totaldate - 1; j++) {
+        for (var i = 0; i < 24; i++) {
+          if (i >= this.data.starti && i <= starti) {
+            if (j == this.data.startj) {
+              var color = 'color[' + j + '][' + i + ']'
+              this.setData({
+                [color]: this.data.select
+              })
+            }
+            if (j > this.data.startj && j <= startj) {
+              if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
+              var color = 'color[' + j + '][' + i + ']'
+              this.setData({
+                [color]: this.data.color[this.data.startj][i]
+              })
+            }
+            // else if (j > this.data.startj && j > startj) {
+            //   if(this.data.color[j][i] == this.data.previousColor[j][i]) continue
+            //   var color = 'color[' + j + '][' + i + ']'
+            //   this.setData({
+            //     [color]: this.data.previousColor[j][i]
+            //   })
+            // }
+            else if(j < this.data.startj && j >= startj){
+              if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
+              var color = 'color[' + j + '][' + i + ']'
+              this.setData({
+                [color]: this.data.color[this.data.startj][i]
+              })
+            }
+            else if (j < this.data.startj && j < startj){
+              if (this.data.color[j][i] == this.data.previousColor[j][i]) continue
+              var color = 'color[' + j + '][' + i + ']'
+              this.setData({
+                [color]: this.data.previousColor[j][i]
+              })
+            }
+          }
+          else {
+            if (this.data.color[j][i] == this.data.previousColor[j][i]) continue
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.previousColor[j][i]
+            })
+          }
+          // else if (i < this.data.starti)
+        }
+      }
+    // }
+    // if (starti > this.data.lasti && starti > this.data.starti) {
+    //   if (startj >= this.data.lastj && startj >= this.data.startj) {
+    //     for (var i = this.data.starti; i <= starti; i++) {
+    //       for (var j = this.data.startj; j <= startj; j++) {
+    //         if (otherside && i < this.data.starti) continue
+    //         if (this.data.color[j][i] == this.data.select) continue
+    // var color = 'color[' + j + '][' + i + ']'
+    // this.setData({
+    //   [color]: this.data.select
+    // })
+    //       }
+    //     }
+    //   } else if (startj < this.data.lastj && startj >= this.data.startj) {
+    //     console.log('here')
+    //     for (var i = this.data.starti; i <= starti; i++) {
+
+    //       for (var j = this.data.lastj; j > startj; j--) {
+    //         // if (otherside && i < this.data.starti) continue
+    //         // if (this.data.color[j][i] == this.data.select) continue
+    //         var color = 'color[' + j + '][' + i + ']'
+    //         this.setData({
+    //           [color]: this.data.previousColor[j][i]
+    //         })
+    //       }
+    //     }
+    //   }
+    // }
+
+    // } else if (starti < this.data.lasti && starti > this.data.starti) {
+    //   for (var i = this.data.lasti; i >= starti; i--) {
+    //     var color = 'color[' + this.data.startj + '][' + i + ']'
+    //     // console.log(this.data.previousColor)
+    //     this.setData({
+    //       [color]: this.data.previousColor[this.data.startj][i]
+    //     })
+    //   }
+    // } else if (starti < this.data.lasti && starti < this.data.starti) {
+    //   for (var i = this.data.lasti; i >= starti; i--) {
+    //     if (otherside && i > this.data.starti) continue
+    //     var color = 'color[' + this.data.startj + '][' + i + ']'
+    //     this.setData({
+    //       [color]: this.data.select
+    //     })
+    //   }
+    // } else if (starti > this.data.lasti && starti < this.data.starti) {
+    //   for (var i = this.data.lasti; i <= starti; i++) {
+    //     var color = 'color[' + this.data.startj + '][' + i + ']'
+    //     // console.log(this.data.previousColor)
+    //     this.setData({
+    //       [color]: this.data.previousColor[this.data.startj][i]
+    //     })
+    //   }
+    // }
+    this.data.lasti = starti
+    // if (startj > this.data.lastj && startj > this.data.startj) {
+    //   for (var j = this.data.lastj + 1; j <= startj; j++) {
+    //     for (var i = this.data.starti; i <= starti; i++) {
+    //       var color = 'color[' + j + '][' + i + ']'
+    //       this.setData({
+    //         [color]: this.data.select
+    //       })
+    //     }
+    //   }
+    // }
+    this.data.lastj = startj
+  },
   onChange: function(e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
@@ -257,61 +405,74 @@ Page({
     var starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
     var otherside = false
     if (this.data.lasti > this.data.starti && starti < this.data.starti) {
-      console.log('here')
-
+      // console.log('here')
       for (var i = this.data.lasti; i > this.data.starti; i--) {
-        var color = 'color[' + startj + '][' + i + ']'
+        var color = 'color[' + this.data.startj + '][' + i + ']'
         this.setData({
-          [color]: this.data.previousColor[startj][i]
+          [color]: this.data.previousColor[this.data.startj][i]
         })
       }
       otherside = true
     } else if (this.data.lasti < this.data.starti && starti > this.data.starti) {
       console.log('where')
       for (var i = this.data.lasti; i < this.data.starti; i++) {
-        var color = 'color[' + startj + '][' + i + ']'
+        var color = 'color[' + this.data.startj + '][' + i + ']'
         this.setData({
-          [color]: this.data.previousColor[startj][i]
+          [color]: this.data.previousColor[this.data.startj][i]
         })
       }
       otherside = true
 
     }
     if (starti > this.data.lasti && starti > this.data.starti) {
-      for (var i = this.data.lasti; i <= starti; i++) {
-        if (otherside && i < this.data.starti) continue
-        var color = 'color[' + startj + '][' + i + ']'
-        this.setData({
-          [color]: this.data.select
-        })
+      if (startj >= this.data.lastj && startj >= this.data.startj) {
+        for (var j = this.data.startj; j <= startj; j++) {
+          for (var i = this.data.starti; i <= starti; i++) {
+            if (otherside && i < this.data.starti) continue
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.select
+            })
+          }
+        }
       }
     } else if (starti < this.data.lasti && starti > this.data.starti) {
       for (var i = this.data.lasti; i >= starti; i--) {
-        var color = 'color[' + startj + '][' + i + ']'
-        console.log(this.data.previousColor)
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        // console.log(this.data.previousColor)
         this.setData({
-          [color]: this.data.previousColor[startj][i]
+          [color]: this.data.previousColor[this.data.startj][i]
         })
       }
     } else if (starti < this.data.lasti && starti < this.data.starti) {
       for (var i = this.data.lasti; i >= starti; i--) {
         if (otherside && i > this.data.starti) continue
-        var color = 'color[' + startj + '][' + i + ']'
+        var color = 'color[' + this.data.startj + '][' + i + ']'
         this.setData({
           [color]: this.data.select
         })
       }
     } else if (starti > this.data.lasti && starti < this.data.starti) {
       for (var i = this.data.lasti; i <= starti; i++) {
-        var color = 'color[' + startj + '][' + i + ']'
-        console.log(this.data.previousColor)
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        // console.log(this.data.previousColor)
         this.setData({
-          [color]: this.data.previousColor[startj][i]
+          [color]: this.data.previousColor[this.data.startj][i]
         })
       }
     }
     this.data.lasti = starti
-
+    // if (startj > this.data.lastj && startj > this.data.startj) {
+    //   for (var j = this.data.lastj + 1; j <= startj; j++) {
+    //     for (var i = this.data.starti; i <= starti; i++) {
+    //       var color = 'color[' + j + '][' + i + ']'
+    //       this.setData({
+    //         [color]: this.data.select
+    //       })
+    //     }
+    //   }
+    // }
+    this.data.lastj = startj
   },
   //   if (this.data.arr[starti] == false) {
   //     var index = 'intervals[' + startj + '][' + starti + ']'
@@ -392,17 +553,16 @@ Page({
     // this.data.intervals = intervalls
   },
   mytouchend: function(e) {
-    for(var j = 0; j < this.data.totaldate-1; j++){
-      for(var i = 0; i < 24; i++){
-        if(this.data.color[j][i] == green){
+    for (var j = 0; j < this.data.totaldate - 1; j++) {
+      for (var i = 0; i < 24; i++) {
+        if (this.data.color[j][i] == green) {
           this.data.intervals[j][i] = true
-        }
-        else{
+        } else {
           this.data.intervals[j][i] = false
         }
       }
     }
-    
+
   },
   mytap: function(e) {
     var Name = parseInt(e.target.id[0])

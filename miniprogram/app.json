@@ -1,14 +1,14 @@
 {
   "pages": [
-    "pages/createEvent/createEvent",
-    "pages/loading/loading",
     "pages/profile/profile",
+    "pages/authorize/authorize",
+    "pages/loading/loading",
+    "pages/createEvent/createEvent",
     "pages/selectTime/selectTime",
     "pages/test/test",
     "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",
-    "pages/guestEvent/guestEvent",
-    "pages/authorize/authorize"
+    "pages/guestEvent/guestEvent"   
   ],
   "window": {
     "backgroundTextStyle": "light",

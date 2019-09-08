@@ -1,8 +1,5 @@
-<!--pages/profile/profile.wxml-->
-<!-- <scroll-view scroll-y='false' bindtouchstart="mytouchstart" bindtouchmove="mytouchmove" bindtouchend="mytouchend"> -->
 <scroll-view scroll-y='false'>
  
-
   <view bindtap="touchAndDrag">
     <view class="table">
       <view class="title">

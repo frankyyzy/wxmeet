@@ -1,31 +1,31 @@
 <scroll-view scroll-y='false'>
- 
-  <view bindtap="touchAndDrag">
-    <view class="table">
-      <view class="title">
-        <block wx:if="{{totaldate>=1}}">
-          <block class="tr" wx:for="{{totaldate}}" wx:for-item="i">
-            <view class="th td1"> {{dates[i]}}</view>
-          </block>
+
+
+  <view class="table">
+    <view class="title">
+      <block wx:if="{{totaldate>=1}}">
+        <block class="tr" wx:for="{{totaldate}}" wx:for-item="i">
+          <view class="th td1"> {{dates[i]}}</view>
         </block>
-      </view>
+      </block>
+    </view>
 
-      <view class="tr" wx:for="{{24}}" wx:for-item="i" style='height: {{rowHeight}}px;'>
-        <view class="td td1">{{i}}</view>
-        <block wx:for="{{totaldate-1}}" wx:for-item="j">
-
-
-
-  <view class='td td1 ' id="{{j}}{{i}}" bindtouchstart="blockTouchStart" bindtouchend="blockTouchEnd" bindtouchmove = "blockTouchMove" style= 'background-color:{{intervals[j][i] == false ? "#fff;" : "#52962a"}}'> 
-            </view>
+    <view class="tr" wx:for="{{24}}" wx:for-item="i" style='height: {{rowHeight}}px;'>
+      <view class="td td1">{{i}}</view>
+      <block wx:for="{{totaldate-1}}" wx:for-item="j">
 
 
-        </block>
-      </view>
+
+        <view class='td td1 ' id="{{j}}{{i}}" bindtouchstart="blockTouchStart" bindtouchend="blockTouchEnd" bindtouchmove="blockTouchMove" style='background-color:{{intervals[j][i] == false ? "#fff;" : "#52962a"}}'>
+        </view>
+
+
+      </block>
     </view>
   </view>
 
-   <view class="hori">
+
+  <view class="hori">
     <button type="primary" catchtap="onSubmitTap">确认时间</button>
   </view>
 

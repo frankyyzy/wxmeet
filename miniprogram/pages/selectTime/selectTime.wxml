@@ -25,8 +25,8 @@
   </view>
 
 
-  <view class="hori">
-    <button type="primary" catchtap="onSubmitTap">确认时间</button>
-  </view>
+
+  <button type="primary" catchtap="onSubmitTap">确认时间</button>
+
 
 </scroll-view>

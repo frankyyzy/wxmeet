@@ -35,9 +35,7 @@
   margin: 30px;
   text-align: center;
 }
-.hori{
-  flex-direction: felx;
-}
+
 .datet{
   width:50%;
 }

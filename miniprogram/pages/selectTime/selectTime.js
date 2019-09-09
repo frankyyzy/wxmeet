@@ -79,17 +79,21 @@ Page({
     })
 
 
+
+
+    // set the height of each row 
     wx.getSystemInfo({
       success: function(res) {
-        console.log(res);
-        // 屏幕宽度、高度
-        console.log('height=' + res.windowHeight);
-        console.log('width=' + res.windowWidth);
+        
         // 高度,宽度 单位为px
         that.setData({
-          windowHeight:  res.windowHeight,
-          windowWidth:  res.windowWidth
+          windowHeight: res.windowHeight,
+          windowWidth: res.windowWidth,
+          rowHeight: (res.windowHeight / 30)
+          // rowHeight: 30
         })
+        console.log(that.data.rowHeight)
+
       }
     })
 
@@ -97,7 +101,6 @@ Page({
   },
 
   blockTouchStart: function(e) {
-    console.log("start");
 
     // deep copy 2d array
     let intervalToSet = []
@@ -178,9 +181,6 @@ Page({
 
 
 
-
-
-
     this.setData({
       intervals: intervalToSet
     })
@@ -189,11 +189,9 @@ Page({
 
 
   blockTouchEnd: function(e) {
-    console.log("end");
     this.setData({
       prevIntervals: this.data.intervals
     });
-
 
   },
   /**

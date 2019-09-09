@@ -111,16 +111,11 @@ Page({
     }
     this.data.prevIntervals = intervalToSet;
 
-
-
     var date = parseInt(e.target.id[0]); // 0th char
     var hour = parseInt(e.target.id.substr(1)); // 1st to end 
 
     this.data.startDate = date;
     this.data.startHour = hour;
-
-    this.data.pdate = date;
-    this.data.phour = hour;
 
     this.setData({
       toSet: !this.data.prevIntervals[date][hour]
@@ -131,61 +126,64 @@ Page({
 
   blockTouchMove: function(e) {
 
+    var horizontal = e.changedTouches[0].pageX;
+    var vertical = e.changedTouches[0].pageY;
+    var n = this.data.totaldate;
+
+    var date = parseInt(n * horizontal / (0.98 * this.data.windowWidth)) - 1;
+    var hour = vertical / this.data.rowHeight - 1;
 
 
-      var horizontal = e.changedTouches[0].pageX;
-      var vertical = e.changedTouches[0].pageY;
-      var n = this.data.totaldate;
-
-      var date = parseInt(n * horizontal / (0.98 * this.data.windowWidth)) - 1;
-      var hour = vertical / this.data.rowHeight - 1;
+    var sHour = this.data.startHour;
+    var sDate = this.data.startDate;
 
 
-      var sHour = this.data.startHour;
-      var sDate = this.data.startDate;
+    // deep copy 2d array
+    var intervalToSet = [];
 
+    for (let dayArr of this.data.prevIntervals) {
+      let temp = []
+      for (let value of dayArr) {
+        temp.push(value);
+      }
+      intervalToSet.push(temp);
+    }
 
-      // deep copy 2d array
-      var intervalToSet = []
-
-      for (let dayArr of this.data.prevIntervals) {
-        let temp = []
-        for (let value of dayArr) {
-          temp.push(value);
+    if (date >= sDate) {
+      for (let currDate = sDate; currDate <= date; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
         }
-        intervalToSet.push(temp);
-
       }
-   
-
-
-      // if (hour > sHour) {
-      for (var i = sHour; i <= hour; i++) {
-
-        intervalToSet[date][i] = this.data.toSet;
-
-        // this.setData({
-        //   ['intervals[' + date + '][' + i + ']']: this.data.toSet,
-        // })
+    } else {
+      for (let currDate = date; currDate <= sDate; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        }
       }
 
-      this.setData({
-        intervals: intervalToSet
-      })
-
-    // } else {
-
-    //   for (var i = hour; i <= sHour; i++) {
-    //     console.log(i);
-    //     console.log(hour)
-    //     this.setData({
-    //       ['intervals[' + date + '][' + i + ']']: !this.data.intervals[date][hour],
-    //     })
-    //   }
-    // }
+    }
 
 
 
+
+
+
+    this.setData({
+      intervals: intervalToSet
+    })
 
   },
 

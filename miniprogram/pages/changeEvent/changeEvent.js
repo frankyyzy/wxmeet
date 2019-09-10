@@ -10,7 +10,7 @@ Page({
 
     user: '',
     dates: [],
-    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
+    // datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
     totaldate: 3,
     start: -1,
     end: -1,
@@ -43,79 +43,68 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     let that = this
-    var datesTitle = ["小时"]
-    datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
-    console.log(datesTitle);
-    var color = [
-      []
-    ];
-    for (var j = 0; j < that.data.totaldate - 1; j++) {
-      color[j] = []
-      for (var i = 0; i < 24; i++) {
-        color[j][i] = white
-      }
-    }
     that.setData({
+      eventId: options.eventId,
       eventName: options.eventName,
-      dates: datesTitle,
-      totaldate: datesTitle.length,
+      createTime: options.createTime,
       user: app.globalData.user,
-      color: color
+      // x:30,
+      // y:30
     })
     const db = wx.cloud.database()
     const _ = db.command
-    // db.collection('events').where({
-    //   _id: that.data.eventId
-    // }).get({
-    //   success: function(res) {
-    //     var passdates = res.data[0].dates
-    //     var curdates = ["小时"]
-    //     var datechoos = [0]
-    //     for (let i = 0; i < passdates.length; i++) {
-    //       curdates.push(passdates[i])
-    //       datechoos.push(i + 1)
-    //     }
-    //     var total = curdates.length
-    //     that.setData({
-    //       dates: curdates,
-    //       totaldate: total,
-    //       datechoose: datechoos
-    //     })
-    //     var intervalss = [];
-        // var color = [
-        //   []
-        // ];
-        // for (var j = 0; j < that.data.totaldate - 1; j++) {
-        //   color[j] = []
-        //   for (var i = 0; i < 24; i++) {
-        //     color[j][i] = white
-        //   }
-        // }
-    //     for (var i = 0; i < that.data.totaldate - 1; i++) {
-    //       var interves = [];
-    //       for (var j = 0; j < 24; j++) {
-    //         interves.push(false);
-    //         // color[i][j]=("rgba(0,255,0,100)")
-    //       }
-    //       intervalss.push(interves);
-    //     }
-    //     console.log(color)
-    //     that.setData({
-    //       intervals: intervalss,
-    //       color: color
-    //     })
-    //   }
-    // })
+    db.collection('events').where({
+      _id: that.data.eventId
+    }).get({
+      success: function (res) {
+        var passdates = res.data[0].dates
+        var curdates = ["小时"]
+        var datechoos = [0]
+        for (let i = 0; i < passdates.length; i++) {
+          curdates.push(passdates[i])
+          datechoos.push(i + 1)
+        }
+        var total = curdates.length
+        that.setData({
+          dates: curdates,
+          totaldate: total,
+          datechoose: datechoos
+        })
+        var intervalss = [];
+        var color = [
+          []
+        ];
+        for (var j = 0; j < that.data.totaldate - 1; j++) {
+          color[j] = []
+          for (var i = 0; i < 24; i++) {
+            color[j][i] = white
+          }
+        }
+        for (var i = 0; i < that.data.totaldate - 1; i++) {
+          var interves = [];
+          for (var j = 0; j < 24; j++) {
+            interves.push(false);
+            // color[i][j]=("rgba(0,255,0,100)")
+          }
+          intervalss.push(interves);
+        }
+        console.log(color)
+        that.setData({
+          intervals: intervalss,
+          color: color
+        })
+      }
+    })
     wx.getSystemInfo({
-      success: function(res) {
+      success: function (res) {
         // 屏幕宽度、高度
         // 高度,宽度 单位为px
         that.setData({
-          windowHeight:  res.windowHeight,
+          windowHeight: res.windowHeight,
 
-          windowWidth:  res.windowWidth
+          windowWidth: res.windowWidth
 
         })
       }
@@ -125,28 +114,26 @@ Page({
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
+  onReady: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
-
-  },
+  onShow: function () { },
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
@@ -160,59 +147,18 @@ Page({
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   },
-  onSubmitTap: function(){
-    var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
-    wx.cloud.callFunction({
-      name: 'creatEvent',
-      data:{
-        id: that.data.user,
-        name: that.data.value,
-        dates: that.data.intervals,
-        createDate: createTime,
-      },
-      success: res => {
-        that.setData({
-          eventId:res.result._id
-        })
-        this.updateUser()
-      }
-    })
-  }
-  ,
-  updateAttendee: function(){
-    this.updateUser()
-    var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
-    wx.cloud.callFunction({
-      name: 'testupdate',
-      data: {
-        eventId: that.data.eventId,
-        id: that.data.user,
-        dates: that.data.dates,
-        times: that.data.intervals,
-      },
-      success: res => {
-        // console.log(that.data.eventId)
-        wx.redirectTo({
-          url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
-        })
-      }
-    })
-  },
-  onSubmitTap1: function() {
+
+  onSubmitTap: function () {
     wx.showLoading({
       title: '',
     })
@@ -236,7 +182,7 @@ Page({
       }
     })
   },
-  updateUser: function() {
+  updateUser: function () {
     var that = this
     wx.cloud.callFunction({
       name: 'updateAttendEvent',
@@ -246,12 +192,11 @@ Page({
         eventName: that.data.eventName,
         createTime: that.data.createTime
       },
-      success: res => {
-      }
+      success: res => { }
     })
   },
 
-  mytouchstart: function(e) {
+  mytouchstart: function (e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
     var n = this.data.totaldate;
@@ -303,7 +248,7 @@ Page({
     // })
 
   },
-  onSelect: function(e) {
+  onSelect: function (e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
     // console.log("hi")
@@ -336,54 +281,54 @@ Page({
     // }
     //swipe down, after the initial i
     // if (starti > this.data.lasti && starti > this.data.starti) {
-      for (var j = 0; j < this.data.totaldate - 1; j++) {
-        for (var i = 0; i < 24; i++) {
-          if (i >= this.data.starti && i <= starti) {
-            if (j == this.data.startj) {
-              var color = 'color[' + j + '][' + i + ']'
-              this.setData({
-                [color]: this.data.select
-              })
-            }
-            if (j > this.data.startj && j <= startj) {
-              if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
-              var color = 'color[' + j + '][' + i + ']'
-              this.setData({
-                [color]: this.data.color[this.data.startj][i]
-              })
-            }
-            // else if (j > this.data.startj && j > startj) {
-            //   if(this.data.color[j][i] == this.data.previousColor[j][i]) continue
-            //   var color = 'color[' + j + '][' + i + ']'
-            //   this.setData({
-            //     [color]: this.data.previousColor[j][i]
-            //   })
-            // }
-            else if(j < this.data.startj && j >= startj){
-              if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
-              var color = 'color[' + j + '][' + i + ']'
-              this.setData({
-                [color]: this.data.color[this.data.startj][i]
-              })
-            }
-            else if (j < this.data.startj && j < startj){
-              if (this.data.color[j][i] == this.data.previousColor[j][i]) continue
-              var color = 'color[' + j + '][' + i + ']'
-              this.setData({
-                [color]: this.data.previousColor[j][i]
-              })
-            }
+    for (var j = 0; j < this.data.totaldate - 1; j++) {
+      for (var i = 0; i < 24; i++) {
+        if (i >= this.data.starti && i <= starti) {
+          if (j == this.data.startj) {
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.select
+            })
           }
-          else {
+          if (j > this.data.startj && j <= startj) {
+            if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.color[this.data.startj][i]
+            })
+          }
+          // else if (j > this.data.startj && j > startj) {
+          //   if(this.data.color[j][i] == this.data.previousColor[j][i]) continue
+          //   var color = 'color[' + j + '][' + i + ']'
+          //   this.setData({
+          //     [color]: this.data.previousColor[j][i]
+          //   })
+          // }
+          else if (j < this.data.startj && j >= startj) {
+            if (this.data.color[j][i] == this.data.color[this.data.startj][i]) continue
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.color[this.data.startj][i]
+            })
+          }
+          else if (j < this.data.startj && j < startj) {
             if (this.data.color[j][i] == this.data.previousColor[j][i]) continue
             var color = 'color[' + j + '][' + i + ']'
             this.setData({
               [color]: this.data.previousColor[j][i]
             })
           }
-          // else if (i < this.data.starti)
         }
+        else {
+          if (this.data.color[j][i] == this.data.previousColor[j][i]) continue
+          var color = 'color[' + j + '][' + i + ']'
+          this.setData({
+            [color]: this.data.previousColor[j][i]
+          })
+        }
+        // else if (i < this.data.starti)
       }
+    }
     // }
     // if (starti > this.data.lasti && starti > this.data.starti) {
     //   if (startj >= this.data.lastj && startj >= this.data.startj) {
@@ -451,11 +396,96 @@ Page({
     // }
     this.data.lastj = startj
   },
-  onChange: function(e) {
-    console.log(e)
+  onChange: function (e) {
+    var sx = e.touches[0].pageX;
+    var sy = e.touches[0].pageY;
+
+    var n = this.data.totaldate;
+    var startj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
+    var starti = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
+    var otherside = false
+    if (this.data.lasti > this.data.starti && starti < this.data.starti) {
+      // console.log('here')
+      for (var i = this.data.lasti; i > this.data.starti; i--) {
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.previousColor[this.data.startj][i]
+        })
+      }
+      otherside = true
+    } else if (this.data.lasti < this.data.starti && starti > this.data.starti) {
+      console.log('where')
+      for (var i = this.data.lasti; i < this.data.starti; i++) {
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.previousColor[this.data.startj][i]
+        })
+      }
+      otherside = true
+
+    }
+    if (starti > this.data.lasti && starti > this.data.starti) {
+      if (startj >= this.data.lastj && startj >= this.data.startj) {
+        for (var j = this.data.startj; j <= startj; j++) {
+          for (var i = this.data.starti; i <= starti; i++) {
+            if (otherside && i < this.data.starti) continue
+            var color = 'color[' + j + '][' + i + ']'
+            this.setData({
+              [color]: this.data.select
+            })
+          }
+        }
+      }
+    } else if (starti < this.data.lasti && starti > this.data.starti) {
+      for (var i = this.data.lasti; i >= starti; i--) {
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        // console.log(this.data.previousColor)
+        this.setData({
+          [color]: this.data.previousColor[this.data.startj][i]
+        })
+      }
+    } else if (starti < this.data.lasti && starti < this.data.starti) {
+      for (var i = this.data.lasti; i >= starti; i--) {
+        if (otherside && i > this.data.starti) continue
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        this.setData({
+          [color]: this.data.select
+        })
+      }
+    } else if (starti > this.data.lasti && starti < this.data.starti) {
+      for (var i = this.data.lasti; i <= starti; i++) {
+        var color = 'color[' + this.data.startj + '][' + i + ']'
+        // console.log(this.data.previousColor)
+        this.setData({
+          [color]: this.data.previousColor[this.data.startj][i]
+        })
+      }
+    }
+    this.data.lasti = starti
+    // if (startj > this.data.lastj && startj > this.data.startj) {
+    //   for (var j = this.data.lastj + 1; j <= startj; j++) {
+    //     for (var i = this.data.starti; i <= starti; i++) {
+    //       var color = 'color[' + j + '][' + i + ']'
+    //       this.setData({
+    //         [color]: this.data.select
+    //       })
+    //     }
+    //   }
+    // }
+    this.data.lastj = startj
   },
+  //   if (this.data.arr[starti] == false) {
+  //     var index = 'intervals[' + startj + '][' + starti + ']'
+  //     var color = 'color[' + startj + '][' + starti + ']'
+  //     this.setData({
+  //       [index]: !this.data.intervals[startj][starti],
+  //       [color]: (this.data.color[startj][starti] == "green") ? "white" : "green"
+  //     })
+  //     this.data.arr[starti] = true
+  //   }
+  // },
   //长按事件
-  mytouchmove: function(e) {
+  mytouchmove: function (e) {
     // console.log(e)
     if (this.data.first) {
       var sx = e.touches[0].pageX;
@@ -522,7 +552,7 @@ Page({
     // }
     // this.data.intervals = intervalls
   },
-  mytouchend: function(e) {
+  mytouchend: function (e) {
     for (var j = 0; j < this.data.totaldate - 1; j++) {
       for (var i = 0; i < 24; i++) {
         if (this.data.color[j][i] == green) {
@@ -534,7 +564,7 @@ Page({
     }
 
   },
-  mytap: function(e) {
+  mytap: function (e) {
     var Name = parseInt(e.target.id[0])
     var idd = e.target.id
     var ID = '';
@@ -553,7 +583,7 @@ Page({
       intervals: interv
     })
   },
-  testposition: function(e) {
+  testposition: function (e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
   }

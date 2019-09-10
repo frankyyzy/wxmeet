@@ -16,7 +16,7 @@ Page({
     intervals: [],
     eventId: '',
     user: '',
-    value: '',
+    eventName: '',
     size: -1
   },
 
@@ -194,7 +194,7 @@ Page({
 
   bindinput(event) {
     this.setData({
-      value: event.detail.value
+      eventName: event.detail.value
     })
   },
   //根据指定年月获得当月天数
@@ -260,7 +260,7 @@ Page({
     return monthArray;
   },
   onSubmitTap: function() {
-    if(this.data.value == ''){
+    if(this.data.eventName == ''){
       wx.showToast({
         title: 'dumb shit',
       })
@@ -274,39 +274,40 @@ Page({
       })
       return
     }
-    wx.showLoading({
-      title: '',
-    })
     var that = this
-    var createTime = new Date().getTime()
-    wx.cloud.callFunction({
-      name: 'creatEvent',
-      data: {
-        id: that.data.user,
-        name: that.data.value,
-        dates: that.data.intervals,
-        createDate: createTime,
-      },
-      success: res => {
-        that.setData({
-          eventId: res.result._id
-        })
-
-        wx.cloud.callFunction({
-          name: 'updateSponsorEvent',
-          data: {
-            id: that.data.user,
-            eventId: res.result._id,
-            eventName: that.data.value,
-            createTime: createTime
-          },
-          success: res => {
-          }
-        })
-        wx.redirectTo({
-          url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
-        })
-      }
+    var datesArr = JSON.stringify(that.data.intervals);
+    wx.navigateTo({
+      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr
     })
+
+    // wx.cloud.callFunction({
+    //   name: 'creatEvent',
+    //   data: {
+    //     id: that.data.user,
+    //     name: that.data.value,
+    //     dates: that.data.intervals,
+    //     createDate: createTime,
+    //   },
+    //   success: res => {
+    //     that.setData({
+    //       eventId: res.result._id
+    //     })
+
+    //     wx.cloud.callFunction({
+    //       name: 'updateSponsorEvent',
+    //       data: {
+    //         id: that.data.user,
+    //         eventId: res.result._id,
+    //         eventName: that.data.value,
+    //         createTime: createTime
+    //       },
+    //       success: res => {
+    //       }
+    //     })
+    //     wx.redirectTo({
+    //       url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
+    //     })
+    //   }
+    // })
   },
 })

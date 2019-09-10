@@ -4,6 +4,7 @@
     "pages/selectTime/selectTime",
     "pages/test/test",
     "pages/createEvent/createEvent",
+    "pages/changeEvent/changeEvent",    
     "pages/profile/profile",
     "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",

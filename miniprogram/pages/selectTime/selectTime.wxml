@@ -1,33 +1,29 @@
 <!-- pages/profile/profile.wxml -->
 <!-- <movable-area style="height: 1500rpx; width: 1000rpx;" scale-area> -->
 
-  <scroll-view scroll-y="false" catchtouchmove='true'>
-    <view class="hori">
-      <button type="primary" catchtap="onSubmitTap">确认时间</button>
-    </view>
-    <view>
-      <view class="table">
-        <view class="title">
-          <block wx:if="{{totaldate>=1}}">
-            <block class="tr" wx:for="{{totaldate}}" wx:for-item="i">
-              <view class="th td1"> {{dates[i]}}</view>
-            </block>
+<scroll-view scroll-y="false" catchtouchmove='true'>
+  <view class="hori">
+    <button type="primary" catchtap="onSubmitTap">确认时间</button>
+  </view>
+  <view>
+    <view class="table">
+      <view class="title">
+        <block wx:if="{{totaldate>=1}}">
+          <block class="tr" wx:for="{{totaldate}}" wx:for-item="i">
+            <view class="th td1"> {{dates[i]}}</view>
           </block>
-        </view>
+        </block>
+      </view>
 
-        <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
-          <view class="td td1">{{i}}</view>
-          <block wx:for="{{totaldate-1}}" wx:for-item="j">
-              <view class="td td1" id="{{j}}-{{i}}" bindtouchstart="mytouchstart" bindtouchend="mytouchend" bindtouchmove="onSelect" style = "background: {{color[j][i]}};">
-                      <!-- <movable-view style="height: 20px; width: 20px; background: green;" direction="all" x="{{x}}" y="{{y}}" bindchange="testfunc" animation="{{false}}" id="{{j}} - {{i}}">
-        </movable-view> -->
-                <!-- {{intervals[j][i]}} -->
-              </view>
+      <view class="tr" wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:for-item="i">
+        <view class="td td1">{{i}}</view>
+        <block wx:for="{{totaldate-1}}" wx:for-item="j">
+          <view class="td td1" id="{{j}}-{{i}}" bindtouchstart="mytouchstart" bindtouchend="mytouchend" bindtouchmove="onChange" style="background: {{color[j][i]}};">
+          </view>
 
 
-          </block>
-        </view>
+        </block>
       </view>
     </view>
-  </scroll-view>
-<!-- </movable-area> -->
+  </view>
+</scroll-view>

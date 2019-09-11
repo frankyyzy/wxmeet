@@ -1,5 +1,6 @@
 // pages/profile/profile.js
-const app = getApp()
+const app = getApp();
+
 Page({
   /**
    * Page initial data
@@ -14,14 +15,14 @@ Page({
     edit: false,
     intervals: [],
     prevIntervals: [], // array to store intervals before this touch operation
+    toSet: false,
+    readnow: true,
     eventId: '',
     eventName: '',
     createTime: -1,
     windowHeight: 0,
     windowWidtht: 0,
-    touchIntervals: [],
     buttom: false,
-    arr: [],
     timer: null,
     startHour: null,
     startDate: null,
@@ -70,21 +71,29 @@ Page({
           })
         }
 
+        console.debug("finishing onLoad");
+        console.log(that.data.intervals);
+
       }
+
     })
 
 
+
+
+    // set the height of each row 
     wx.getSystemInfo({
       success: function(res) {
-        console.log(res);
-        // 屏幕宽度、高度
-        console.log('height=' + res.windowHeight);
-        console.log('width=' + res.windowWidth);
+        
         // 高度,宽度 单位为px
         that.setData({
-          windowHeight:  res.windowHeight,
-          windowWidth:  res.windowWidth
+          windowHeight: res.windowHeight,
+          windowWidth: res.windowWidth,
+          rowHeight: (res.windowHeight / 30)
+          // rowHeight: 30
         })
+        console.log(that.data.rowHeight)
+
       }
     })
 
@@ -92,20 +101,33 @@ Page({
   },
 
   blockTouchStart: function(e) {
-    console.log(this.data.intervals )
-    
-    this.data.prevIntervals = this.data.intervals;
+
+    // deep copy 2d array
+    let intervalToSet = []
+    for (let dayArr of this.data.intervals) {
+      let temp = []
+      for (let value of dayArr) {
+        temp.push(value);
+      }
+      intervalToSet.push(temp);
+
+    }
+    this.data.prevIntervals = intervalToSet;
+
     var date = parseInt(e.target.id[0]); // 0th char
     var hour = parseInt(e.target.id.substr(1)); // 1st to end 
 
     this.data.startDate = date;
     this.data.startHour = hour;
-    
+
+    this.setData({
+      toSet: !this.data.prevIntervals[date][hour]
+    })
+
 
   },
 
   blockTouchMove: function(e) {
-    console.log("blockTouchMove")
 
     var horizontal = e.changedTouches[0].pageX;
     var vertical = e.changedTouches[0].pageY;
@@ -118,73 +140,58 @@ Page({
     var sHour = this.data.startHour;
     var sDate = this.data.startDate;
 
-    this.setData({
-      intervals: this.data.prevIntervals
-    })
-      
-    
-    
 
-    if (hour > sHour) {
-      for (var i = sHour; i <= hour; i++) {
-        this.setData({
-          ['intervals[' + date + '][' + i + ']']: !this.data.intervals[date][hour],
-        })
+    // deep copy 2d array
+    var intervalToSet = [];
 
+    for (let dayArr of this.data.prevIntervals) {
+      let temp = []
+      for (let value of dayArr) {
+        temp.push(value);
       }
-
-    } else {
-      
-      for (var i = hour; i <= sHour; i++) {
-        console.log(i);
-        console.log(hour)
-        this.setData({
-          ['intervals[' + date + '][' + i + ']']: !this.data.intervals[date][hour],
-        })
-      }
+      intervalToSet.push(temp);
     }
 
+    if (date >= sDate) {
+      for (let currDate = sDate; currDate <= date; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        }
+      }
+    } else {
+      for (let currDate = date; currDate <= sDate; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        }
+      }
+
+    }
+
+
+
+    this.setData({
+      intervals: intervalToSet
+    })
 
   },
 
 
   blockTouchEnd: function(e) {
-
-    var horizontal = e.changedTouches[0].pageX;
-    var vertical = e.changedTouches[0].pageY;
-    var n = this.data.totaldate;
-
-    var date = parseInt(n * horizontal / (0.98 * this.data.windowWidth)) - 1;
-    //var hour = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    var hour = vertical / this.data.rowHeight - 1;
-    console.log(hour);
-
-
-
-    var sHour = this.data.startHour;
-    var sDate = this.data.startDate;
-
-    if (hour > sHour) {
-      for (var i = sHour; i <= hour; i++) {
-        this.setData({
-          ['intervals[' + date + '][' + i + ']']: !this.data.intervals[date][hour],
-        })
-
-      }
-
-    } else {
-      for (var i = hour; i <= sHour; i++) {
-        console.log(i);
-        console.log(hour)
-        this.setData({
-          ['intervals[' + date + '][' + i + ']']: !this.data.intervals[date][hour],
-        })
-
-      }
-
-    }
-
-
+    this.setData({
+      prevIntervals: this.data.intervals
+    });
 
   },
   /**

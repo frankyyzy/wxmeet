@@ -3,11 +3,8 @@
     "pages/loading/loading",
     "pages/selectTime/selectTime",
     "pages/authorize/authorize",
-    "pages/test/test",
     "pages/createEvent/createEvent",
-    "pages/changeEvent/changeEvent",    
     "pages/profile/profile",
-    "pages/testSwipe/testSwipe",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent"   
   ],

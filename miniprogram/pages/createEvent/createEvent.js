@@ -263,7 +263,7 @@ Page({
   onSubmitTap: function() {
     if(this.data.eventName == ''){
       wx.showToast({
-        title: 'dumb shit',
+        title: '请输入时间名称',
       })
       return
     }
@@ -278,7 +278,7 @@ Page({
     var that = this
     var datesArr = JSON.stringify(that.data.intervals);
     wx.navigateTo({
-      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr
+      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr+'&isCreate='+true
     })
 
     // wx.cloud.callFunction({

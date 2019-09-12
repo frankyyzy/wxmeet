@@ -17,6 +17,7 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+    this.onUpdateEvents()
     this.setData({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent

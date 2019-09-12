@@ -35,9 +35,7 @@
   margin: 30px;
   text-align: center;
 }
-.hori{
-  flex-direction: felx;
-}
+
 .datet{
   width:50%;
 }
@@ -47,7 +45,6 @@
   border-right:0;
   border-bottom: 0;
   width: 98%;
-  height:98%;
   margin-left: 1%;
 }
 .title{
@@ -78,10 +75,4 @@
 .td1{
   width:49%;
 }
-/* .tdblwhite{
-  background-color:#fff;
-} */
-/* .tdblgreen{
-  background-color:#52962a;
-} */
 

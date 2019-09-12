@@ -25,18 +25,18 @@
          traceUser: true,
        })
      }
-     if (options.query.share) {
-       if (that.globalData.user === options.query.sponserId) {
-         that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
-       } else {
-         that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime //  otherwise go to selectTime
-       }
-     }
      //perform login and authorization
      wx.cloud.callFunction({
        name: 'login',
        complete: res => {
          that.globalData.user = res.result.openId
+         if (options.query.share) {
+           if (that.globalData.user === options.query.sponserId) {
+             that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+           } else {
+             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime //  otherwise go to selectTime
+           }
+         }
          that.setSponsorAndAttendEvent()
        }
      })
@@ -46,14 +46,11 @@
 
    // implement redirection for reopening the app
    onShow: function(options) {
-    //  console.log(options)
      if (this.globalData.userSet) {
 
        this.setSponsorAndAttendEvent();
 
 
-       console.log(options)
-       console.log(this.globalData)
 
        if (options.query.share) {
          if (this.globalData.user === options.query.sponserId) {
@@ -83,19 +80,11 @@
 
          var AttendEvent = {}
          for (var id in res.data.AttendEvent) {
-
-           console.log(SponsorEvent[id])
            if (!SponsorEvent[id]) {
-             console.log("here")
-             console.log(id)
-             console.log(AttendEvent)
-             console.log(res.data)
              AttendEvent[id] = res.data.AttendEvent[id]
-             console.log("set correct")
            }
 
          }
-         console.log("outa here")
 
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
@@ -107,9 +96,9 @@
                    success: function(res) {
                      that.updateUser(res.userInfo)
                      that.globalData.userSet = true
-                    //  wx.redirectTo({
-                    //    url: that.globalData.url
-                    //  })
+                     wx.redirectTo({
+                       url: that.globalData.url
+                     })
                    },
                    fail: function() {
                      console.log("fail")
@@ -138,7 +127,6 @@
          id: that.globalData.user,
        },
        success: res => {
-         console.log('创建用户成功！')
          wx.redirectTo({
            url: '/pages/authorize/authorize'
          })
@@ -154,7 +142,6 @@
          profilePic: info.avatarUrl,
        },
        success: res => {
-         console.log('更新用户数据成功！')
        }
      })
    }

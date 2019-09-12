@@ -45,7 +45,6 @@ Page({
         profilePic: info.avatarUrl,
       },
       success: res => {
-        console.log('更新用户数据成功！')
       }
     })
   }

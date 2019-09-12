@@ -16,8 +16,8 @@ Page({
     intervals: [],
     eventId: '',
     user: '',
-    value: '',
-    size: -1
+    eventName: '',
+    size: 0
   },
 
   /**
@@ -50,6 +50,7 @@ Page({
     if (date == '' || date <= 0) {
       return;
     }
+    console.log(this.data.size)
     var index = e.currentTarget.dataset.key;
     var item = e.currentTarget.dataset.keyitem;
     var month = e.currentTarget.dataset.month;
@@ -70,6 +71,12 @@ Page({
     if (that[index][item].state == true) {
       that[index][item].state = false;
     } else if (that[index][item].state == false) {
+      if (this.data.size >= 7) {
+        wx.showToast({
+          title: '请选择小于7天日期',
+        })
+        return
+      }
       that[index][item].state = true;
     }
 
@@ -99,6 +106,12 @@ Page({
         }
       }
       if (check) {
+        if (this.data.size >= 7) {
+          wx.showToast({
+            title: '请选择小于7天日期',
+          })
+          return
+        }
         let once = true
         let end = 0
         let length = tInterv.length;
@@ -170,11 +183,9 @@ Page({
         }
       }
     }
-    console.log(size)
     //console.log(tInterv)
     //console.log(nInterv)
     interv = tInterv.concat(nInterv)
-    console.log(interv)
     //console.log(that);
     //根据月份设置数据
     if (month == 'thisMonth') {
@@ -197,7 +208,7 @@ Page({
 
   bindinput(event) {
     this.setData({
-      value: event.detail.value
+      eventName: event.detail.value
     })
   },
   //根据指定年月获得当月天数
@@ -263,9 +274,9 @@ Page({
     return monthArray;
   },
   onSubmitTap: function() {
-    if(this.data.value == ''){
+    if(this.data.eventName == ''){
       wx.showToast({
-        title: 'dumb shit',
+        title: '请输入时间名称',
       })
       return
     }
@@ -277,41 +288,40 @@ Page({
       })
       return
     }
-    wx.showLoading({
-      title: '',
-    })
     var that = this
-    var createTime = new Date().getTime()
-    wx.cloud.callFunction({
-      name: 'creatEvent',
-      data: {
-        id: that.data.user,
-        name: that.data.value,
-        dates: that.data.intervals,
-        createDate: createTime,
-      },
-      success: res => {
-        console.log('创建事件成功')
-        that.setData({
-          eventId: res.result._id
-        })
-
-        wx.cloud.callFunction({
-          name: 'updateSponsorEvent',
-          data: {
-            id: that.data.user,
-            eventId: res.result._id,
-            eventName: that.data.value,
-            createTime: createTime
-          },
-          success: res => {
-            console.log('新增用户创建事件！')
-          }
-        })
-        wx.redirectTo({
-          url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
-        })
-      }
+    var datesArr = JSON.stringify(that.data.intervals);
+    wx.navigateTo({
+      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr+'&isCreate='+true
     })
+
+    // wx.cloud.callFunction({
+    //   name: 'creatEvent',
+    //   data: {
+    //     id: that.data.user,
+    //     name: that.data.value,
+    //     dates: that.data.intervals,
+    //     createDate: createTime,
+    //   },
+    //   success: res => {
+    //     that.setData({
+    //       eventId: res.result._id
+    //     })
+
+    //     wx.cloud.callFunction({
+    //       name: 'updateSponsorEvent',
+    //       data: {
+    //         id: that.data.user,
+    //         eventId: res.result._id,
+    //         eventName: that.data.value,
+    //         createTime: createTime
+    //       },
+    //       success: res => {
+    //       }
+    //     })
+    //     wx.redirectTo({
+    //       url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
+    //     })
+    //   }
+    // })
   },
 })

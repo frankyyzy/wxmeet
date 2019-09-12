@@ -1,12 +1,10 @@
 {
   "pages": [
-    "pages/profile/profile",
+    "pages/loading/loading",
     "pages/selectTime/selectTime",
     "pages/authorize/authorize",
-    "pages/loading/loading",
     "pages/createEvent/createEvent",
-    "pages/test/test",
-    "pages/testSwipe/testSwipe",
+    "pages/profile/profile",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent"   
   ],

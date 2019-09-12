@@ -8,21 +8,16 @@ Page({
   data: {
     user: '',
     dates: [],
-    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
     totaldate: 3,
-    start: -1,
-    end: -1,
-    edit: false,
+    isCreate: false,
     intervals: [],
     prevIntervals: [], // array to store intervals before this touch operation
     toSet: false,
-    readnow: true,
     eventId: '',
     eventName: '',
     createTime: -1,
     windowHeight: 0,
     windowWidtht: 0,
-    buttom: false,
     timer: null,
     startHour: null,
     startDate: null,
@@ -33,48 +28,77 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+    console.log(options)
     let that = this
+    var datesTitle = ["小时"]
+    datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
     that.setData({
-      eventId: options.eventId,
       eventName: options.eventName,
-      createTime: options.createTime,
-      user: app.globalData.user
+      dates: datesTitle,
+      totaldate: datesTitle.length,
+      user: app.globalData.user,
     })
-    const db = wx.cloud.database()
-    const _ = db.command
-    db.collection('events').where({
-      _id: that.data.eventId
-    }).get({
-      success: function(res) {
-        var passdates = res.data[0].dates;
-        var curdates = ["小时"]
-        var datechoose = [0]
-        for (let i = 0; i < passdates.length; i++) {
-          curdates.push(passdates[i])
-          datechoose.push(i + 1)
-        }
-        var total = curdates.length
-        that.setData({
-          dates: curdates,
-          totaldate: total,
-          datechoose: datechoose
-        })
-        var intervals = [];
-        for (var i = 0; i < that.data.totaldate - 1; i++) {
-          var interves = [];
-          for (var j = 0; j < 24; j++) {
-            interves.push(false);
-          }
-          intervals.push(interves);
-          that.setData({
-            intervals: intervals
-          })
-        }
-
-
+    var intervals = [];
+    for (var i = 0; i < that.data.totaldate - 1; i++) {
+      var interves = [];
+      for (var j = 0; j < 24; j++) {
+        interves.push(false);
       }
+      intervals.push(interves);
+    }
+    // if creating new event
+    if (options.isCreate) {
+      that.data.isCreate = options.isCreate
+      that.setData({
+        intervals: intervals
+      })
+    }
+    //if editing user intervals
+    else {
+      that.setData({
+        intervals: (options.userIntervals) ? JSON.parse(options.userIntervals) : intervals,
+        eventId: options.eventId,
+        createTime: options.createDate
+      })
+      
+    }
+    that.data.dates.splice(0, 1)
 
-    })
+    // const db = wx.cloud.database()
+    // const _ = db.command
+    // db.collection('events').where({
+    //   _id: that.data.eventId
+    // }).get({
+    //   success: function(res) {
+    //     var passdates = res.data[0].dates;
+    //     var curdates = ["小时"]
+    //     var datechoose = [0]
+    //     for (let i = 0; i < passdates.length; i++) {
+    //       curdates.push(passdates[i])
+    //       datechoose.push(i + 1)
+    //     }
+    //     var total = curdates.length
+    //     that.setData({
+    //       dates: curdates,
+    //       totaldate: total,
+    //       datechoose: datechoose
+    //     })
+    //     var intervals = [];
+    //     for (var i = 0; i < that.data.totaldate - 1; i++) {
+    //       var interves = [];
+    //       for (var j = 0; j < 24; j++) {
+    //         interves.push(false);
+    //       }
+    //       intervals.push(interves);
+    //       that.setData({
+    //         intervals: intervals
+    //       })
+    //     }
+
+
+    //   }
+
+    // })
 
 
 
@@ -82,7 +106,7 @@ Page({
     // set the height of each row 
     wx.getSystemInfo({
       success: function(res) {
-        
+
         // 高度,宽度 单位为px
         that.setData({
           windowHeight: res.windowHeight,
@@ -202,7 +226,9 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {},
+  onShow: function() {
+
+  },
 
   /**
    * Lifecycle function--Called when page hide
@@ -238,15 +264,67 @@ Page({
   onShareAppMessage: function() {
 
   },
-
   onSubmitTap: function() {
+    wx.showLoading({})
+    var that = this
+    if (that.data.isCreate) {
+      var createTime = new Date().getTime()
+      wx.cloud.callFunction({
+        name: 'creatEvent',
+        data: {
+          id: that.data.user,
+          name: that.data.eventName,
+          dates: that.data.dates,
+          createDate: createTime,
+        },
+        success: res => {
+          that.setData({
+            eventId: res.result._id
+          })
+          that.updateAttendeeOfEvent(createTime)
+        }
+      })
+    }
+    else{
+      var that = this
+      wx.cloud.callFunction({
+        name: 'updateAttendEvent',
+        data: {
+          id: that.data.user,
+          eventId: that.data.eventId,
+          eventName: that.data.eventName,
+          createTime: that.data.createTime
+        },
+        success: res => {
+          console.log('新增用户参与事件！')
+          wx.cloud.callFunction({
+            name: 'testupdate',
+            data: {
+              eventId: that.data.eventId,
+              id: that.data.user,
+              dates: that.data.dates,
+              times: that.data.intervals,
+            },
+            success: res => {
+              // console.log(that.data.eventId)
+              wx.navigateBack({
+                delta: 1
+              })
+              // wx.navigateTo({
+              //   url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+              // })
+            }
+          })
+        }
+      })
+    }
+  },
+  updateAttendeeOfEvent: function(createTime) {
     wx.showLoading({
       title: '',
     })
-    this.updateUser()
+    this.updateSponsorAndAttendee(createTime)
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
     wx.cloud.callFunction({
       name: 'testupdate',
       data: {
@@ -257,26 +335,62 @@ Page({
       },
       success: res => {
         // console.log(that.data.eventId)
-        console.log('更新数据成功')
-        wx.redirectTo({
+        wx.navigateBack({
+          delta: 2
+        })
+        wx.navigateTo({
           url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
         })
       }
     })
   },
+  // onSubmitTap1: function() {
+  //   wx.showLoading({
+  //     title: '',
+  //   })
+  //   this.updateUser()
+  //   var that = this
+  //   const db = wx.cloud.database()
+  //   const _ = db.command
+  //   wx.cloud.callFunction({
+  //     name: 'testupdate',
+  //     data: {
+  //       eventId: that.data.eventId,
+  //       id: that.data.user,
+  //       dates: that.data.dates,
+  //       times: that.data.intervals,
+  //     },
+  //     success: res => {
+  //       // console.log(that.data.eventId)
+  //       wx.redirectTo({
+  //         url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+  //       })
+  //     }
+  //   })
+  // },
 
-  updateUser: function() {
+  updateSponsorAndAttendee: function(createTime) {
     var that = this
     wx.cloud.callFunction({
-      name: 'updateAttendEvent',
+      name: 'updateSponsorEvent',
       data: {
         id: that.data.user,
         eventId: that.data.eventId,
         eventName: that.data.eventName,
-        createTime: that.data.createTime
+        createTime: createTime
       },
       success: res => {
-        console.log('新增用户参与事件！')
+        console.log('新增用户创建事件！')
+        wx.cloud.callFunction({
+          name: 'updateAttendEvent',
+          data: {
+            id: that.data.user,
+            eventId: that.data.eventId,
+            eventName: that.data.eventName,
+            createTime: createTime
+          },
+          success: res => {}
+        })
       }
     })
   },
@@ -296,8 +410,6 @@ Page({
   testposition: function(e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
-    console.log(sx)
-    console.log(sy)
   }
 
 })

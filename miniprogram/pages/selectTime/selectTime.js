@@ -46,33 +46,31 @@ Page({
       _id: that.data.eventId
     }).get({
       success: function(res) {
-        var passdates = res.data[0].dates
+        var passdates = res.data[0].dates;
         var curdates = ["小时"]
-        var datechoos = [0]
+        var datechoose = [0]
         for (let i = 0; i < passdates.length; i++) {
           curdates.push(passdates[i])
-          datechoos.push(i + 1)
+          datechoose.push(i + 1)
         }
         var total = curdates.length
         that.setData({
           dates: curdates,
           totaldate: total,
-          datechoose: datechoos
+          datechoose: datechoose
         })
-        var intervalss = [];
+        var intervals = [];
         for (var i = 0; i < that.data.totaldate - 1; i++) {
           var interves = [];
           for (var j = 0; j < 24; j++) {
             interves.push(false);
           }
-          intervalss.push(interves);
+          intervals.push(interves);
           that.setData({
-            intervals: intervalss
+            intervals: intervals
           })
         }
 
-        console.debug("finishing onLoad");
-        console.log(that.data.intervals);
 
       }
 

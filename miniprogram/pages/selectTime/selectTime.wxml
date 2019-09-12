@@ -2,6 +2,7 @@
 
 
   <view class="table">
+
     <view class="title">
       <block wx:if="{{totaldate>=1}}">
         <block class="tr" wx:for="{{totaldate}}" wx:for-item="i">
@@ -11,12 +12,12 @@
     </view>
 
     <view class="tr" wx:for="{{24}}" wx:for-item="i" style='height: {{rowHeight}}px;'>
-      <view class="td td1">{{i}}</view>
+      <view class="td td1">{{i}} - {{i+1}} </view>
       <block wx:for="{{totaldate-1}}" wx:for-item="j">
 
 
 
-        <view class='td td1 ' id="{{j}}{{i}}" bindtouchstart="blockTouchStart" bindtouchend="blockTouchEnd" bindtouchmove="blockTouchMove" style='background-color:{{intervals[j][i] == false ? "#fff;" : "#52962a"}}'>
+        <view class='td td1 ' id="{{j}}{{i}}" bindtouchstart="blockTouchStart" bindtouchend="blockTouchEnd" bindtouchmove="blockTouchMove" bindtap = "mytap" style='background-color:{{intervals[j][i] == false ? "#fff;" : "#52962a"}}'>
         </view>
 
 

@@ -80,11 +80,12 @@ Page({
       let curr = 0;
       //补0
       if (selected < 10) {
-        curr = currMonth + "0" + selected.toString(10);
+        curr = currMonth + "/0" + selected.toString(10);
       } else {
-        curr = currMonth + selected.toString(10);
+        curr = currMonth + "/" + selected.toString(10);
       }
-      //
+      
+      
       for (let i = 0; i < tLength; i++) {
         if (tInterv[i] === curr) {
           check = false
@@ -92,8 +93,8 @@ Page({
           if (index > -1) {
             tInterv.splice(index, 1)
           }
-          //var del = tInterv.splice(i, i + 1);
-          //console.log(del)
+          
+
           size = size-1;
         }
       }

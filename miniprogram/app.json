@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/selectTime/selectTime",
     "pages/profile/profile",
+    "pages/selectTime/selectTime",
     "pages/authorize/authorize",
     "pages/loading/loading",
     "pages/createEvent/createEvent",

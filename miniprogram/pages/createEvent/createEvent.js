@@ -17,7 +17,7 @@ Page({
     eventId: '',
     user: '',
     eventName: '',
-    size: -1
+    size: 0
   },
 
   /**
@@ -50,6 +50,7 @@ Page({
     if (date == '' || date <= 0) {
       return;
     }
+    console.log(this.data.size)
     var index = e.currentTarget.dataset.key;
     var item = e.currentTarget.dataset.keyitem;
     var month = e.currentTarget.dataset.month;
@@ -70,6 +71,12 @@ Page({
     if (that[index][item].state == true) {
       that[index][item].state = false;
     } else if (that[index][item].state == false) {
+      if (this.data.size >= 7) {
+        wx.showToast({
+          title: '请选择小于7天日期',
+        })
+        return
+      }
       that[index][item].state = true;
     }
 
@@ -99,6 +106,12 @@ Page({
         }
       }
       if (check) {
+        if (this.data.size >= 7) {
+          wx.showToast({
+            title: '请选择小于7天日期',
+          })
+          return
+        }
         let once = true
         let end = 0
         let length = tInterv.length;

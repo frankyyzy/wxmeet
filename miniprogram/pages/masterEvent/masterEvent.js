@@ -26,7 +26,7 @@ Page({
     eventName: "",
     eventId: '',
     sponser: "",
-    createDate: -1,
+    createDate: -1
   },
 
 
@@ -37,47 +37,10 @@ Page({
     wx.showLoading({
       title: '',
     })
-
-    // if (!wx.cloud) {
-    //   wx.redirectTo({
-    //     url: '../chooseLib/chooseLib',
-    //   })
-    //   return
-    // }
-
     var that = this
     this.setData({
       eventId: options.eventId,
     })
-    wx.cloud.callFunction({
-      name: 'getEventTime',
-      data: {
-        eventID: that.data.eventId,
-      },
-      success: function(res) {
-       
-        
-        
-        that.setData({
-          dates: res.result.data[0].dates,
-          Attendee: res.result.data[0].Attendee,
-          totaldate: res.result.data[0].dates.length,
-          eventName: res.result.data[0].eventName,
-          sponser: res.result.data[0].Sponser,
-          createDate: res.result.data[0].createDate,
-        });
-
-        that.adjustTimeTable()
-        wx.hideLoading()
-
-
-      },
-      fail: function(res) {
-
-        console.log("error")
-      }
-    })
-
   },
 
   setcolor: function(NumOfPeople) {
@@ -105,8 +68,8 @@ Page({
   },
   onShareAppMessage: function() {
     let that = this
-    return({
-      title: '分享'+ that.data.eventName,
+    return ({
+      title: '分享' + that.data.eventName,
       path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate,
     })
   },
@@ -114,19 +77,17 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-   
+
 
     var that = this
-    this.adjustTimeTable()
+    this.updateEventFromDB()
 
 
     this.setData({
       timer: setInterval(function() {
-        wx.showLoading({
-          title: '',
-        })
+        wx.showLoading()
         //db call?
-        that.adjustTimeTable()
+        that.updateEventFromDB()
         wx.hideLoading()
       }, 10000)
     })
@@ -143,9 +104,40 @@ Page({
       times: arr
     })
   },
+  updateEventFromDB: function(){
+    var that = this
+    wx.cloud.callFunction({
+      name: 'getEventTime',
+      data: {
+        eventID: that.data.eventId,
+      },
+      success: function (res) {
+
+
+        let user = app.globalData.user
+        that.setData({
+          dates: res.result.data[0].dates,
+          Attendee: res.result.data[0].Attendee,
+          totaldate: res.result.data[0].dates.length,
+          eventName: res.result.data[0].eventName,
+          sponser: res.result.data[0].Sponser,
+          createDate: res.result.data[0].createDate,
+
+        });
+        that.adjustTimeTable()
+        wx.hideLoading()
+
+
+      },
+      fail: function (res) {
+
+        console.log("error")
+      }
+    })
+  },
 
   adjustTimeTable: function() {
-    
+
 
     var attendeeArr = this.data.Attendee;
 
@@ -267,8 +259,10 @@ Page({
   onEditTap: function() {
     //var edit = true
     var that = this
+    let user = app.globalData.user
+    let userIntervals = that.data.Attendee[user]
     wx.navigateTo({
-      url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.eventName + '&createTime=' + that.data.createDate,
+      url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.eventName + '&datesArr=' + JSON.stringify(that.data.dates) + '&userIntervals=' + JSON.stringify(userIntervals) + '&createDate='+ that.data.createDate,
     })
   },
   onEndTap: function() {

@@ -28,33 +28,42 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+    console.log(options)
     let that = this
     var datesTitle = ["小时"]
-    if (options.isCreate) {
-      datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
-      console.log(datesTitle);
-      that.setData({
-        eventName: options.eventName,
-        dates: datesTitle,
-        totaldate: datesTitle.length,
-        user: app.globalData.user,
-        isCreate: options.isCreate
-      })
-      var intervals = [];
-      for (var i = 0; i < that.data.totaldate - 1; i++) {
-        var interves = [];
-        for (var j = 0; j < 24; j++) {
-          interves.push(false);
-        }
-        intervals.push(interves);
+    datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
+    that.setData({
+      eventName: options.eventName,
+      dates: datesTitle,
+      totaldate: datesTitle.length,
+      user: app.globalData.user,
+    })
+    var intervals = [];
+    for (var i = 0; i < that.data.totaldate - 1; i++) {
+      var interves = [];
+      for (var j = 0; j < 24; j++) {
+        interves.push(false);
       }
+      intervals.push(interves);
+    }
+    // if creating new event
+    if (options.isCreate) {
+      that.data.isCreate = options.isCreate
       that.setData({
         intervals: intervals
       })
     }
-    else{
-      console.log("not creating event")
+    //if editing user intervals
+    else {
+      that.setData({
+        intervals: (options.userIntervals) ? JSON.parse(options.userIntervals) : intervals,
+        eventId: options.eventId,
+        createTime: options.createDate
+      })
+      
     }
+    that.data.dates.splice(0, 1)
+
     // const db = wx.cloud.database()
     // const _ = db.command
     // db.collection('events').where({
@@ -256,37 +265,66 @@ Page({
 
   },
   onSubmitTap: function() {
+    wx.showLoading({})
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
-    var createTime = new Date().getTime()
-    wx.cloud.callFunction({
-      name: 'creatEvent',
-      data: {
-        id: that.data.user,
-        name: that.data.eventName,
-        dates: that.data.dates,
-        createDate: createTime,
-      },
-      success: res => {
-        that.setData({
-          eventId: res.result._id
-        })
-        that.updateAttendeeOfEvent(createTime)
-      }
-    })
+    if (that.data.isCreate) {
+      var createTime = new Date().getTime()
+      wx.cloud.callFunction({
+        name: 'creatEvent',
+        data: {
+          id: that.data.user,
+          name: that.data.eventName,
+          dates: that.data.dates,
+          createDate: createTime,
+        },
+        success: res => {
+          that.setData({
+            eventId: res.result._id
+          })
+          that.updateAttendeeOfEvent(createTime)
+        }
+      })
+    }
+    else{
+      var that = this
+      wx.cloud.callFunction({
+        name: 'updateAttendEvent',
+        data: {
+          id: that.data.user,
+          eventId: that.data.eventId,
+          eventName: that.data.eventName,
+          createTime: that.data.createTime
+        },
+        success: res => {
+          console.log('新增用户参与事件！')
+          wx.cloud.callFunction({
+            name: 'testupdate',
+            data: {
+              eventId: that.data.eventId,
+              id: that.data.user,
+              dates: that.data.dates,
+              times: that.data.intervals,
+            },
+            success: res => {
+              // console.log(that.data.eventId)
+              wx.navigateBack({
+                delta: 1
+              })
+              // wx.navigateTo({
+              //   url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+              // })
+            }
+          })
+        }
+      })
+    }
   },
   updateAttendeeOfEvent: function(createTime) {
     wx.showLoading({
       title: '',
     })
-    wx.navigateBack({
-      delta:2
-    })
     this.updateSponsorAndAttendee(createTime)
     var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
     wx.cloud.callFunction({
       name: 'testupdate',
       data: {
@@ -297,6 +335,9 @@ Page({
       },
       success: res => {
         // console.log(that.data.eventId)
+        wx.navigateBack({
+          delta: 2
+        })
         wx.navigateTo({
           url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
         })

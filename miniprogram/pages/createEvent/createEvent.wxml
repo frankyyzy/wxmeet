@@ -68,4 +68,5 @@
     </swiper-item>
   </swiper>
 </scroll-view>
+
 <button type="primary" bindtap='onSubmitTap'>确认提交</button>

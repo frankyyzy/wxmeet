@@ -26,7 +26,8 @@ Page({
     eventName: "",
     eventId: '',
     sponser: "",
-    createDate: -1
+    createDate: -1,
+    rowHeight: 30 // in px
   },
 
 
@@ -41,6 +42,19 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
+    
+    // set the height of each row 
+    wx.getSystemInfo({
+      success: function (res) {
+
+        // 高度,宽度 单位为px
+        that.setData({
+          rowHeight: (res.windowHeight / 30)
+        })
+      }
+    });
+
+
   },
 
   setcolor: function(NumOfPeople) {

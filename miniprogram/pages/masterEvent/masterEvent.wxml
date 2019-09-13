@@ -1,7 +1,6 @@
-<!--pages/group/group.wxml-->
-
-
-<view class="title">{{eventName}}</view>
+<view class="title">
+  {{eventName}}
+</view>
 
 <view class="table">
   <view class="myToast" hidden="{{nullHouse}}">{{display}}
@@ -10,16 +9,18 @@
     </view>
   </view>
 
-  <view class="tr">
-    <view class="th"> 小时</view>
+
+  <view class="tr" style='height: {{rowHeight}}px;'>
+    <view class="th td1"> 小时</view>
     <block wx:for="{{totaldate}}" wx:for-item="i">
-      <view class="th"> {{dates[i]}}</view>
+      <view class="th td1"> {{dates[i]}}</view>
     </block>
   </view>
 
 
-  <view class="tr" wx:for="{{24}}" wx:for-item="i">
-    <view class="td">{{i}}</view>
+  <view class="tr" style='height: {{rowHeight}}px;' wx:for="{{24}}" wx:for-item="i">
+    <view class="td td1">{{i}} - {{i+1}}</view>
+
     <block wx:for="{{totaldate}}" wx:for-item="j">
       <view class="td" style="background: {{color[i][j]}};" bindtouchstart='onTouchStart' bindtouchend='onTouchEnd' data-i="{{i}}" data-j="{{j}}">
         {{times[i][j]}}
@@ -28,6 +29,7 @@
   </view>
 </view>
 
-<button type="primary" bindtap='onBackHomeTap'>回到首页</button>
-<button type="primary" bindtap='onEditTap'>修改</button>
-<!-- <button type="primary" bindtap='onEndTap'>结束</button> -->
+<view class="btns">
+  <button type="primary" bindtap='onBackHomeTap'>回到首页</button>
+  <button type="primary" bindtap='onEditTap'>修改</button>
+</view>

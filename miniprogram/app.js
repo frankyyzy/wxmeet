@@ -14,7 +14,7 @@
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-    //  wx.showLoading()
+    wx.showLoading();
     var that = this
      //cloud ability init
      if (!wx.cloud) {
@@ -37,7 +37,7 @@
              that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime //  otherwise go to selectTime
            }
          }
-         that.setSponsorAndAttendEvent()
+         that.setSponsorAndAttendEvent();
        }
      })
 
@@ -49,9 +49,6 @@
      if (this.globalData.userSet) {
 
        this.setSponsorAndAttendEvent();
-
-
-
        if (options.query.share) {
          if (this.globalData.user === options.query.sponserId) {
            this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId

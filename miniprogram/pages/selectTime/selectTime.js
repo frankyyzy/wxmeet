@@ -21,7 +21,7 @@ Page({
     timer: null,
     startHour: null,
     startDate: null,
-    rowHeight: 30 // in px, hardcoded for now
+    rowHeight: 30 // in px
   },
 
   /**
@@ -62,43 +62,7 @@ Page({
       })
       
     }
-    that.data.dates.splice(0, 1)
-
-    // const db = wx.cloud.database()
-    // const _ = db.command
-    // db.collection('events').where({
-    //   _id: that.data.eventId
-    // }).get({
-    //   success: function(res) {
-    //     var passdates = res.data[0].dates;
-    //     var curdates = ["小时"]
-    //     var datechoose = [0]
-    //     for (let i = 0; i < passdates.length; i++) {
-    //       curdates.push(passdates[i])
-    //       datechoose.push(i + 1)
-    //     }
-    //     var total = curdates.length
-    //     that.setData({
-    //       dates: curdates,
-    //       totaldate: total,
-    //       datechoose: datechoose
-    //     })
-    //     var intervals = [];
-    //     for (var i = 0; i < that.data.totaldate - 1; i++) {
-    //       var interves = [];
-    //       for (var j = 0; j < 24; j++) {
-    //         interves.push(false);
-    //       }
-    //       intervals.push(interves);
-    //       that.setData({
-    //         intervals: intervals
-    //       })
-    //     }
-
-
-    //   }
-
-    // })
+    that.data.dates.splice(0, 1);
 
 
 
@@ -112,9 +76,7 @@ Page({
           windowHeight: res.windowHeight,
           windowWidth: res.windowWidth,
           rowHeight: (res.windowHeight / 30)
-          // rowHeight: 30
         })
-        console.log(that.data.rowHeight)
 
       }
     })
@@ -265,10 +227,10 @@ Page({
 
   },
   onSubmitTap: function() {
-    wx.showLoading({})
-    var that = this
+    wx.showLoading({});
+    var that = this;
     if (that.data.isCreate) {
-      var createTime = new Date().getTime()
+      var createTime = new Date().getTime();
       wx.cloud.callFunction({
         name: 'creatEvent',
         data: {
@@ -284,8 +246,7 @@ Page({
           that.updateAttendeeOfEvent(createTime)
         }
       })
-    }
-    else{
+    } else {
       var that = this
       wx.cloud.callFunction({
         name: 'updateAttendEvent',
@@ -306,19 +267,17 @@ Page({
               times: that.data.intervals,
             },
             success: res => {
-              // console.log(that.data.eventId)
               wx.navigateBack({
                 delta: 1
-              })
-              // wx.navigateTo({
-              //   url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
-              // })
+              })          
             }
           })
         }
       })
     }
   },
+
+
   updateAttendeeOfEvent: function(createTime) {
     wx.showLoading({
       title: '',
@@ -344,30 +303,7 @@ Page({
       }
     })
   },
-  // onSubmitTap1: function() {
-  //   wx.showLoading({
-  //     title: '',
-  //   })
-  //   this.updateUser()
-  //   var that = this
-  //   const db = wx.cloud.database()
-  //   const _ = db.command
-  //   wx.cloud.callFunction({
-  //     name: 'testupdate',
-  //     data: {
-  //       eventId: that.data.eventId,
-  //       id: that.data.user,
-  //       dates: that.data.dates,
-  //       times: that.data.intervals,
-  //     },
-  //     success: res => {
-  //       // console.log(that.data.eventId)
-  //       wx.redirectTo({
-  //         url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
-  //       })
-  //     }
-  //   })
-  // },
+
 
   updateSponsorAndAttendee: function(createTime) {
     var that = this

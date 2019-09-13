@@ -54,6 +54,7 @@
   display: flex;
   justify-content: space-between;
 }
+
 .th{
   padding: 4.9px;
   border-bottom: 1px solid #dadada;
@@ -72,7 +73,12 @@
   font-size: 20rpx;
   color: #ec9480;
 }
+
 .td1{
   width:49%;
+}
+
+button {
+  margin: 1em 2em;
 }
 

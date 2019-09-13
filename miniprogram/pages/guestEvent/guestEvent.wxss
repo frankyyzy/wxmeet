@@ -65,3 +65,7 @@
   width: 100rpx;
   height: 100rpx;
 }
+
+button {
+  margin: 1em 2em;
+}

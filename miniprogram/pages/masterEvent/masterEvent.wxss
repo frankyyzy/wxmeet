@@ -24,24 +24,26 @@
 }
 
 .th{
-  padding: 10px;
-  flex: 1 1 0;
+  padding: 4.9px;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
   background-color: #b66242;
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #330e0e;
-  display:flex;
 }
 
-.td{
-  padding: 10px;
+.td {
   flex: 1 1 0;
   border-bottom: 1px solid #dadada;
   border-right: 1px solid #dadada;
   text-align: center;
   font-size: 28rpx;
+  
+}
+
+.td1 {
+  width: 49%;
 }
 
 
@@ -64,4 +66,14 @@
 .profilepic{
   width: 100rpx;
   height: 100rpx;
+}
+
+button {
+  margin: 1em 2em;
+  width: 100px;
+}
+
+.btns {
+  display: flex;
+  justify-content: space-around;
 }

@@ -73,6 +73,7 @@ Page({
     } else if (that[index][item].state == false) {
       if (this.data.size >= 7) {
         wx.showToast({
+          icon: 'none',
           title: '请选择小于7天日期',
         })
         return
@@ -183,8 +184,7 @@ Page({
         }
       }
     }
-    //console.log(tInterv)
-    //console.log(nInterv)
+
     interv = tInterv.concat(nInterv)
     //console.log(that);
     //根据月份设置数据
@@ -276,16 +276,22 @@ Page({
   onSubmitTap: function() {
     if(this.data.eventName == ''){
       wx.showToast({
-        title: '请输入时间名称',
+        icon: 'none',
+        title: '请输入事件名称',
+        duration: 2000
       })
       return
     }
-    // test
+    
+    // TODO 优化 ?
     if(this.data.size >=7){
       wx.showToast({
-        title:'more than 7',
+        icon: 'none',
+        title:'请选择小于7天日期',
         duration: 2000
       })
+
+
       return
     }
     var that = this
@@ -294,34 +300,5 @@ Page({
       url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr+'&isCreate='+true
     })
 
-    // wx.cloud.callFunction({
-    //   name: 'creatEvent',
-    //   data: {
-    //     id: that.data.user,
-    //     name: that.data.value,
-    //     dates: that.data.intervals,
-    //     createDate: createTime,
-    //   },
-    //   success: res => {
-    //     that.setData({
-    //       eventId: res.result._id
-    //     })
-
-    //     wx.cloud.callFunction({
-    //       name: 'updateSponsorEvent',
-    //       data: {
-    //         id: that.data.user,
-    //         eventId: res.result._id,
-    //         eventName: that.data.value,
-    //         createTime: createTime
-    //       },
-    //       success: res => {
-    //       }
-    //     })
-    //     wx.redirectTo({
-    //       url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.value + '&createTime=' + createTime,
-    //     })
-    //   }
-    // })
   },
 })

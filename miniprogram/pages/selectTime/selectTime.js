@@ -28,7 +28,6 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
-    console.log(options)
     let that = this
     var datesTitle = ["小时"]
     datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
@@ -58,7 +57,7 @@ Page({
       that.setData({
         intervals: (options.userIntervals) ? JSON.parse(options.userIntervals) : intervals,
         eventId: options.eventId,
-        createTime: options.createDate
+        createTime: parseInt(options.createDate)
       })
       
     }

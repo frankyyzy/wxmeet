@@ -99,7 +99,7 @@ Page({
     })
   },
 
-  onLongPress: function(event) {
+  onCreateLongPress: function(event) {
     let that = this
     let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
@@ -127,6 +127,44 @@ Page({
             }
           })
         } else {}
+      }
+    })
+  },
+  onAttendLongPress: function (event) {
+    let that = this
+    let id = event.currentTarget.id
+    var AttendEvent = this.data.AttendEvent
+
+    wx.showModal({
+      title: '提示',
+      content: '确定要取消加入此事件吗？',
+      success: function (res) {
+        if (res.confirm) {
+          delete AttendEvent[id]
+          that.setData({
+            AttendEvent: AttendEvent
+          })
+          wx.cloud.callFunction({
+            name: 'deleteAttendEvent',
+            data: {
+              eventId:(id),
+              userId: app.globalData.user
+            }
+          })
+          // db.collection('events').doc(id).get({
+          //   success: function (res) {
+          //     var Attendeelist = res.data.Attendee
+          //     Attendeelist[res.data.Sponser] = {}
+          //     wx.cloud.callFunction({
+          //       name: 'deleteEventUser',
+          //       data: {
+          //         eventId: (id),
+          //         Attendee: Attendeelist
+          //       }
+          //     })
+          //   }
+          // })
+        } else { }
       }
     })
   },

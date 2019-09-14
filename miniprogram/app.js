@@ -14,8 +14,8 @@
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-    wx.showLoading();
-    var that = this
+     wx.showLoading();
+     var that = this
      //cloud ability init
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -57,10 +57,10 @@
            that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime
 
          }
-         wx.redirectTo({
-           url: this.globalData.url
-         })
        }
+       wx.redirectTo({
+         url: this.globalData.url
+       })
      }
    },
 
@@ -138,8 +138,7 @@
          nickName: info.nickName,
          profilePic: info.avatarUrl,
        },
-       success: res => {
-       }
+       success: res => {}
      })
    }
  })

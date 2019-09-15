@@ -1,22 +1,10 @@
-<view class="section">
-  <view class="section__title">movable-view区域小于movable-area</view>
-  <movable-area style="height: 200px; width: 200px; background: red;">
-    <movable-view style="height: 50px; width: 50px; background: blue;" x="{{x}}" y="{{y}}" direction="all">
-    </movable-view>
-  </movable-area>
-  <view class="btn-area">
-    <button size="mini" bindtap="tap">click me to move to (30px, 30px)</button>
-  </view>
-  <view class="section__title">movable-view区域大于movable-area</view>
-  <movable-area style="height: 100px; width: 100px; background: red;">
-    <movable-view style="height: 200px; width: 200px; background: blue;" direction="all">
-    </movable-view>
-  </movable-area>
-  <view class="section__title">可放缩</view>
-  <movable-area style="height: 1000rpx; width: 1000rpx; background: red;" scale-area>
-    <movable-view style="height: 50px; width: 50px; background: blue;" direction="all" bindchange="onChange" bindscale="onScale" scale scale-min="0.5" scale-max="4" scale-value="1">
-    </movable-view>
-  </movable-area>
+<view class='view'>
+<swiper class='swiper' indicator-active-color="true">
+  <swiper-item>
+    <calendar calendar-style="calendar" cell-size="40" weeks-type="cn" next="{{false}}" prev="{{false}}" header-style="calendar-header" board-style="calendar-board" days-color="{{dayStyle1}}"  binddayClick="dayClick" />
+  </swiper-item>
+  <swiper-item>
+    <calendar calendar-style="calendar" cell-size="40" weeks-type="cn" next="{{false}}" prev="{{false}}" header-style="calendar-header" board-style="calendar-board" days-color="{{dayStyle2}}" month = "{{nextMonth}}" year = "{{nextMonthYear}}" binddayClick="dayClick" />
+  </swiper-item>
+</swiper>
 </view>
-
-<!-- <calendar calendar-style="calendar" cell-size="30" bindnextMonth="next" bindprevMonth="prev" header-style="calendar-header" board-style="calendar-board" days-color="{{dayStyle}}" start-date="{{currentDate}}" binddayClick="dayClick" /> -->

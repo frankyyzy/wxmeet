@@ -4,19 +4,18 @@ Page({
    * 页面的初始数据
    */
   data: {
-    thisYear: '',
-    thisMonth: '',
-    thisMonthArr: [],
-    today: new Date().getDate(),
-    nextYear: '',
-    nextMonth: '',
-    nextMonthArr: [],
-    tIntervals: [],
-    nIntervals: [],
-    intervals: [],
     eventId: '',
     user: '',
     eventName: '',
+    dayStyle1: [{}],
+    dayStyle2: [{}],
+    currDate: 14,
+    currMonth: 9,
+    currMonthYear: 2019,
+    currMonthCopy: [{}],
+    nextMonthCopy: [{}],
+    nextMonthYear: 2019,
+    nextMonth: 10,
     size: 0
   },
 
@@ -28,181 +27,70 @@ Page({
     this.setData({
       user: app.globalData.user
     })
-    //初始化日历数据
-    var nextM_start = new Date(new Date(new Date().toLocaleDateString()).setMonth(new Date().getMonth() + 1)); //下一个月
-    var thisMonthArr = this.getDateArr(new Date());
-    var nextMonthArr = this.getDateArr(nextM_start);
-    var tIntervals = [];
-    var nIntervals = [];
-    var intervals = [];
-    this.setData({
-      thisYear: new Date().getFullYear(),
-      thisMonth: new Date().getMonth() + 1,
-      nextYear: nextM_start.getFullYear(),
-      nextMonth: nextM_start.getMonth() + 1,
-      thisMonthArr: thisMonthArr,
-      nextMonthArr: nextMonthArr
-    })
-  },
-  select_date: function(e) {
-    //如果点击项为空百项目，不继续执行
-    var date = e.currentTarget.dataset.date;
-    if (date == '' || date <= 0) {
-      return;
-    }
-    console.log(this.data.size)
-    var index = e.currentTarget.dataset.key;
-    var item = e.currentTarget.dataset.keyitem;
-    var month = e.currentTarget.dataset.month;
-    var tInterv = this.data.tIntervals;
-    var nInterv = this.data.nIntervals;
-    var interv = this.data.intervals;
-    var currMonth = 0;
-    var size = this.data.size;
-    var thisMonth = new Date().getMonth() + 1;
-    if (month == 'thisMonth') {
-      var that = this.data.thisMonthArr;
-      currMonth = thisMonth;
-    } else {
-      var that = this.data.nextMonthArr;
-      currMonth = thisMonth + 1;
-    }
-    //切换选中状态
-    if (that[index][item].state == true) {
-      that[index][item].state = false;
-    } else if (that[index][item].state == false) {
-      if (this.data.size >= 7) {
-        wx.showToast({
-          icon: 'none',
-          title: '请选择小于7天日期',
+    var initDate = []
+    let date = new Date();
+
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    for (var i = 1; i <= lastDay; i++) {
+      var col = 'LightGray'
+      if (i === date.getDate()) {
+        col = 'white'
+        initDate.push({
+          month: 'current',
+          monthNum: date.getMonth() + 1,
+          day: i,
+          color: col,
+          background: 'DarkGray',
+          selected: false
         })
-        return
+      } else if (i > date.getDate()) {
+        var colorDate = new Date(date.getFullYear(), date.getMonth(), i);
+        if (colorDate.getDay() === 6) col = 'CornflowerBlue'
+        else if (colorDate.getDay() === 0) col = 'LightCoral'
+        else col = 'black'
       }
-      that[index][item].state = true;
+      initDate.push({
+        month: 'current',
+        monthNum: date.getMonth() + 1,
+        day: i,
+        color: col,
+        selected: false
+      })
     }
-
-    if (month == 'thisMonth') {
-      var selected = parseInt(date) + parseInt(item);
-      var check = true
-      let tLength = tInterv.length
-      let curr = 0;
-      //补0
-      if (selected < 10) {
-        curr = currMonth + "/0" + selected.toString(10);
-      } else {
-        curr = currMonth + "/" + selected.toString(10);
-      }
-      
-      
-      for (let i = 0; i < tLength; i++) {
-        if (tInterv[i] === curr) {
-          check = false
-          var index = i
-          if (index > -1) {
-            tInterv.splice(index, 1)
-          }
-          
-
-          size = size-1;
-        }
-      }
-      if (check) {
-        if (this.data.size >= 7) {
-          wx.showToast({
-            title: '请选择小于7天日期',
-          })
-          return
-        }
-        let once = true
-        let end = 0
-        let length = tInterv.length;
-        if (length === 0) {
-          tInterv.push(curr);
-          size = size+1;
-        }
-        for (let i = 0; i < length; i++) {
-          if (once == true) {
-            if (parseInt(tInterv[i]) > parseInt(curr)) {
-              tInterv.splice(i, 0, curr)
-              size = size+1;
-              once = false;
-            }
-            end += 1
-          }
-          if ((end >= length) && once) {
-            tInterv.push(curr)
-            size = size+1;
-            once = true;
-            end = 0
-          }
-        }
-      }
-
+    var initDateNextMonth = []
+    var nextMonthDate = new Date()
+    if (date.getMonth() == 11) {
+      nextMonthDate = new Date(date.getFullYear() + 1, 0)
     } else {
-      var check = true
-      let nLength = nInterv.length
-      var selected = parseInt(date);
-      let curr = 0;
-      if (selected < 10) {
-        curr = currMonth + "0" + selected.toString(10);
-      } else {
-        curr = currMonth + selected.toString(10);
-      }
-      for (let i = 0; i < nLength; i++) {
-        if (nInterv[i] === curr && check) {
-          check = false
-          var index = i
-          if(index > -1){
-            nInterv.splice(index,1)
-          }
-          size =size-1;
-        }
-      }
-      if (check) {
-        let once = true
-        let end = 0
-        let length = nInterv.length;
-        if (length === 0) {
-          nInterv.push(curr);
-          size =size+1;
-        }
-        for (let i = 0; i < length; i++) {
-          if (once == true) {
-            if (parseInt(nInterv[i]) > parseInt(curr)) {
-              nInterv.splice(i, 0, curr)
-              once = false;
-              size=size+1;
-            }
-            end += 1
-          }
-          if ((end >= length) && once) {
-            nInterv.push(curr)
-            once = true;
-            end = 0
-            size=size+1;
-          }
-        }
-      }
+      nextMonthDate = new Date(date.getFullYear(), date.getMonth() + 1)
     }
 
-    interv = tInterv.concat(nInterv)
-    //console.log(that);
-    //根据月份设置数据
-    if (month == 'thisMonth') {
-      this.setData({
-        thisMonthArr: that,
-      });
-    } else {
-      this.setData({
-        nextMonthArr: that,
-      });
-    }
 
+    let nextMonthLastDay = new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth() + 1, 0).getDate()
+    for (var i = 1; i <= nextMonthLastDay; i++) {
+      // if (i === date.getDate()) col = 'red'
+      var colorDate = new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), i);
+      if (colorDate.getDay() === 6) col = 'CornflowerBlue'
+      else if (colorDate.getDay() === 0) col = 'LightCoral'
+      else col = 'black'
+      initDateNextMonth.push({
+        month: 'current',
+        monthNum: nextMonthDate.getMonth() + 1,
+        day: i,
+        color: col,
+        selected: false
+      })
+    }
     this.setData({
-      tIntervals: tInterv,
-      nIntervals: nInterv,
-      intervals: interv,
-      size: size
+      currDate: date.getDate(),
+      currMonth: date.getMonth() + 1,
+      currYear: date.getFullYear(),
+      nextMonthYear: nextMonthDate.getFullYear(),
+      nextMonth: nextMonthDate.getMonth() + 1,
+      dayStyle2: initDateNextMonth,
+      nextMonthCopy: JSON.parse(JSON.stringify(initDateNextMonth)),
+      currMonthCopy: JSON.parse(JSON.stringify(initDate)),
+      dayStyle1: initDate,
     })
   },
 
@@ -212,69 +100,48 @@ Page({
     })
   },
   //根据指定年月获得当月天数
-  mGetDate(year, month) {
-    var d = new Date(year, month, 0);
-    return d.getDate();
-  },
-  //根据指定年月获得当月日历数组
-  getDateArr(date) {
-    //根据指定年月
-    //var myDate = new Date();
-    var myDate = date;
-    var thisYear = myDate.getFullYear(); //获取完整的年份
-    var thisMonth = myDate.getMonth() + 1; //获取当前月份(0-11,0代表1月)
-    var firstDay = new Date(thisYear + ',' + thisMonth + ',01').getDay(); //本月第一天星期几,0表示星期天
-    var nowDay = myDate.getDate(); // 今天是几号
-    var monthNum = this.mGetDate(thisYear, thisMonth); //本月多少天
-
-    var monthArray = [];
-    var week = 1; //第一周
-    var oneDay = '';
-    var isToday = false;
-    monthArray[week] = new Array(); //声明本周的二维数组
-
-    //循环当月的每一天
-    for (var k = 1; k <= monthNum; k++) {
-      isToday = false;
-      //组装当前日期
-      oneDay = thisYear + ',' + thisMonth + ',' + k;
-      var witchDay = new Date(oneDay).getDay(); //当前是星期几
-      //如果当期循环日期为今天
-      if (k == nowDay) {
-        isToday = true;
+  dayClick: function(event) {
+    if (this.checkDate(event) == false) return
+    let index = event.detail.day
+    let month = event.detail.month
+    // console.log(this.data.dayStyle1[index])
+    var chosenStyle = (month == this.data.currMonth) ? this.data.dayStyle1 : this.data.dayStyle2
+    var chosenCopy = (month == this.data.currMonth) ? this.data.currMonthCopy : this.data.nextMonthCopy
+    if (chosenStyle[index].selected) {
+      chosenStyle[index] = chosenCopy[index]
+      this.data.size--
+    } else {
+      if (this.data.size >= 7) {
+        wx.showToast({
+          icon:'none',
+          title: '请选择小于7天日期',
+        })
+        return
       }
-      //如果是第一周
-      if (week == 1) {
-        //判断当前日期是否是本月第一天
-        if (k == 1) {
-          //第一天之前的日期补为空
-          for (var a = 0; a < firstDay; a++) {
-            monthArray[week][a] = {
-              date: '',
-              isToday: isToday,
-              state: false
-            };
-          }
-        }
+      chosenStyle[index] = {
+        month: 'current',
+        day: index,
+        color: 'white',
+        // background: '#09B83E',
+        background: 'MediumSeaGreen',
+        monthNum: month,
+        selected: true
       }
-      monthArray[week][witchDay] = {
-        date: k,
-        isToday: isToday,
-        state: false
-      };
-
-      //如果已经是周六，切换到下一周
-      if (witchDay == 6) {
-        week++;
-        monthArray[week] = new Array(); //声明本周的二维数组
-      }
+      this.data.size++
     }
-    monthArray.splice(0, 1); //删除下标为0的空元素
-    //console.log(monthArray);
-    return monthArray;
+    this.setData({
+      dayStyle1: this.data.dayStyle1,
+      dayStyle2: this.data.dayStyle2
+    })
+
+  },
+  checkDate: function(event) {
+    if (event.detail.month > this.data.currMonth) return true
+    if (event.detail.month == this.data.currMonth && event.detail.day >= this.data.currDate) return true
+    return false
   },
   onSubmitTap: function() {
-    if(this.data.eventName == ''){
+    if (this.data.eventName == '') {
       wx.showToast({
         icon: 'none',
         title: '请输入事件名称',
@@ -282,22 +149,29 @@ Page({
       })
       return
     }
-    
-    // TODO 优化 ?
-    if(this.data.size >=7){
+    if (this.data.size == 0){
       wx.showToast({
-        icon: 'none',
-        title:'请选择小于7天日期',
-        duration: 2000
+        title: '请选择心仪的日期',
       })
-
-
-      return
+    }
+    var datesArr = []
+    var arr = this.data.dayStyle1
+    for(var i in arr){
+      if(arr[i].selected == true){
+        datesArr.push(arr[i].monthNum.toString()+'/'+arr[i].day.toString())
+      }
+    }
+    arr= this.data.dayStyle2
+    for (var i in arr) {
+      if (arr[i].selected == true) {
+        datesArr.push(arr[i].monthNum.toString() + '/' + arr[i].day.toString())
+      }
     }
     var that = this
-    var datesArr = JSON.stringify(that.data.intervals);
+    datesArr = JSON.stringify(datesArr);
+    console.log(datesArr)
     wx.navigateTo({
-      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName+'&datesArr='+datesArr+'&isCreate='+true
+      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName + '&datesArr=' + datesArr + '&isCreate=' + true
     })
 
   },

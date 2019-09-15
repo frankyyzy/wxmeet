@@ -278,6 +278,9 @@ Page({
 
 
   updateAttendeeOfEvent: function(createTime) {
+    wx.navigateBack({
+      delta: 2
+    })
     wx.showLoading({
       title: '',
     })
@@ -292,10 +295,6 @@ Page({
         times: that.data.intervals,
       },
       success: res => {
-        // console.log(that.data.eventId)
-        wx.navigateBack({
-          delta: 2
-        })
         wx.navigateTo({
           url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
         })

@@ -1,133 +1,125 @@
 Page({
   data: {
-    map: {},
-    today: {
-      month: 'current',
-      day: new Date().getDate(),
-      color: 'white',
-      background: '#AAD4F5',
-    },
-    dayStyle: [{}],
-    currentDate: "2019-06",
-    size: 0,
-    x: 0,
-    y: 0,
+    dayStyle1: [{}],
+    dayStyle2: [{}],
+    currDate: 14,
+    currMonth: 9,
+    currMonthYear: 2019,
+    currMonthCopy: [{}],
+    nextMonthCopy: [{}],
+    nextMonthYear: 2019,
+    nextMonth: 10,
+    size: 0
 
-  },
-  tap: function (e) {
-    this.setData({
-      x: 30,
-      y: 30
-    });
-  },
-  onChange: function (e) {
-    console.log(e.detail)
-  },
-  onScale: function (e) {
-    console.log(e.detail)
   },
   onLoad() {
-    console.log(this.data.currentDate)
-    var preDate = []
-    var date = new Date();
-    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    var initDate = []
+    let date = new Date();
+
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     for (var i = 1; i <= lastDay; i++) {
-      var col = 'grey'
-      // if (i === date.getDate()) col = 'red'
-      if (i >= date.getDate()) col = 'black'
-      preDate.push({
+      var col = 'LightGray'
+      if (i === date.getDate()) {
+        col = 'white'
+        initDate.push({
+          month: 'current',
+          monthNum: date.getMonth() + 1,
+          day: i,
+          color: col,
+          background: 'DarkGray',
+          selected: false
+        })
+      } else if (i > date.getDate()) {
+        var colorDate = new Date(date.getFullYear(), date.getMonth(), i);
+        if (colorDate.getDay() === 6) col = 'CornflowerBlue'
+        else if (colorDate.getDay() === 0) col = 'LightCoral'
+        else col = 'black'
+      }
+      initDate.push({
         month: 'current',
+        monthNum: date.getMonth() + 1,
         day: i,
         color: col,
+        selected: false
       })
     }
-    let month = new Date().getMonth() + 1
-    var strMonth = month.toString()
-    if (month < 10) strMonth = "0" + strMonth
-    let strYear = new Date().getFullYear().toString()
-    this.setData({
-      currentDate: strYear + '-' + strMonth,
-      dayStyle: preDate
-    })
-    var localMap = {}
-    let key = (date.getFullYear()).toString() + (date.getMonth() + 1).toString()
-    localMap[key] = this.data.dayStyle
-    this.data.map = localMap;
-    // console.log(this.data.map)
+    var initDateNextMonth = []
+    var nextMonthDate = new Date()
+    if (date.getMonth() == 11) {
+      nextMonthDate = new Date(date.getFullYear() + 1, 0)
+    } else {
+      nextMonthDate = new Date(date.getFullYear(), date.getMonth() + 1)
+    }
 
+
+    let nextMonthLastDay = new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth() + 1, 0).getDate()
+    for (var i = 1; i <= nextMonthLastDay; i++) {
+      // if (i === date.getDate()) col = 'red'
+      var colorDate = new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), i);
+      if (colorDate.getDay() === 6) col = 'CornflowerBlue'
+      else if (colorDate.getDay() === 0) col = 'LightCoral'
+      else col = 'black'
+      initDateNextMonth.push({
+        month: 'current',
+        monthNum: nextMonthDate.getMonth() + 1,
+        day: i,
+        color: col,
+        selected: false
+      })
+    }
+    this.setData({
+      currDate: date.getDate(),
+      currMonth: date.getMonth() + 1,
+      currYear: date.getFullYear(),
+      nextMonthYear: nextMonthDate.getFullYear(),
+      nextMonth: nextMonthDate.getMonth() + 1,
+      dayStyle2: initDateNextMonth,
+      nextMonthCopy: JSON.parse(JSON.stringify(initDateNextMonth)),
+      currMonthCopy: JSON.parse(JSON.stringify(initDate)),
+      dayStyle1: initDate,
+    })
   },
+
   dayClick: function(event) {
     if (this.checkDate(event) == false) return
-    let key = (event.detail.year).toString() + (event.detail.month).toString()
-    console.log(event)
-    var localMap = this.data.map
-    let clickDay = event.detail.day
-    var selectedDays = this.data.dayStyle
-    // console.log(this.data.map)
-    if (selectedDays[clickDay - 1].color === 'black') {
+    let index = event.detail.day
+    let month = event.detail.month
+    // console.log(this.data.dayStyle1[index])
+    var chosenStyle = (month == this.data.currMonth) ? this.data.dayStyle1 : this.data.dayStyle2
+    var chosenCopy = (month == this.data.currMonth) ? this.data.currMonthCopy : this.data.nextMonthCopy
+    if (chosenStyle[index].selected) {
+      chosenStyle[index] = chosenCopy[index]
+      this.data.size--
+    } else {
       if (this.data.size >= 7) {
         wx.showToast({
-          title: '最多可选7天',
+          title: '请选择小于7天日期',
         })
         return
       }
-      selectedDays[clickDay - 1] = {
+      chosenStyle[index] = {
         month: 'current',
-        day: clickDay,
+        day: index,
         color: 'white',
-        background: '#09B83E'
+        // background: '#09B83E',
+        background: 'MediumSeaGreen',
+        monthNum: month,
+        selected: true
       }
       this.data.size++
-    } else {
-      selectedDays[clickDay - 1] = {
-        month: 'current',
-        day: clickDay,
-        color: 'black',
-      }
-      this.data.size--
     }
     this.setData({
-      dayStyle: selectedDays
+      dayStyle1: this.data.dayStyle1,
+      dayStyle2: this.data.dayStyle2
     })
-    localMap[key] = this.data.dayStyle
-    this.data.map = localMap
-    // console.log(this.data.dayStyle)
-  },
-  next: function(event) {
-    let key = (event.detail.currentYear).toString() + (event.detail.currentMonth).toString()
-    var lastDay = new Date(event.detail.currentYear, event.detail.currentMonth, 0).getDate();
-    console.log(event)
-    var localMap = this.data.map
-    if (!localMap[key]) {
-      localMap[key] = []
-      for (var i = 1; i <= lastDay; i++) {
-        localMap[key].push({
-          month: 'current',
-          day: i,
-          color: 'black',
-        })
-      }
-    }
-    this.setData({
-      dayStyle: localMap[key]
-    })
-    this.data.map = localMap
-  },
-  prev: function(event) {
-    let key = (event.detail.currentYear).toString() + (event.detail.currentMonth).toString()
-    var localMap = this.data.map
-    this.setData({
-      dayStyle: localMap[key]
-    })
+
   },
   checkDate: function(event) {
-    let day = new Date().getDate()
     // console.log('day' + day + 'e' + event.detail.day)
-    let month = new Date().getMonth() + 1
     // console.log('mon' + month + 'e' + event.detail.month)
 
-    if (event.detail.month > month) return true
-    if (event.detail.month == month && event.detail.day >= day) return true
+    if (event.detail.month > this.data.currMonth) return true
+    if (event.detail.month == this.data.currMonth && event.detail.day >= this.data.currDate) return true
     return false
   }
 

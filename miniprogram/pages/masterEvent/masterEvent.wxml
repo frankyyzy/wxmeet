@@ -3,7 +3,8 @@
 </view>
 
 <view class="table">
-  <view class="myToast" hidden="{{nullHouse}}">{{display}}
+  <view class="myToast" hidden="{{nullHouse}}">
+  {{display}}
     <view wx:for="{{numOfPics}}" wx:for-item="i">
       <image class="profilepic" src="{{pics[i]}}"></image>
     </view>

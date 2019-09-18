@@ -27,6 +27,7 @@ Page({
     eventId: '',
     sponser: "",
     createDate: -1,
+    attendeeID: {},
     rowHeight: 30 // in px
   },
 
@@ -42,10 +43,10 @@ Page({
     this.setData({
       eventId: options.eventId,
     })
-    
+
     // set the height of each row 
     wx.getSystemInfo({
-      success: function (res) {
+      success: function(res) {
 
         // 高度,宽度 单位为px
         that.setData({
@@ -53,6 +54,11 @@ Page({
         })
       }
     });
+    if (app.globalData.authorize == false) {
+      wx.navigateTo({
+        url: '/pages/authorize/authorize',
+      })
+    }
 
 
   },
@@ -84,7 +90,7 @@ Page({
     let that = this
     return ({
       title: '分享' + that.data.eventName,
-      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate,
+      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate + "&datesArr=" + that.data.dates,
     })
   },
   /**
@@ -105,10 +111,18 @@ Page({
         wx.hideLoading()
       }, 10000)
     })
-
-
   },
-
+  updateUser: function(info) {
+    wx.cloud.callFunction({
+      name: 'updateUser',
+      data: {
+        id: app.globalData.user,
+        nickName: info.nickName,
+        profilePic: info.avatarUrl,
+      },
+      success: res => {}
+    })
+  },
   clear: function() {
     var arr = []
     for (var i = 0; i < totalNumOfHours; i++) {
@@ -118,14 +132,14 @@ Page({
       times: arr
     })
   },
-  updateEventFromDB: function(){
+  updateEventFromDB: function() {
     var that = this
     wx.cloud.callFunction({
       name: 'getEventTime',
       data: {
         eventID: that.data.eventId,
       },
-      success: function (res) {
+      success: function(res) {
 
 
         let user = app.globalData.user
@@ -139,17 +153,31 @@ Page({
 
         });
         that.adjustTimeTable()
+        that.attendeeUrl()
         wx.hideLoading()
 
 
       },
-      fail: function (res) {
-
+      fail: function() {
         console.log("error")
       }
     })
   },
+  attendeeUrl: function() {
+    var that = this
+    for (var id in this.data.Attendee) {
+      db.collection('users').doc(id).get({
+        success: function(res) {
+          // res.data 包含该记录的数据
+          that.data.attendeeID[id] = res.data.profilePic
+        },
 
+        error: e => {
+          console.log("error")
+        }
+      })
+    }
+  },
   adjustTimeTable: function() {
 
 
@@ -209,6 +237,20 @@ Page({
   },
 
   onTouchStart: function(e) {
+    if (app.globalData.authorize == false) {
+      wx.navigateTo({
+        url: '/pages/authorize/authorize',
+        success: function() {
+          wx.showToast({
+            title: '此功能仅限授权用户',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      })
+      return
+    }
+    var that = this
     var i = parseInt(e.target.dataset.i)
     var j = parseInt(e.target.dataset.j)
 
@@ -216,12 +258,11 @@ Page({
     var numOfPicsToShow = this.data.times[i][j]
     this.setData({
       numOfPics: numOfPicsToShow,
-      display: this.data.times[i][j].toString() + " people are available",
+      display: this.data.times[i][j].toString() + ((this.data.times[i][j] == 1) ? " person " : " people ") + "available on " + this.data.dates[j] + " between " + i.toString() + " to " + (i + 1).toString(),
       nullHouse: false
     })
 
     // set the url for profile pics 
-    var picUrl = [];
     var attendeeID = [];
 
     var attendeeDict = this.data.Attendee;
@@ -234,27 +275,19 @@ Page({
         }
       }
     }
-
-    // get profile pics from id 
+    var picUrl = []
+    //get pics or set default pic
     for (var id of attendeeID) {
-
-      var that = this
-      //get url from the user id 
-      db.collection('users').doc(id).get({
-        success: function(res) {
-          // res.data 包含该记录的数据
-          picUrl.push(res.data.profilePic)
-          that.setData({
-            pics: picUrl
-          })
-        },
-
-        error: e => {
-          console.log("error")
-        }
-      })
+      if (this.data.attendeeID[id] == '') {
+        picUrl.push('/image/default.png')
+      } else {
+        picUrl.push(this.data.attendeeID[id])
+      }
     }
-
+    picUrl.sort()
+    that.setData({
+      pics: picUrl
+    })
   },
 
   onTouchEnd: function() {
@@ -276,27 +309,10 @@ Page({
     let user = app.globalData.user
     let userIntervals = that.data.Attendee[user]
     wx.navigateTo({
-      url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.eventName + '&datesArr=' + JSON.stringify(that.data.dates) + '&userIntervals=' + JSON.stringify(userIntervals) + '&createDate='+ that.data.createDate,
+      url: '/pages/selectTime/selectTime?eventId=' + that.data.eventId + '&eventName=' + that.data.eventName + '&datesArr=' + JSON.stringify(that.data.dates) + '&userIntervals=' + JSON.stringify(userIntervals) + '&createDate=' + that.data.createDate,
     })
   },
-  onEndTap: function() {
-    // wx.cloud.callFunction({
-    //   name: 'removeEvent',
-    //   data: {
-    //     eventId: that.data.eventId,
-    //     id: that.data.user,
-    //     dates: that.data.dates,
-    //     times: that.data.intervals,
-    //   },
-    //   success: res => {
-    //     console.log(that.data.eventId)
-    //     console.log('更新数据成功')
-    //     wx.redirectTo({
-    //       url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
-    //     })
-    //   }
-    // })
-  }
+  onEndTap: function() {}
 
 
 })

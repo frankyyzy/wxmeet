@@ -9,9 +9,6 @@ Page({
   data: {
     // 判断小程序的API，回调，参数，组件等是否在当前版本可用。
     canIUse: wx.canIUse('button.open-type.getUserInfo'), //获取用户信息是否在当前版本可用
-    user: '',
-    nickName: '',
-    profilePic: '',
   },
 
   /**
@@ -23,16 +20,12 @@ Page({
     var that = this
 
     if (e.detail.userInfo) { //点击了“允许”按钮，
+      app.globalData.authorize = true
       this.setUser(e.detail.userInfo)
-      wx.redirectTo({
-        url: app.globalData.url
-      })
+      wx.navigateBack()
     }
     else{
-      wx.showToast({
-        title: 'Goodbye',
-        icon: 'loading'
-      })
+      wx.navigateBack()
     }
   },
   setUser: function(info) {

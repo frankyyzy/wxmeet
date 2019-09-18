@@ -1,10 +1,9 @@
 {
   "pages": [
     "pages/loading/loading",
-    "pages/createEvent/createEvent",
-    "pages/test/test",
-    "pages/selectTime/selectTime",
     "pages/authorize/authorize",
+    "pages/createEvent/createEvent",
+    "pages/selectTime/selectTime",
     "pages/profile/profile",
     "pages/masterEvent/masterEvent",
     "pages/guestEvent/guestEvent"

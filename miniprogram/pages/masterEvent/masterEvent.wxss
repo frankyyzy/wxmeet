@@ -46,8 +46,21 @@
   width: 49%;
 }
 
-
 .myToast{
+  position: absolute;
+  top: 20px;
+  left: 170rpx;
+  width:50%;
+  line-height: 50rpx;
+  border-radius:20rpx;
+  background-color: rgb(114,113,113);
+  color:rgb(255,255,255);
+  font-size: 30rpx;
+  text-align: center;
+  z-index: 100;
+  opacity: 0.85;
+}
+/* .myToast{
   position: absolute;
   top: 20px;
   left: 170rpx;
@@ -60,7 +73,7 @@
   text-align: center;
   z-index: 100;
   opacity: 0.85;
-}
+} */
   
 
 .profilepic{

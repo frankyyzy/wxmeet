@@ -152,7 +152,10 @@ Page({
     if (this.data.size == 0){
       wx.showToast({
         title: '请选择心仪的日期',
+        icon: 'none',
+        duration: 2000
       })
+      return
     }
     var datesArr = []
     var arr = this.data.dayStyle1

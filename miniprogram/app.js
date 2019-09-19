@@ -1,8 +1,6 @@
  //app.js
  App({
    globalData: {
-     appid: 'wxd6397161949fd434',
-     secret: 'ee5b16d9d571a666979d75d38ee27c2c',
      user: null,
      authorize: false,
      AttendEvent: [],
@@ -25,7 +23,7 @@
          env: 'wxmeet-5taii',
          traceUser: true,
        })
-     }
+     } 
      //perform login and authorization
      wx.cloud.callFunction({
        name: 'login',
@@ -36,7 +34,7 @@
            if (that.globalData.user === options.query.sponserId) {
              that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
            } else {
-             that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + options.query.datesArr //  otherwise go to selectTime
+             that.globalData.url = "/pages/masterEvent/masterEvent?share=true&eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + (options.query.datesArr) //  otherwise go to selectTime
            }
          }
          that.setSponsorAndAttendEvent();
@@ -48,6 +46,7 @@
 
    // implement redirection for reopening the app
    onShow: function(options) {
+     var that = this
      if (this.globalData.user != null) {
        this.checkAuthorize()
        if (options.query.share) {
@@ -55,7 +54,7 @@
            this.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
 
          } else {
-           that.globalData.url = "/pages/selectTime/selectTime?eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + options.query.datesArr
+           that.globalData.url = "/pages/masterEvent/masterEvent?share=true&eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + (options.query.datesArr) //  otherwise go to selectTime
 
          }
          this.setSponsorAndAttendEvent()
@@ -88,34 +87,6 @@
          wx.redirectTo({
            url: that.globalData.url,
          })
-
-         //  if (that.globalData.userSet == false) {
-         //    wx.getSetting({
-         //      success: function(res) {
-         //        if (res.authSetting['scope.userInfo']) { //授权了，可以获取用户信息了
-         //          wx.getUserInfo({
-         //            success: function(res) {
-         //              that.updateUser(res.userInfo)
-         //              that.globalData.userSet = true
-         //              wx.redirectTo({
-         //                url: that.globalData.url
-         //              })
-         //            },
-         //            fail: function() {
-         //              console.log("fail")
-         //            }
-         //          })
-         //        } else { //未授权，跳到授权页面
-         //          wx.redirectTo({
-         //            url: '/pages/authorize/authorize', //授权页面
-         //          })
-         //        }
-         //      },
-         //      fail: function() {
-         //        console.log("can't get setting")
-         //      }
-         //  })
-         //  }
        },
      })
    },
@@ -128,9 +99,6 @@
              success: function(res) {
                that.updateUser(res.userInfo)
                that.globalData.authorize = true
-               // wx.redirectTo({
-               //   url: that.globalData.url
-               // })
 
              },
              fail: function() {
@@ -138,14 +106,12 @@
                that.globalData.authorize = false
              }
            })
-         } else { //未授权，跳到授权页面
+         } else { //if the user is not authorize 
            that.globalData.authorize = false
-           //  wx.navigateTo({
-           //    url: '/pages/authorize/authorize', //授权页面
-           //  })
          }
        },
        fail: function() {
+         that.globalData.authorize = false
          console.log("can't get setting")
        }
      })

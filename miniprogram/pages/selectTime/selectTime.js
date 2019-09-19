@@ -256,7 +256,6 @@ Page({
           createTime: that.data.createTime
         },
         success: res => {
-          console.log('新增用户参与事件！')
           wx.cloud.callFunction({
             name: 'testupdate',
             data: {

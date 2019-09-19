@@ -36,10 +36,14 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
-    wx.showLoading({
-      title: '',
-    })
+    console.log(options)
+    wx.showLoading({})
     var that = this
+    if(options.share){
+      wx.navigateTo({
+        url: '/pages/selectTime/selectTime?share=true&eventId=' + options.eventId + '&eventName=' + options.eventName + '&createTime=' + options.createTime + '&datesArr=' + (options.datesArr) //  otherwise go to selectTime
+      })
+    }
     this.setData({
       eventId: options.eventId,
     })
@@ -90,7 +94,7 @@ Page({
     let that = this
     return ({
       title: '分享' + that.data.eventName,
-      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate + "&datesArr=" + that.data.dates,
+      path: '/pages/loading/loading?share=true&eventId=' + that.data.eventId + "&sponserId=" + that.data.sponser + "&eventName=" + that.data.eventName + "&createTime=" + that.data.createDate + "&datesArr=" + JSON.stringify(that.data.dates),
     })
   },
   /**
@@ -105,10 +109,8 @@ Page({
 
     this.setData({
       timer: setInterval(function() {
-        wx.showLoading()
         //db call?
         that.updateEventFromDB()
-        wx.hideLoading()
       }, 10000)
     })
   },

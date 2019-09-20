@@ -101,7 +101,7 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 7. The event is created and visible from Profile Screen.
 
 <p align="center">
-	<img src = "https://i.imgur.com/zCqVySE.gif" height = 400>
+	<img src = "https://i.imgur.com/zg97UHs.gif" height = 790>
 </p>
 
 ### Delete an event
@@ -110,7 +110,7 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 3. The event is deleted and invisible from Profile Screen.
 
 <p align="center">
-	<img src = "https://i.imgur.com/JRYpTT4.gif" height = 790>
+	<img src = "https://i.imgur.com/fmdC9lX.gif" height = 790>
 </p>
 
 ### Share an event
@@ -121,7 +121,7 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 5. The recipients can join the event through the link.
 
 <p align="center">
-	<img src = "https://i.imgur.com/sEfeDie.gif" height=790>
+	<img src = "https://i.imgur.com/AFrkWn6.gif" height=790>
 </p>
 
 ### Edit an event
@@ -134,3 +134,4 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 <p align="center">
 	<img src = "https://i.imgur.com/EOd9zfE.gif" height=790>
 </p>
+

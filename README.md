@@ -132,6 +132,6 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 5. The time has been edited and updated on the event.
 
 <p align="center">
-	<img src = "https://i.imgur.com/EOd9zfE.gif" height=300>
+	<img src = "https://i.imgur.com/EOd9zfE.gif" height=400>
 </p>
 

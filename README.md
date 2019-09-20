@@ -101,7 +101,7 @@ Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event particip
 7. The event is created and visible from Profile Screen.
 
 <p align="center">
-	<img src = "https://i.imgur.com/zCqVySE.gif" height = 790>
+	<img src = "https://i.imgur.com/zCqVySE.gif" height = 400>
 </p>
 
 ### Delete an event

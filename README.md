@@ -8,16 +8,14 @@ This README is also available in [简体中文](https://github.com/frankyyzy/wxm
 
 ## Overview
 ### Description
-Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event participants to vote for their availibilities. Unlike When2meet, which is optimized for desktop web browsers, wxmeet is availble on every smartphone and tablets that are equipped with WeChat. Because wxmeet is based on WeChat, user of wxmeet can participate other WeChat users events or create events to invite other WeChat users.
+Inspired by When2meet, wxmeet is a WeChat miniprogram that allows event participants to vote for their availibilities. Unlike When2meet, which is optimized for desktop web browsers, wxmeet is availble on every smartphone and tablets that are equipped with WeChat. Because wxmeet is based on WeChat, user of wxmeet can participate other WeChat users events or create events to invite other WeChat users to schedule a meeting.
 
 
 ### App Evaluation
 - **Category:** Utilities, Lifestyle
-- **Mobile:** Mobility is important because students may want to access the trading market on their iphone.
-- **Story:** Allow users post about things they want to sell and scroll through and search for items they want. 
-- **Market:** UCSD students who need to sell or buy used items. 
-- **Habit:** User can get the habit of checking the app on their phone whenever they want to buy something.
-- **Scope:** This app will target at UCSD students for now. In the future, it may be expanded to more campuses.
+- **Story:** Allow WeChat users to conveniently schedule meetings with other WeChat users.
+- **Market:** WeChat users who need to schedule meeting with others. 
+- **Scope:** This app will target to all WeChat users that would like to schedule a group meeting.
 
 ## Product Spec
 

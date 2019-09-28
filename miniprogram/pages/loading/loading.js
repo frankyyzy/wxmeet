@@ -6,25 +6,23 @@ Page({
    * Page initial data
    */
   data: {
-
+    url:app.globalData.url
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    // console.log(options.url)
 
-
-    // wx.showLoading()
-    // console.log("url"+ this.route)
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-
+    this.setData({
+      url: app.globalData.url
+    })
   },
 
   /**

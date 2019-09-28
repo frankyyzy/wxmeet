@@ -1,4 +1,8 @@
 <!--pages/loading/loading.wxml-->
-<view class='header'>
-  <image src='/image/loading.jpg'></image>
+<view class='loading'>
+  <image src='/image/loading.gif' class='pic'></image>
+  <text>此页面将自动跳转\n</text>
+  <view class='body'>如果没有自动跳转，请点击
+    <navigator class='link' url='{{url}}' open-type="redirect">此处手动跳转</navigator>
+  </view>
 </view>

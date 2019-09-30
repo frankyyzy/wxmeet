@@ -22,7 +22,6 @@ Page({
       SponsorEvent: app.globalData.SponsorEvent,
       AttendEvent: app.globalData.AttendEvent
     })
-
   },
 
   /**

@@ -6,17 +6,15 @@
 
 
 <view class="title">| 我组的局</view>
-
-
-<view wx:for="{{SponsorEvent}}" wx:for-item="value" id="{{index}}" bindtap="onSponserEventTap" bindlongpress='onCreateLongPress'>
-  <button class="items">{{value[0]}}</button>
+<view wx:for="{{SponsorEvent}}" id="{{index}}" wx:key="*this" bindtap="onSponserEventTap" bindlongpress='onCreateLongPress'>
+  <button class="items">{{item[0]}}</button>
   <view class="divLine"></view>
 </view>
 
 
 
 <view class="title">| 我加入的局</view>
-<view wx:for="{{AttendEvent}}" id="{{index}}" wx:for-item="value" bindtap="onAttendingEventTap" bindlongpress='onAttendLongPress'>
-  <button class="items">{{value[0]}}</button>
+<view wx:for="{{AttendEvent}}" id="{{index}}" wx:key="*this" bindtap="onAttendingEventTap" bindlongpress='onAttendLongPress'>
+  <button class="items">{{item[0]}}</button>
   <view class="divLine"></view>
 </view>

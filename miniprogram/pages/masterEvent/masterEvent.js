@@ -27,7 +27,6 @@ Page({
     eventId: '',
     sponser: "",
     createDate: -1,
-    attendeeID: {},
     rowHeight: 30 // in px
   },
 
@@ -39,7 +38,7 @@ Page({
     console.log(options)
     wx.showLoading({})
     var that = this
-    if(options.share){
+    if (options.share) {
       wx.navigateTo({
         url: '/pages/selectTime/selectTime?share=true&eventId=' + options.eventId + '&eventName=' + options.eventName + '&createTime=' + options.createTime + '&datesArr=' + (options.datesArr) //  otherwise go to selectTime
       })
@@ -103,14 +102,13 @@ Page({
   onShow: function() {
 
 
-    var that = this
-    this.updateEventFromDB()
-
+    var that = this;
+    this.updateEventFromDB();
 
     this.setData({
       timer: setInterval(function() {
         //db call?
-        that.updateEventFromDB()
+        that.updateEventFromDB();
       }, 10000)
     })
   },
@@ -166,12 +164,18 @@ Page({
     })
   },
   attendeeUrl: function() {
-    var that = this
+    var that = this;
+    var picUrl = [];
+   
     for (var id in this.data.Attendee) {
+ 
       db.collection('users').doc(id).get({
         success: function(res) {
           // res.data 包含该记录的数据
-          that.data.attendeeID[id] = res.data.profilePic
+          picUrl.push(res.data.profilePic)
+          that.setData({
+            pics: picUrl
+          })
         },
 
         error: e => {
@@ -179,7 +183,9 @@ Page({
         }
       })
     }
+   
   },
+
   adjustTimeTable: function() {
 
 
@@ -264,32 +270,32 @@ Page({
       nullHouse: false
     })
 
-    // set the url for profile pics 
-    var attendeeID = [];
+    // // set the url for profile pics 
+    // var attendeeID = [];
 
-    var attendeeDict = this.data.Attendee;
+    // var attendeeDict = this.data.Attendee;
 
-    for (var id in attendeeDict) {
+    // for (var id in attendeeDict) {
 
-      if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
-        if (attendeeDict[id][j][i]) {
-          attendeeID.push(id);
-        }
-      }
-    }
-    var picUrl = []
-    //get pics or set default pic
-    for (var id of attendeeID) {
-      if (this.data.attendeeID[id] == '') {
-        picUrl.push('/image/default.png')
-      } else {
-        picUrl.push(this.data.attendeeID[id])
-      }
-    }
-    picUrl.sort()
-    that.setData({
-      pics: picUrl
-    })
+    //   if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
+    //     if (attendeeDict[id][j][i]) {
+    //       attendeeID.push(id);
+    //     }
+    //   }
+    // }
+    // var picUrl = []
+    // //get pics or set default pic
+    // for (var id of attendeeID) {
+    //   if (this.data.attendeeID[id] == '') {
+    //     picUrl.push('/image/default.png')
+    //   } else {
+    //     picUrl.push(this.data.attendeeID[id])
+    //   }
+    // }
+    // picUrl.sort()
+    // that.setData({
+    //   pics: picUrl
+    // })
   },
 
   onTouchEnd: function() {

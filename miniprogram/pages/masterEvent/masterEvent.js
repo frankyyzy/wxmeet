@@ -307,7 +307,7 @@ Page({
 
 
   onBackHomeTap: function() {
-    wx.redirectTo({
+    wx.reLaunch({
       url: '/pages/profile/profile',
     })
   },

@@ -43,7 +43,6 @@
 
    },
 
-
    // implement redirection for reopening the app
    onShow: function(options) {
      var that = this

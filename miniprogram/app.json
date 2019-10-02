@@ -5,8 +5,7 @@
     "pages/createEvent/createEvent",
     "pages/authorize/authorize",
     "pages/selectTime/selectTime",
-    "pages/masterEvent/masterEvent",
-    "pages/guestEvent/guestEvent"
+    "pages/masterEvent/masterEvent"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -93,7 +93,7 @@ Page({
   onAttendingEventTap: function(event) {
     let eventId = event.currentTarget.id
 
-    wx.redirectTo({
+    wx.navigateTo({
       url: '../masterEvent/masterEvent?eventId=' + eventId,
     })
   },

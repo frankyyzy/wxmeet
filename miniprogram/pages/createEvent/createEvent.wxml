@@ -15,4 +15,11 @@
   </swiper>
 </scroll-view>
 
+
+<view>start</view>
+
+<input bindinput='inputStartTime' style="background-color:white;"/>
+<view>end</view>
+<input bindinput='inputEndTime'style="background-color:white;"/>
+
 <button type="primary" bindtap='onSubmitTap'>确认提交</button>

@@ -83,9 +83,9 @@
 
          that.globalData.SponsorEvent = SponsorEvent
          that.globalData.AttendEvent = AttendEvent
-         wx.redirectTo({
-           url: that.globalData.url,
-         })
+        //  wx.redirectTo({
+          //  url: that.globalData.url,
+        //  })
        },
      })
    },

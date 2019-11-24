@@ -1,0 +1,26 @@
+<!--pages/database/database.wxml-->
+<view>
+  <text>pages/database/database.wxml</text>
+</view>
+<input type="text" class="input" placeholder="请输入你的名字" bindinput="bindinput"></input>
+<view class="btn">
+  <button type="primary" bindtap="onSubmit">提交</button>
+</view>
+  <text class="input">{{dbName}}</text>
+<view class="btn">
+  <button type="primary" bindtap="onCheck">查看名字</button>
+</view>
+<input type="text" class="input" placeholder="请输入更改名称" bindinput="bindchange"></input>
+<view class = "btn">
+  <button type="primary" bindtap="onChange">更改</button>
+</view>
+<view class = "btn">
+<button type="warn" bindtap="onDelete">删除</button>
+</view>
+<view class = "btn">
+<button type="primary" bindtap="checkNames">查看所有名字</button>
+</view>
+<scroll-view>
+  <view class="input" wx:for="{{allName}}">{{item.name}}
+  </view>
+</scroll-view>

@@ -1,0 +1,7 @@
+/* pages/database/database.wxss */
+.input{
+  text-align: center;
+}
+.btn{
+  padding: 5rpx;
+}

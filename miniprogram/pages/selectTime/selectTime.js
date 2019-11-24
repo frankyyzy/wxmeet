@@ -21,13 +21,21 @@ Page({
     timer: null,
     startHour: null,
     startDate: null,
-    rowHeight: 30 // in px
+    rowHeight: 30, // in px
+    start: 0,
+    end: 24
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+
+    this.setData({
+      start: options.start,
+      end: options.end
+    })
+    console.log(options.start);
     let that = this
     var datesTitle = ["小时"]
     datesTitle = datesTitle.concat(JSON.parse(options.datesArr))

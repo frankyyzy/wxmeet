@@ -16,7 +16,9 @@ Page({
     nextMonthCopy: [{}],
     nextMonthYear: 2019,
     nextMonth: 10,
-    size: 0
+    size: 0,
+    startHour: 0,
+    endHour: 24
   },
 
   /**
@@ -174,7 +176,7 @@ Page({
     datesArr = JSON.stringify(datesArr);
     console.log(datesArr)
     wx.navigateTo({
-      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName + '&datesArr=' + datesArr + '&isCreate=' + true
+      url: '/pages/selectTime/selectTime?eventName=' + that.data.eventName + '&datesArr=' + datesArr + '&isCreate=' + true + '&start=' + this.data.startHour + '&end=' + this.data.endHour
     })
 
   },
@@ -182,6 +184,16 @@ Page({
 
 
   inputStartTime(e){
-    console.log(e.detail.value)
+    this.setData({
+      startHour: e.detail.value
+    })
+  },
+
+
+  inputEndTime(e) {
+    this.setData({
+      endHour: e.detail.value
+    })
   }
+
 })

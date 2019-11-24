@@ -1,6 +1,15 @@
 <scroll-view scroll-y='false'>
 
 
+
+<wxs module="fn">
+      module.exports = {
+          add: function(a,b){
+            return (parseInt(a)+parseInt(b));
+          }
+      }
+</wxs>
+
   <view class="table">
 
     <view class="title">
@@ -11,8 +20,8 @@
       </block>
     </view>
 
-    <view class="tr" wx:for="{{24}}" wx:for-item="i" style='height: {{rowHeight}}px;'>
-      <view class="td td1">{{i}} - {{i+1}} </view>
+    <view class="tr" wx:for="{{end - start}}" wx:for-item="i" style='height: {{rowHeight}}px;'>
+      <view class="td td1">{{fn.add(start, i)}} - {{ fn.add(start,i+1)}} </view>
       <block wx:for="{{totaldate-1}}" wx:for-item="j">
 
 

@@ -58,7 +58,7 @@ Page({
   onPullDownRefresh: function() {
 
     this.onUpdateEvents();
-   
+
 
   },
 
@@ -86,7 +86,7 @@ Page({
   onSponserEventTap: function(event) {
     let eventId = event.currentTarget.id
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + eventId,
+      url: '../event/event?eventId=' + eventId,
     })
   },
 
@@ -94,7 +94,7 @@ Page({
     let eventId = event.currentTarget.id
 
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + eventId,
+      url: '../event/event?eventId=' + eventId,
     })
   },
 
@@ -129,7 +129,7 @@ Page({
       }
     })
   },
-  onAttendLongPress: function (event) {
+  onAttendLongPress: function(event) {
     let that = this
     let id = event.currentTarget.id
     var AttendEvent = this.data.AttendEvent
@@ -137,7 +137,7 @@ Page({
     wx.showModal({
       title: '提示',
       content: '确定要取消加入此事件吗？',
-      success: function (res) {
+      success: function(res) {
         if (res.confirm) {
           delete AttendEvent[id]
           that.setData({
@@ -146,24 +146,12 @@ Page({
           wx.cloud.callFunction({
             name: 'deleteAttendEvent',
             data: {
-              eventId:(id),
+              eventId: (id),
               userId: app.globalData.user
             }
           })
-          // db.collection('events').doc(id).get({
-          //   success: function (res) {
-          //     var Attendeelist = res.data.Attendee
-          //     Attendeelist[res.data.Sponser] = {}
-          //     wx.cloud.callFunction({
-          //       name: 'deleteEventUser',
-          //       data: {
-          //         eventId: (id),
-          //         Attendee: Attendeelist
-          //       }
-          //     })
-          //   }
-          // })
-        } else { }
+
+        }
       }
     })
   },
@@ -174,16 +162,10 @@ Page({
     var that = this;
     const db = wx.cloud.database()
     db.collection('users').doc(app.globalData.user).get({
-      success: function (res) {
-       
+      success: function(res) {
 
-        var SponsorEvent = res.data.SponsorEvent
-        var AttendEvent = {}
-        for (var id in res.data.AttendEvent) {
-          if (!SponsorEvent[id]) AttendEvent[id] = res.data.AttendEvent[id]
-        }
-        app.globalData.SponsorEvent = SponsorEvent
-        app.globalData.AttendEvent = AttendEvent
+        app.globalData.SponsorEvent = res.data.SponsorEvent
+        app.globalData.AttendEvent = res.data.AttendEvent
         that.setData({
           SponsorEvent: app.globalData.SponsorEvent,
           AttendEvent: app.globalData.AttendEvent
@@ -191,7 +173,8 @@ Page({
         wx.stopPullDownRefresh();
 
       },
-      fail: function (res) {
+      fail: function(res) {
+        console.error('error on updating ');
       }
     })
   }

@@ -5,16 +5,19 @@
      authorize: false,
      AttendEvent: [],
      SponsorEvent: [],
-     url: '/pages/profile/profile', //used in app.js and authorize.js, initial url to go to, include the eventID param
-     userSet: false
+     url: '/pages/profile/profile', //used in app.js and authorize.js, initial page(profile/masterEvent) to go to, include the eventID param
+     userSet: false,
+     share: false
    },
 
 
    // implement login, authorize functionality, redirection if the user open the app for the first time 
    onLaunch: function(options) {
 
-     //  wx.showLoading();
-     var that = this
+     var that = this;
+     if (options.query.share) this.globalData.share = true;
+     else this.globalData.share = false;
+
      //cloud ability init
      if (!wx.cloud) {
        console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -23,22 +26,31 @@
          env: 'wxmeet-5taii',
          traceUser: true,
        })
-     } 
+     }
      //perform login and authorization
      wx.cloud.callFunction({
        name: 'login',
-       complete: res => {
-         that.globalData.user = res.result.openId
-         that.checkAuthorize()
-         if (options.query.share) {
-           if (that.globalData.user === options.query.sponserId) {
-             that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
-           } else {
-             that.globalData.url = "/pages/masterEvent/masterEvent?share=true&eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + (options.query.datesArr) //  otherwise go to selectTime
-           }
-         }
-         that.setSponsorAndAttendEvent();
+       complete: res => that.handleLogin(res, options)
+     })
+
+   },
+
+   handleLogin(res, options) {
+     this.globalData.user = res.result.openId
+     this.checkAuthorize()
+     if (this.globalData.share) {
+       if (that.globalData.user === options.query.sponserId) {
+         that.globalData.url = "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId
+       } else {
+         that.globalData.url = "/pages/masterEvent/masterEvent?share=true&eventId=" + options.query.eventId + '&eventName=' + options.query.eventName + '&createTime=' + options.query.createTime + '&datesArr=' + (options.query.datesArr) //  otherwise go to selectTime
        }
+     }
+     this.setSponsorAndAttendEvent().then(res => {
+
+       wx.redirectTo({
+         url: this.globalData.url,
+       })
+
      })
 
    },
@@ -62,32 +74,30 @@
      }
    },
 
-   setSponsorAndAttendEvent: function() {
+
+   setSponsorAndAttendEvent() {
+
      var that = this;
      const db = wx.cloud.database()
-     db.collection('users').doc(that.globalData.user).get({
-       fail: function() {
-         that.setNewUser()
-       },
-       success: function(res) {
 
-         var SponsorEvent = res.data.SponsorEvent
+     return new Promise((resolve, reject) => {
+       db.collection('users').doc(that.globalData.user).get({
+         fail: function() {
+           that.setNewUser()
+         },
+         success: function(res) {
 
-         var AttendEvent = {}
-         for (var id in res.data.AttendEvent) {
-           if (!SponsorEvent[id]) {
-             AttendEvent[id] = res.data.AttendEvent[id]
-           }
+           that.globalData.SponsorEvent = res.data.SponsorEvent;
+           that.globalData.AttendEvent = res.data.AttendEvent;
+           resolve();
 
-         }
+         },
+       })
 
-         that.globalData.SponsorEvent = SponsorEvent
-         that.globalData.AttendEvent = AttendEvent
-         wx.redirectTo({
-           url: that.globalData.url,
-         })
-       },
+
      })
+
+
    },
    checkAuthorize: function() {
      let that = this

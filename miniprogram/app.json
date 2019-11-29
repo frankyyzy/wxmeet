@@ -1,11 +1,10 @@
 {
   "pages": [
-    "pages/loading/loading",
     "pages/profile/profile",
     "pages/createEvent/createEvent",
     "pages/authorize/authorize",
     "pages/selectTime/selectTime",
-    "pages/masterEvent/masterEvent"
+    "pages/event/event"
   ],
   "window": {
     "backgroundTextStyle": "light",

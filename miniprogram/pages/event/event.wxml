@@ -5,8 +5,8 @@
 <view class="table">
   <view class="myToast" hidden="{{nullHouse}}">
   {{display}}
-    <view wx:for="{{numOfPics}}" wx:for-item="i">
-      <image class="profilepic" src="{{pics[i]}}"></image>
+    <view wx:for="{{pics}}">
+      <image class="profilepic" src="{{item[0]}}" hidden="{{item[1]}}"></image>
     </view>
   </view>
 

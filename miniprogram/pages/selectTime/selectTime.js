@@ -31,6 +31,7 @@ Page({
     let that = this
     var datesTitle = ["小时"]
     datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
+    console.log(datesTitle)
     that.setData({
       eventName: options.eventName,
       dates: datesTitle,

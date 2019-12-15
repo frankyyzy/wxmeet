@@ -41,6 +41,10 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 1,
 			"list": [
@@ -54,7 +58,7 @@
 					"id": 1,
 					"name": "share",
 					"pathName": "pages/profile/profile",
-					"query": "share=true&eventId=14dc756e5d13ce3d017a8eb65c2bb548&sponserId=oOzmX5AQyPqYvQi6ZLn7vY1d-VhI",
+					"query": "share=true&eventId=3397e9015d9405eb08cbc0f54883fa6b&sponserId=oOzmX5MUusmIgEBmpt9bYe52uMGI",
 					"scene": 1008
 				}
 			]

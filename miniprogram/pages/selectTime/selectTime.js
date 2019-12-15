@@ -296,7 +296,7 @@ Page({
       },
       success: res => {
         wx.navigateTo({
-          url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+          url: '/pages/event/event?eventId=' + that.data.eventId,
         })
       }
     })

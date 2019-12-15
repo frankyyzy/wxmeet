@@ -34,29 +34,62 @@ App({
 
   handleLogin(res, options) {
     this.globalData.user = res.result.openId;
+    console.log("handleLogin");
+    console.log(this.globalData.user);
     this.checkAuthorize();
+    var that = this;
 
     if (this.globalData.share) {
-      if (this.globalData.user === options.query.sponserId) {
-        this.globalData.url =
-          "/pages/event/event?eventId=" + options.query.eventId;
-      } else {
-        this.globalData.url =
-          "/pages/event/event?share=true&eventId=" +
-          options.query.eventId +
-          "&eventName=" +
-          options.query.eventName +
-          "&createTime=" +
-          options.query.createTime +
-          "&datesArr=" +
-          options.query.datesArr; //  otherwise go to selectTime
-      }
-    }
-    this.setSponsorAndAttendEvent().then(res => {
-      wx.redirectTo({
-        url: this.globalData.url
+      wx.cloud.callFunction({
+        name: "getEventTime",
+        data: {
+          eventID: options.query.eventId
+        },
+        success: function(res) {
+          // that.setData({
+          //   dates: res.result.data[0].dates,
+          //   Attendee: res.result.data[0].Attendee,
+          //   totaldate: res.result.data[0].dates.length,
+          //   eventName: res.result.data[0].eventName,
+          //   sponser: res.result.data[0].Sponser,
+          //   createDate: res.result.data[0].createDate
+          // });
+          //1. sponsor 点击直接进入event page 2. 非sponsor第一次点击进入select time 3. 非sponsor之后点击进入event page
+          if (
+            that.globalData.user === options.query.sponserId ||
+            that.globalData.user in res.result.data[0].Attendee
+          ) {
+            that.globalData.url =
+              "/pages/event/event?eventId=" + options.query.eventId;
+          } else {
+            that.globalData.url =
+              "/pages/event/event?share=true&eventId=" +
+              options.query.eventId +
+              "&eventName=" +
+              options.query.eventName +
+              "&createTime=" +
+              options.query.createTime +
+              "&datesArr=" +
+              options.query.datesArr; //  otherwise go to selectTime
+          }
+
+          that.setSponsorAndAttendEvent().then(res => {
+            wx.redirectTo({
+              url: that.globalData.url
+            });
+          });
+        },
+        fail: function() {
+          console.log("error");
+        }
       });
-    });
+    } else {
+      this.setSponsorAndAttendEvent().then(res => {
+        wx.redirectTo({
+          url: this.globalData.url
+        });
+      });
+    }
   },
 
   // implement redirection for reopening the app

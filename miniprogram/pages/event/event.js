@@ -13,7 +13,7 @@ Page({
     ],
     nullHouse: true, //先设置隐藏
     display: "",
-    pics: [],
+    pics: {},
     numOfPics: 0,
     times: [
       []

@@ -62,15 +62,26 @@ App({
             that.globalData.url =
               "/pages/event/event?eventId=" + options.query.eventId;
           } else {
-            that.globalData.url =
+            // that.globalData.url =
+            //   "/pages/event/event?share=true&eventId=" +
+            //   options.query.eventId +
+            //   "&eventName=" +
+            //   options.query.eventName +
+            //   "&createTime=" +
+            //   options.query.createTime +
+            //   "&datesArr=" +
+            //   options.query.datesArr; //  otherwise go to selectTime
+
+
+              that.globalData.url =
               "/pages/event/event?share=true&eventId=" +
               options.query.eventId +
               "&eventName=" +
-              options.query.eventName +
+              res.result.data[0].eventName +
               "&createTime=" +
-              options.query.createTime +
+              res.result.data[0].createDate +
               "&datesArr=" +
-              options.query.datesArr; //  otherwise go to selectTime
+              JSON.stringify(res.result.data[0].dates); //  otherwise go to selectTime
           }
 
           that.setSponsorAndAttendEvent().then(res => {

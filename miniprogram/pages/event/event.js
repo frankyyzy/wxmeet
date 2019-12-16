@@ -10,7 +10,7 @@ Page({
     color: [[]],
     nullHouse: true, //先设置隐藏
     display: "",
-    pics: [],
+    pics: {},
     numOfPics: 0,
     times: [[]],
     timer: null,
@@ -165,23 +165,17 @@ Page({
   },
   attendeeUrl: function() {
     var that = this;
-    var picUrl = [];
-
     for (var id in this.data.Attendee) {
       db.collection("users")
         .doc(id)
-        .get({
-          success: function(res) {
-            // res.data 包含该记录的数据
-            picUrl.push(res.data.profilePic);
-            that.setData({
-              pics: picUrl
-            });
-          },
+        .get()
+        .then(res => {
+          // console.log(res)
+          that.data.pics[res.data._id] = [res.data.profilePic, true];
 
-          error: e => {
-            console.log("error");
-          }
+          that.setData({
+            pics: that.data.pics
+          });
         });
     }
   },
@@ -252,9 +246,18 @@ Page({
       return;
     }
     var that = this;
-    var i = parseInt(e.target.dataset.i);
-    var j = parseInt(e.target.dataset.j);
-
+    var i = parseInt(e.target.dataset.i); //gives you what time
+    var j = parseInt(e.target.dataset.j); //gives you what day
+    for (var id in that.data.pics) {
+      if (that.data.Attendee[id][j][i]) {
+        that.data.pics[id][1] = false;
+      } else {
+        that.data.pics[id][1] = true;
+      }
+    }
+    this.setData({
+      pics: that.data.pics
+    });
     // set number of pictures to show
     var numOfPicsToShow = this.data.times[i][j];
     this.setData({
@@ -272,33 +275,7 @@ Page({
     });
 
     // // set the url for profile pics
-    // var attendeeID = [];
-
-    // var attendeeDict = this.data.Attendee;
-
-    // for (var id in attendeeDict) {
-
-    //   if (attendeeDict[id][j]) { // validity check, this shouldn't be necessary if the database is in correct format
-    //     if (attendeeDict[id][j][i]) {
-    //       attendeeID.push(id);
-    //     }
-    //   }
-    // }
-    // var picUrl = []
-    // //get pics or set default pic
-    // for (var id of attendeeID) {
-    //   if (this.data.attendeeID[id] == '') {
-    //     picUrl.push('/image/default.png')
-    //   } else {
-    //     picUrl.push(this.data.attendeeID[id])
-    //   }
-    // }
-    // picUrl.sort()
-    // that.setData({
-    //   pics: picUrl
-    // })
   },
-
   onTouchEnd: function() {
     this.setData({
       nullHouse: true

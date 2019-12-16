@@ -164,19 +164,17 @@ Page({
     });
   },
   attendeeUrl: function() {
-    var that = this;
-    for (var id in this.data.Attendee) {
-      db.collection("users")
-        .doc(id)
-        .get()
-        .then(res => {
-          // console.log(res)
-          that.data.pics[res.data._id] = [res.data.profilePic, true];
-
+    var that = this
+    for (var id in this.data.Attendee){
+      db.collection('users').doc(id).get().then(res => {
+        // console.log(res)
+        that.data.pics[res.data._id] = [res.data.profilePic, true]
+        
           that.setData({
             pics: that.data.pics
-          });
-        });
+          })
+        }
+      )
     }
   },
 
@@ -245,14 +243,15 @@ Page({
       });
       return;
     }
-    var that = this;
-    var i = parseInt(e.target.dataset.i); //gives you what time
-    var j = parseInt(e.target.dataset.j); //gives you what day
-    for (var id in that.data.pics) {
-      if (that.data.Attendee[id][j][i]) {
-        that.data.pics[id][1] = false;
-      } else {
-        that.data.pics[id][1] = true;
+    var that = this
+    var i = parseInt(e.target.dataset.i)//gives you what time
+    var j = parseInt(e.target.dataset.j)//gives you what day
+    for(var id in that.data.pics){
+      if(that.data.Attendee[id][j][i]){
+        that.data.pics[id][1] = false
+      }
+      else{
+        that.data.pics[id][1] = true
       }
     }
     this.setData({

@@ -28,9 +28,11 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
+    console.log(options)
     let that = this
     var datesTitle = ["小时"]
     datesTitle = datesTitle.concat(JSON.parse(options.datesArr))
+    console.log(datesTitle)
     that.setData({
       eventName: options.eventName,
       dates: datesTitle,
@@ -295,7 +297,7 @@ Page({
       },
       success: res => {
         wx.navigateTo({
-          url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
+          url: '/pages/event/event?eventId=' + that.data.eventId,
         })
       }
     })

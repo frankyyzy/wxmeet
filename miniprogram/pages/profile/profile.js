@@ -155,9 +155,8 @@ Page({
           app.globalData.SponsorEvent = res.data.SponsorEvent;
           app.globalData.AttendEvent = res.data.AttendEvent;
 
-          for (let key in app.globalData.SponsorEvent){
-            
-            if (key in app.globalData.AttendEvent){
+          for (let key in app.globalData.SponsorEvent) {
+            if (key in app.globalData.AttendEvent) {
               delete app.globalData.AttendEvent[key];
             }
           }

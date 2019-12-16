@@ -34,8 +34,6 @@ App({
 
   handleLogin(res, options) {
     this.globalData.user = res.result.openId;
-    console.log("handleLogin");
-    console.log(this.globalData.user);
     this.checkAuthorize();
     var that = this;
 
@@ -72,8 +70,7 @@ App({
             //   "&datesArr=" +
             //   options.query.datesArr; //  otherwise go to selectTime
 
-
-              that.globalData.url =
+            that.globalData.url =
               "/pages/event/event?share=true&eventId=" +
               options.query.eventId +
               "&eventName=" +

@@ -1,7 +1,6 @@
 // pages/loading/loading.js
-const app = getApp()
+const app = getApp();
 Page({
-
   /**
    * Page initial data
    */
@@ -12,64 +11,55 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function (options) {
-    var that = this
+  onLoad: function(options) {
+    var that = this;
     this.setData({
-      timer: setInterval(function () {
+      timer: setInterval(function() {
         that.setData({
           url: app.globalData.url
-        })
+        });
       }, 1000)
-    })
+    });
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function () {
+  onReady: function() {
     // this.setData({
-      // url: app.globalData.url
+    // url: app.globalData.url
     // })
   },
 
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function (res) {
-  }, 
+  onShow: function(res) {},
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function () {
-    clearInterval(this.data.timer)
+  onHide: function() {
+    clearInterval(this.data.timer);
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function () {
-
-  },
+  onUnload: function() {},
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function () {
-
-  },
+  onPullDownRefresh: function() {},
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function () {
-
-  },
+  onReachBottom: function() {},
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function () {
-
-  }
-})
+  onShareAppMessage: function() {}
+});

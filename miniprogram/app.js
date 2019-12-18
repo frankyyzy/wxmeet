@@ -6,12 +6,14 @@ App({
     SponsorEvent: [],
     url: "/pages/profile/profile", //used in app.js and authorize.js, initial page(profile/masterEvent) to go to, include the eventID param
     userSet: false,
-    share: false
+    share: false,
+    options:''
   },
 
   // implement login, authorize functionality, redirection if the user open the app for the first time
-  onLaunch: function(options) {
+  onLaunch: function (options) {
     var that = this;
+    this.globalData.options = options;
     if (options.query.share) this.globalData.share = true;
     else this.globalData.share = false;
 
@@ -25,12 +27,28 @@ App({
       });
     }
     //perform login and authorization
+    // wx.cloud.callFunction({
+    //   name: "login",
+    //   complete: res => that.handleLogin(res, options)
+    // });
+    this.initialLogin();
+  },
+  initialLogin(){
+    var that = this
+
+    let promise = new Promise(function (resolve, reject){
+
     wx.cloud.callFunction({
       name: "login",
-      complete: res => that.handleLogin(res, options)
+      complete: function(res) {
+        that.handleLogin(res, that.globalData.options)
+        resolve()
+      }
     });
-  },
+  })
+  return promise;
 
+  },
   handleLogin(res, options) {
     this.globalData.user = res.result.openId;
     this.checkAuthorize();
@@ -42,7 +60,7 @@ App({
         data: {
           eventID: options.query.eventId
         },
-        success: function(res) {
+        success: function (res) {
           // that.setData({
           //   dates: res.result.data[0].dates,
           //   Attendee: res.result.data[0].Attendee,
@@ -86,25 +104,23 @@ App({
             });
           });
         },
-        fail: function() {
+        fail: function () {
           console.log("error");
         }
       });
     } else {
-      this.setSponsorAndAttendEvent().then(res => {
-        wx.redirectTo({
-          url: this.globalData.url
-        });
-      });
+      this.setSponsorAndAttendEvent()
     }
   },
 
   // implement redirection for reopening the app
-  onShow: function(options) {
+  onShow: function (options) {
     var that = this;
+    if (options.query.share) this.globalData.share = true;
+    else this.globalData.share = false;
     if (this.globalData.user != null) {
       this.checkAuthorize();
-      if (options.query.share) {
+      if (this.globalData.share) {
         if (this.globalData.user === options.query.sponserId) {
           this.globalData.url =
             "/pages/masterEvent/masterEvent?eventId=" + options.query.eventId;
@@ -125,6 +141,7 @@ App({
   },
 
   setSponsorAndAttendEvent() {
+    return
     var that = this;
     const db = wx.cloud.database();
 
@@ -132,29 +149,42 @@ App({
       db.collection("users")
         .doc(that.globalData.user)
         .get({
-          fail: function() {
+          fail: function () {
             that.setNewUser();
           },
-          success: function(res) {
+          success: function (res) {
             that.globalData.SponsorEvent = res.data.SponsorEvent;
             that.globalData.AttendEvent = res.data.AttendEvent;
+            for (let key in app.globalData.SponsorEvent) {
+              if (key in app.globalData.AttendEvent) {
+                delete app.globalData.AttendEvent[key];
+              }
+            }
+  
+  
+            app.globalData.SponsorEvent = res.data.SponsorEvent
+            app.globalData.AttendEvent = res.data.AttendEvent
+            that.setData({
+              SponsorEvent: app.globalData.SponsorEvent,
+              AttendEvent: app.globalData.AttendEvent
+            })
             resolve();
           }
         });
     });
   },
-  checkAuthorize: function() {
+  checkAuthorize: function () {
     let that = this;
     wx.getSetting({
-      success: function(res) {
+      success: function (res) {
         if (res.authSetting["scope.userInfo"]) {
           //授权了，可以获取用户信息了
           wx.getUserInfo({
-            success: function(res) {
+            success: function (res) {
               that.updateUser(res.userInfo);
               that.globalData.authorize = true;
             },
-            fail: function() {
+            fail: function () {
               console.log("fail");
               that.globalData.authorize = false;
             }
@@ -164,13 +194,13 @@ App({
           that.globalData.authorize = false;
         }
       },
-      fail: function() {
+      fail: function () {
         that.globalData.authorize = false;
         console.log("can't get setting");
       }
     });
   },
-  setNewUser: function() {
+  setNewUser: function () {
     let that = this;
     wx.cloud.callFunction({
       name: "createUser",
@@ -182,7 +212,7 @@ App({
       }
     });
   },
-  updateUser: function(info) {
+  updateUser: function (info) {
     wx.cloud.callFunction({
       name: "updateUser",
       data: {
@@ -190,7 +220,7 @@ App({
         nickName: info.nickName,
         profilePic: info.avatarUrl
       },
-      success: res => {}
+      success: res => { }
     });
   }
 });

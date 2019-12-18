@@ -16,18 +16,18 @@ Page({
   /*
    * Lifecycle function--Called when page load
    */
-  onLoad: function(options) {
-    this.onUpdateEvents()
-    this.setData({
-      SponsorEvent: app.globalData.SponsorEvent,
-      AttendEvent: app.globalData.AttendEvent
-    })
+  onLoad: function (options) {
+
+    // this.setData({
+      // SponsorEvent: app.globalData.SponsorEvent,
+      // AttendEvent: app.globalData.AttendEvent
+    // })
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
+  onReady: function () {
 
 
   },
@@ -35,27 +35,35 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
-    this.onUpdateEvents()
+  onShow: function () {
+    var that = this;
+    if(app.globalData.user == null){
+      app.initialLogin().then(res => {
+        that.onUpdateEvents()
+      })
+    }
+    else{
+      this.onUpdateEvents()
+    }
   },
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
     this.onUpdateEvents();
 
@@ -65,32 +73,32 @@ Page({
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   },
 
-  onCreateEventTap: function() {
+  onCreateEventTap: function () {
     var edit = false
     wx.navigateTo({
       url: '../createEvent/createEvent?edit=' + edit,
     })
   },
 
-  onSponserEventTap: function(event) {
+  onSponserEventTap: function (event) {
     let eventId = event.currentTarget.id
     wx.navigateTo({
       url: '../event/event?eventId=' + eventId,
     })
   },
 
-  onAttendingEventTap: function(event) {
+  onAttendingEventTap: function (event) {
     let eventId = event.currentTarget.id
 
     wx.navigateTo({
@@ -98,7 +106,7 @@ Page({
     })
   },
 
-  onCreateLongPress: function(event) {
+  onCreateLongPress: function (event) {
     let that = this
     let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
@@ -106,14 +114,14 @@ Page({
     wx.showModal({
       title: '提示',
       content: '确定要删除此事件吗？',
-      success: function(res) {
+      success: function (res) {
         if (res.confirm) {
           delete sponsorE[id]
           that.setData({
             SponsorEvent: sponsorE
           })
           db.collection('events').doc(id).get({
-            success: function(res) {
+            success: function (res) {
               var Attendeelist = res.data.Attendee
               Attendeelist[res.data.Sponser] = {}
               wx.cloud.callFunction({
@@ -125,11 +133,11 @@ Page({
               })
             }
           })
-        } else {}
+        } else { }
       }
     })
   },
-  onAttendLongPress: function(event) {
+  onAttendLongPress: function (event) {
     let that = this
     let id = event.currentTarget.id
     var AttendEvent = this.data.AttendEvent
@@ -137,7 +145,7 @@ Page({
     wx.showModal({
       title: '提示',
       content: '确定要取消加入此事件吗？',
-      success: function(res) {
+      success: function (res) {
         if (res.confirm) {
           delete AttendEvent[id]
           that.setData({
@@ -157,15 +165,15 @@ Page({
   },
 
 
-  onUpdateEvents: function() {
-
+  onUpdateEvents: function () {
+    wx.showLoading()
     var that = this;
 
     const db = wx.cloud.database();
     db.collection("users")
       .doc(app.globalData.user)
       .get({
-        success: function(res) {
+        success: function (res) {
           app.globalData.SponsorEvent = res.data.SponsorEvent;
           app.globalData.AttendEvent = res.data.AttendEvent;
 
@@ -176,19 +184,20 @@ Page({
           }
 
 
-        app.globalData.SponsorEvent = res.data.SponsorEvent
-        app.globalData.AttendEvent = res.data.AttendEvent
-        that.setData({
-          SponsorEvent: app.globalData.SponsorEvent,
-          AttendEvent: app.globalData.AttendEvent
-        })
-        wx.stopPullDownRefresh();
+          app.globalData.SponsorEvent = res.data.SponsorEvent
+          app.globalData.AttendEvent = res.data.AttendEvent
+          that.setData({
+            SponsorEvent: app.globalData.SponsorEvent,
+            AttendEvent: app.globalData.AttendEvent
+          })
+          wx.stopPullDownRefresh();
+          wx.hideLoading();
 
-      },
-      fail: function(res) {
-        console.error('error on updating ');
-      }
-    })
+        },
+        fail: function (res) {
+          console.error('error on updating ');
+        }
+      })
   }
 
 })

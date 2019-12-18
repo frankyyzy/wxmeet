@@ -1,20 +1,16 @@
 <!--pages/profile/profile.wxml-->
-
 <image src="/image/wxmeet.jpg" class="headerimage"></image>
-
 <button type="primary" bindtap="onCreateEventTap" size="default" class="createButton">我要组局</button>
-
-
 <view class="title">| 我组的局</view>
 <view wx:for="{{SponsorEvent}}" id="{{index}}" wx:key="*this" bindtap="onSponserEventTap" bindlongpress='onCreateLongPress'>
   <button class="items">{{item[0]}}</button>
   <view class="divLine"></view>
 </view>
-
-
-
 <view class="title">| 我加入的局</view>
 <view wx:for="{{AttendEvent}}" id="{{index}}" wx:key="*this" bindtap="onAttendingEventTap" bindlongpress='onAttendLongPress'>
   <button class="items">{{item[0]}}</button>
   <view class="divLine"></view>
 </view>
+<div class="help">
+  <button>使用帮助</button>
+</div>

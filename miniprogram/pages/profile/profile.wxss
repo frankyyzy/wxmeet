@@ -26,3 +26,8 @@
 .items {
   margin: 0.2em;
 }
+.help {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+}

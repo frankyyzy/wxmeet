@@ -9,19 +9,15 @@ Page({
    * Page initial data
    */
   data: {
-    SponsorEvent: app.globalData.SponsorEvent,
-    AttendEvent: app.globalData.AttendEvent,
+    SponsorEvent: [],
+    AttendEvent: [],
     timer: null
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-
-    // this.setData({
-      // SponsorEvent: app.globalData.SponsorEvent,
-      // AttendEvent: app.globalData.AttendEvent
-    // })
+    wx.showLoading()
   },
 
   /**
@@ -37,12 +33,11 @@ Page({
    */
   onShow: function () {
     var that = this;
-    if(app.globalData.user == null){
+    if (app.globalData.user == null) {
       app.initialLogin().then(res => {
         that.onUpdateEvents()
       })
-    }
-    else{
+    } else {
       this.onUpdateEvents()
     }
   },
@@ -133,7 +128,7 @@ Page({
               })
             }
           })
-        } else { }
+        } else {}
       }
     })
   },
@@ -166,29 +161,25 @@ Page({
 
 
   onUpdateEvents: function () {
-    wx.showLoading()
     var that = this;
 
-    const db = wx.cloud.database();
     db.collection("users")
       .doc(app.globalData.user)
       .get({
         success: function (res) {
-          app.globalData.SponsorEvent = res.data.SponsorEvent;
-          app.globalData.AttendEvent = res.data.AttendEvent;
-
-          for (let key in app.globalData.SponsorEvent) {
-            if (key in app.globalData.AttendEvent) {
-              delete app.globalData.AttendEvent[key];
+          var SponsorEvent = res.data.SponsorEvent;
+          var AttendEvent = res.data.AttendEvent;
+          // console.log(SponsorEvent)
+          for (var key in SponsorEvent) {
+            if (key in AttendEvent) {
+              delete AttendEvent[key];
             }
           }
 
 
-          app.globalData.SponsorEvent = res.data.SponsorEvent
-          app.globalData.AttendEvent = res.data.AttendEvent
           that.setData({
-            SponsorEvent: app.globalData.SponsorEvent,
-            AttendEvent: app.globalData.AttendEvent
+            SponsorEvent: SponsorEvent,
+            AttendEvent: AttendEvent
           })
           wx.stopPullDownRefresh();
           wx.hideLoading();

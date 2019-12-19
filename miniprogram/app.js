@@ -7,12 +7,11 @@ App({
     url: "/pages/profile/profile", //used in app.js and authorize.js, initial page(profile/masterEvent) to go to, include the eventID param
     userSet: false,
     share: false,
-    options:''
+    options: ''
   },
 
   // implement login, authorize functionality, redirection if the user open the app for the first time
   onLaunch: function (options) {
-    var that = this;
     this.globalData.options = options;
     if (options.query.share) this.globalData.share = true;
     else this.globalData.share = false;
@@ -26,27 +25,22 @@ App({
         traceUser: true
       });
     }
-    //perform login and authorization
-    // wx.cloud.callFunction({
-    //   name: "login",
-    //   complete: res => that.handleLogin(res, options)
-    // });
     this.initialLogin();
   },
-  initialLogin(){
+  initialLogin() {
     var that = this
 
-    let promise = new Promise(function (resolve, reject){
+    let promise = new Promise(function (resolve, reject) {
 
-    wx.cloud.callFunction({
-      name: "login",
-      complete: function(res) {
-        that.handleLogin(res, that.globalData.options)
-        resolve()
-      }
-    });
-  })
-  return promise;
+      wx.cloud.callFunction({
+        name: "login",
+        complete: function (res) {
+          that.handleLogin(res, that.globalData.options)
+          resolve()
+        }
+      });
+    })
+    return promise;
 
   },
   handleLogin(res, options) {
@@ -98,18 +92,14 @@ App({
               JSON.stringify(res.result.data[0].dates); //  otherwise go to selectTime
           }
 
-          that.setSponsorAndAttendEvent().then(res => {
-            wx.redirectTo({
-              url: that.globalData.url
-            });
+          wx.redirectTo({
+            url: that.globalData.url
           });
         },
         fail: function () {
           console.log("error");
         }
       });
-    } else {
-      this.setSponsorAndAttendEvent()
     }
   },
 
@@ -135,44 +125,10 @@ App({
             "&datesArr=" +
             options.query.datesArr; //  otherwise go to selectTime
         }
-        this.setSponsorAndAttendEvent();
       }
     }
   },
 
-  setSponsorAndAttendEvent() {
-    return
-    var that = this;
-    const db = wx.cloud.database();
-
-    return new Promise((resolve, reject) => {
-      db.collection("users")
-        .doc(that.globalData.user)
-        .get({
-          fail: function () {
-            that.setNewUser();
-          },
-          success: function (res) {
-            that.globalData.SponsorEvent = res.data.SponsorEvent;
-            that.globalData.AttendEvent = res.data.AttendEvent;
-            for (let key in app.globalData.SponsorEvent) {
-              if (key in app.globalData.AttendEvent) {
-                delete app.globalData.AttendEvent[key];
-              }
-            }
-  
-  
-            app.globalData.SponsorEvent = res.data.SponsorEvent
-            app.globalData.AttendEvent = res.data.AttendEvent
-            that.setData({
-              SponsorEvent: app.globalData.SponsorEvent,
-              AttendEvent: app.globalData.AttendEvent
-            })
-            resolve();
-          }
-        });
-    });
-  },
   checkAuthorize: function () {
     let that = this;
     wx.getSetting({
@@ -206,9 +162,6 @@ App({
       name: "createUser",
       data: {
         id: that.globalData.user
-      },
-      success: res => {
-        that.setSponsorAndAttendEvent();
       }
     });
   },
@@ -220,8 +173,7 @@ App({
         nickName: info.nickName,
         profilePic: info.avatarUrl
       },
-      success: res => { }
+      success: res => {}
     });
   }
 });
-

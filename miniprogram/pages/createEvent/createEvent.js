@@ -22,19 +22,20 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
-    let that = this;
+  onLoad: function (options) {
     this.setData({
       user: app.globalData.user
     });
     var initDate = [];
+    //get current date
     let date = new Date();
-
+    //get how many days this month has
     let lastDay = new Date(
       date.getFullYear(),
       date.getMonth() + 1,
       0
     ).getDate();
+    //color up the days
     for (var i = 1; i <= lastDay; i++) {
       var col = "LightGray";
       if (i === date.getDate()) {
@@ -49,8 +50,11 @@ Page({
         });
       } else if (i > date.getDate()) {
         var colorDate = new Date(date.getFullYear(), date.getMonth(), i);
+        //check if saturday
         if (colorDate.getDay() === 6) col = "CornflowerBlue";
+        //check if sunday
         else if (colorDate.getDay() === 0) col = "LightCoral";
+        //otherwise it is a weekday
         else col = "black";
       }
       initDate.push({
@@ -75,7 +79,6 @@ Page({
       0
     ).getDate();
     for (var i = 1; i <= nextMonthLastDay; i++) {
-      // if (i === date.getDate()) col = 'red'
       var colorDate = new Date(
         nextMonthDate.getFullYear(),
         nextMonthDate.getMonth(),
@@ -111,7 +114,7 @@ Page({
     });
   },
   //根据指定年月获得当月天数
-  dayClick: function(event) {
+  dayClick: function (event) {
     if (this.checkDate(event) == false) return;
     let index = event.detail.day;
     let month = event.detail.month;
@@ -119,9 +122,9 @@ Page({
     var chosenStyle =
       month == this.data.currMonth ? this.data.dayStyle1 : this.data.dayStyle2;
     var chosenCopy =
-      month == this.data.currMonth
-        ? this.data.currMonthCopy
-        : this.data.nextMonthCopy;
+      month == this.data.currMonth ?
+      this.data.currMonthCopy :
+      this.data.nextMonthCopy;
     if (chosenStyle[index].selected) {
       chosenStyle[index] = chosenCopy[index];
       this.data.size--;
@@ -137,7 +140,6 @@ Page({
         month: "current",
         day: index,
         color: "white",
-        // background: '#09B83E',
         background: "MediumSeaGreen",
         monthNum: month,
         selected: true
@@ -149,16 +151,14 @@ Page({
       dayStyle2: this.data.dayStyle2
     });
   },
-  checkDate: function(event) {
-    if (event.detail.month > this.data.currMonth) return true;
-    if (
-      event.detail.month == this.data.currMonth &&
-      event.detail.day >= this.data.currDate
-    )
-      return true;
+  checkDate: function (event) {
+    if (event.detail.year > this.data.currMonthYear ||
+      event.detail.month > this.data.currMonth) return true;
+    if (event.detail.month == this.data.currMonth &&
+      event.detail.day >= this.data.currDate) return true;
     return false;
   },
-  onSubmitTap: function() {
+  onSubmitTap: function () {
     if (this.data.eventName == "") {
       wx.showToast({
         icon: "none",
@@ -192,8 +192,7 @@ Page({
     datesArr = JSON.stringify(datesArr);
     console.log(datesArr);
     wx.navigateTo({
-      url:
-        "/pages/selectTime/selectTime?eventName=" +
+      url: "/pages/selectTime/selectTime?eventName=" +
         that.data.eventName +
         "&datesArr=" +
         datesArr +

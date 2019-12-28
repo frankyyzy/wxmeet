@@ -1,3 +1,4 @@
+event
 <view class="title">
   {{eventName}}
 </view>

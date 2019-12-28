@@ -1,13 +1,31 @@
 <!-- pages/profile/profile.wxml -->
-<image src="/image/wxmeet.jpg" class="headerimage"></image>
 <button type="primary" bindtap="onCreateEventTap" size="default" class="createButton">我要组局</button>
-<view class="title">| 我组的局</view>
-<view wx:for="{{SponsorEvent}}" id="{{index}}" wx:key="*this" bindtap="onSponserEventTap" bindlongpress='onCreateLongPress'>
-  <button class="items">{{item[0]}}</button>
-  <view class="divLine"></view>
+<view class="page">
+<view class="page__bd">
+  <view class="weui-cells__title">我发起的局</view>
+  <view class="weui-cells weui-cells_after-title" wx:for="{{SponsorEvent}}" id="{{index}}" wx:key="*this" bindtouchmove="touchmove" bindtouchstart="touchstart" bindtap="onSponserEventTap">
+    <view class="weui-slideview">
+        <view class="weui-cell" style="right:{{item.right}}rpx">
+            <view class="weui-cell__bd">{{item[0]}}</view>
+            <view class="weui-cell__ft">说明文字</view>
+          </view>
+        </view>
+        <view class="weui-slideview__right" style="width:207px;line-height:56px;">
+        <view class="weui-slideview__btn__wrp weui-slideview__btn-group_warn" style="transform:translateX(-69px);">
+        <view wx-if="{{item.right!=0}}" class="weui-slideview__btn" bindtap="deleteEvent">{{item.right}}删除</view>
+        </view>
+        </view>
+    </view>
+  </view>
+<view class="page__bd">
+  <view class="weui-cells__title">我参加的局</view>
+  <view class="weui-cells weui-cells_after-title" wx:for="{{AttendEvent}}" id="{{index}}" wx:key="*this" bindtap="onAttendingEventTap" bindlongpress='onAttendLongPress'>
+    <view class="weui-slideview">
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{item[0]}}</view>
+            <view class="weui-cell__ft">说明文字</view>
+        </view>
+    </view>
+  </view>
 </view>
-<view class="title">| 我加入的局</view>
-<view wx:for="{{AttendEvent}}" id="{{index}}" wx:key="*this" bindtap="onAttendingEventTap" bindlongpress='onAttendLongPress'>
-  <button class="items">{{item[0]}}</button>
-  <view class="divLine"></view>
 </view>

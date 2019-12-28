@@ -16,7 +16,9 @@ Page({
     nextMonthCopy: [{}],
     nextMonthYear: 2019,
     nextMonth: 10,
-    size: 0
+    size: 0,
+    startHour:0,
+    endHour:24
   },
 
   /**
@@ -110,6 +112,18 @@ Page({
       eventName: event.detail.value
     });
   },
+  bindStartHour(event){
+    this.setData({
+      startHour: event.detail.value
+    });
+    console.log(this.data.startHour);
+  },
+  bindEndHour(event){
+    this.setDate({
+      endHour:event.detail.value
+    });
+    console.log(this.data.endHour);
+  },
   //根据指定年月获得当月天数
   dayClick: function(event) {
     if (this.checkDate(event) == false) return;
@@ -198,7 +212,11 @@ Page({
         "&datesArr=" +
         datesArr +
         "&isCreate=" +
-        true
+        true +
+        "&startHour=" +
+        that.data.startHour+
+        "&endHour=" +
+        that.data.endHour
     });
   }
 });

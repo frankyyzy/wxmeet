@@ -11,6 +11,9 @@ exports.main = async (event, context) => {
         eventName: event.name,
         dates: event.dates,
         createDate: event.createDate,
+        startTime:event.startTime,
+        endTime: event.endTime,
+        startTime: event.startTime,
         Sponser: event.id,
         Attendee: {},
       }

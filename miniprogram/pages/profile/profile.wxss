@@ -1,4 +1,5 @@
 /* pages/profile/profile.wxss */
+
 .headerimage{
   width: 100%;
 }

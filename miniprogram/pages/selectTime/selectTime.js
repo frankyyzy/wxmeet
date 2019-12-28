@@ -21,7 +21,9 @@ Page({
     timer: null,
     startHour: null,
     startDate: null,
-    rowHeight: 30 // in px
+    rowHeight: 30, // in px
+    startTime: null,
+    endTime: 24
   },
 
   /**
@@ -37,7 +39,9 @@ Page({
       eventName: options.eventName,
       dates: datesTitle,
       totaldate: datesTitle.length,
-      user: app.globalData.user
+      user: app.globalData.user,
+      startTime:options.startHour,
+      endTime:options.endTime
     });
     var intervals = [];
     for (var i = 0; i < that.data.totaldate - 1; i++) {
@@ -205,7 +209,9 @@ Page({
           id: that.data.user,
           name: that.data.eventName,
           dates: that.data.dates,
-          createDate: createTime
+          createDate: createTime,
+          startTime: that.data.startTime,
+          endTime: that.data.endTime
         },
         success: res => {
           that.setData({

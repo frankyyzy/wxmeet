@@ -193,7 +193,6 @@ Page({
     })
     return; 
   },
-  //滑动事件处理
   touchmove: function (event) {
     console.log("touchmove called");
     let that = this;
@@ -204,15 +203,13 @@ Page({
     let startY = that.data.startY;//开始Y坐标
     let touchMoveX = event.changedTouches[0].clientX//滑动变化坐标
     let touchMoveY = event.changedTouches[0].clientY//滑动变化坐标
-    //获取滑动角度
     let angle = that.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
     for(let i in sponsorE){
-      //滑动超过30度角 return
       if (Math.abs(angle) > 30) return;
       if (i == index) {
-        if (touchMoveX > startX) //右滑
+        if (touchMoveX > startX)
           sponsorE[i].right = 0
-        else{ //左滑
+        else{ 
           if(startX-touchMoveX>207)
             sponsorE[i].right=207; 
           else
@@ -221,7 +218,6 @@ Page({
       }
       console.log(sponsorE[i]);
     }
-    //更新数据
     that.setData({
       sponsorE: that.data.SponsorEvent
     })
@@ -232,7 +228,6 @@ Page({
   angle: function (start, end) {
     var _X = end.X - start.X,
       _Y = end.Y - start.Y
-    //返回角度 /Math.atan()返回数字的反正切值
     return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
   },
   deleteEvent:function(){

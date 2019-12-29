@@ -182,7 +182,7 @@ Page({
     var sponsorE = this.data.SponsorEvent;
     //reset all other delete button when new event is selected
     for (let index in sponsorE) {
-      sponsorE[index].right=0;
+      sponsorE[index].right=207;
       console.log(sponsorE[index]);
     }
     

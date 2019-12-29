@@ -12,7 +12,7 @@
         </view>
         <view class="weui-slideview__right" style="width:207px;line-height:56px;">
         <view class="weui-slideview__btn__wrp weui-slideview__btn-group_warn" style="transform:translateX(-69px);">
-        <view wx-if="{{item.right!=0}}" class="weui-slideview__btn" bindtap="deleteEvent">{{item.right}}删除</view>
+        <view wx-if="{{item.right==207}}" class="weui-slideview__btn" bindtap="deleteEvent">{{item.right}}删除</view>
         </view>
         </view>
     </view>

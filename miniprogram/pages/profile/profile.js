@@ -10,36 +10,47 @@ Page({
   data: {
     SponsorEvent: app.globalData.SponsorEvent,
     AttendEvent: app.globalData.AttendEvent,
-    timer: null
+    listR:[10, 12],
+    timer: null,
+      delBtnWidth: 130,
+      data: [{ content: "1", right: 0 }, { content: "2", right: 0 }, { content: "3", right: 0 }, { content: "4", right: 0 }, { content: "5", right: 0 }, { content: "6", right: 0 }, { content: "7", right: 0 }, { content: "8", right: 0 }, { content: "9", right: 0 }, { content: "10", right: 0 }],
+      isScroll: true,
+      windowHeight: 0
   },
   /*
    * Lifecycle function--Called when page load
    */
   onLoad: function(options) {
     console.log("onLoad");
-    console.log(this.data.SponsorEvent);
-    // this.onUpdateEvents()
-    // this.setData({
-    //   SponsorEvent: app.globalData.SponsorEvent,
-    //   AttendEvent: app.globalData.AttendEvent
-    // })
+    //this.onUpdateEvents()  
+    this.setData({
+      SponsorEvent: app.globalData.SponsorEvent,
+      AttendEvent: app.globalData.AttendEvent
+    })
+    var that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          windowHeight: res.windowHeight
+        });
+      }
+    });
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
-    console.log("on ready");
-  },
+  onReady: function() {},
 
   /**
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+    console.log("onShow");
     if (app.globalData.user) {
       this.onUpdateEvents();
+      console.log("update events");
     }
-    console.log("on show"+this.data.SponsorEvent);
   },
   /**
    * Lifecycle function--Called when page hide
@@ -77,9 +88,10 @@ Page({
 
   onSponserEventTap: function(event) {
     let eventId = event.currentTarget.id;
-    wx.navigateTo({
-      url: "../event/event?eventId=" + eventId
-    });
+    if(this.data.SponsorEvent[eventId][2]==0)
+      wx.navigateTo({
+        url: "../event/event?eventId=" + eventId
+      });
   },
 
   onAttendingEventTap: function(event) {
@@ -124,6 +136,7 @@ Page({
       }
     });
   },
+
   onAttendLongPress: function(event) {
     let that = this;
     let id = event.currentTarget.id;
@@ -149,6 +162,7 @@ Page({
       }
     });
   },
+
   onUpdateEvents: function() {
     var that = this;
     const db = wx.cloud.database();
@@ -158,13 +172,11 @@ Page({
         success: function(res) {
           app.globalData.SponsorEvent = res.data.SponsorEvent;
           app.globalData.AttendEvent = res.data.AttendEvent;
-
           for (let key in app.globalData.SponsorEvent) {
             if (key in app.globalData.AttendEvent) {
               delete app.globalData.AttendEvent[key];
             }
           }
-
           that.setData({
             SponsorEvent: app.globalData.SponsorEvent,
             AttendEvent: app.globalData.AttendEvent
@@ -176,74 +188,94 @@ Page({
         }
       });
   },
+
   touchstart: function (event) {
-    console.log("touch start called");
     let id = event.currentTarget.id;
     var sponsorE = this.data.SponsorEvent;
     //reset all other delete button when new event is selected
     for (let index in sponsorE) {
-      sponsorE[index].right=207;
-      console.log(sponsorE[index]);
+      sponsorE[index][2]=0;
     }
-    
+    this.data.SponsorEvent=sponsorE;
     this.setData({
+      isTouch:true,
       startX: event.changedTouches[0].clientX,
       startY: event.changedTouches[0].clientY,
-      sponsorE: this.data.SponsorEvent
+      SponsorEvent: this.data.SponsorEvent,
     })
-    return; 
   },
+
   touchmove: function (event) {
-    console.log("touchmove called");
-    let that = this;
     let id = event.currentTarget.id;
-    var sponsorE = that.data.SponsorEvent;
-    let index = event.currentTarget.dataset.index;//当前索引
-    let startX = that.data.startX;//开始X坐标
-    let startY = that.data.startY;//开始Y坐标
+    var sponsorE = this.data.SponsorEvent;
+    let startX = this.data.startX;//开始X坐标
+    let startY = this.data.startY;//开始Y坐标
     let touchMoveX = event.changedTouches[0].clientX//滑动变化坐标
     let touchMoveY = event.changedTouches[0].clientY//滑动变化坐标
-    let angle = that.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
-    for(let i in sponsorE){
-      if (Math.abs(angle) > 30) return;
-      if (i == index) {
-        if (touchMoveX > startX)
-          sponsorE[i].right = 0
-        else{ 
-          if(startX-touchMoveX>207)
-            sponsorE[i].right=207; 
-          else
-            sponsorE[i].right=startX-touchMoveX;
-        }
-      }
-      console.log(sponsorE[i]);
+    let angle = this.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
+    if (Math.abs(angle) > 30) return;
+    if (touchMoveX > startX)
+      sponsorE[id][2] = 0;
+    else{ 
+      if (startX - touchMoveX > this.data.delBtnWidth)
+        sponsorE[id][2] = this.data.delBtnWidth; 
+      else
+        sponsorE[id][2]=startX-touchMoveX;
     }
-    that.setData({
-      sponsorE: that.data.SponsorEvent
+    this.data.SponsorEvent = sponsorE;
+    this.setData({
+      SponsorEvent: this.data.SponsorEvent,
     })
   },
-  bindEnd:function(){
-    console.log("bindend called");
+
+  bindEnd:function(event){
+    var item = this.data.SponsorEvent[event.currentTarget.id];
+    if(item[2]>=this.data.delBtnWidth / 2){
+      item[2] = this.data.delBtnWidth;
+      this.data.SponsorEvent[event.currentTarget.id] = item;
+      this.setData({
+        SponsorEvent:this.data.SponsorEvent
+      })
+    }else{
+      item[2] = 0;
+      this.data.SponsorEvent[event.currentTarget.id]=item;
+      this.setData({
+        SponsorEvent:this.data.SponsorEvent
+      })
+    }
   },
+
   angle: function (start, end) {
     var _X = end.X - start.X,
       _Y = end.Y - start.Y
     return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
   },
-  deleteEvent:function(){
+
+  deleteEvent:function(event){
     let that = this;
-    let id = event.currentTarget.id;
-    var AttendEvent = this.data.AttendEvent;
-    delete AttendEvent[id];
+    let id = event.currentTarget.dataset.id;
+    var sponsorE=this.data.SponsorEvent;
+    if (this.data.SponsorEvent[id][2] != this.data.delBtnWidth) return;
+    delete sponsorE[id];
     that.setData({
-      AttendEvent: AttendEvent  
+      SponsorEvent: sponsorE
     });
-    wx.cloud.callFunction({
-      name: "deleteAttendEvent",
-      data: {
-        eventId: id,
-        userId: app.globalData.user
-      }
-    });
+    db.collection("events")
+      .doc(id)
+      .get({
+        success: function (res) {
+          var Attendeelist = res.data.Attendee;
+          Attendeelist[res.data.Sponser] = {};
+          wx.cloud.callFunction({
+            name: "deleteEventUser",
+            data: {
+              eventId: id,
+              Attendee: Attendeelist
+            }
+          });
+        }
+      });
+    console.log("event deleted");
   }
+
 });

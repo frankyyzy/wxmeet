@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "calendar": "plugin://calendar/calendar"
+  },
+  "disableScroll": false
 }

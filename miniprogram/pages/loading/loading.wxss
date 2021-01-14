@@ -1,10 +1,17 @@
 /* pages/loading/loading.wxss */
 
-.header {
-    margin: 90rpx 0 90rpx 50rpx;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-    width: 650rpx;
-    height: 300rpx;
-    line-height: 450rpx;
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.body {
+  display: flex;
+}
+
+.link {
+  text-decoration: underline mediumseagreen;
+  color: mediumseagreen;
 }

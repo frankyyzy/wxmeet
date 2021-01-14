@@ -9,25 +9,21 @@ Page({
    * Page initial data
    */
   data: {
-    SponsorEvent: app.globalData.SponsorEvent,
-    AttendEvent: app.globalData.AttendEvent,
+    SponsorEvent: [],
+    AttendEvent: [],
     timer: null
   },
   /*
    * Lifecycle function--Called when page load
    */
-  onLoad: function(options) {
-    this.setData({
-      SponsorEvent: app.globalData.SponsorEvent,
-      AttendEvent: app.globalData.AttendEvent
-    })
-
+  onLoad: function (options) {
+    wx.showLoading()
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
+  onReady: function () {
 
 
   },
@@ -35,78 +31,85 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
-    this.onUpdateEvents()
+  onShow: function () {
+    var that = this;
+    if (app.globalData.user == null) {
+      app.initialLogin().then(res => {
+        that.onUpdateEvents()
+      })
+    } else {
+      this.onUpdateEvents()
+    }
   },
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
     this.onUpdateEvents();
+
 
   },
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   },
 
-  onCreateEventTap: function() {
+  onCreateEventTap: function () {
     var edit = false
     wx.navigateTo({
       url: '../createEvent/createEvent?edit=' + edit,
     })
   },
 
-  onSponserEventTap: function(event) {
-    console.log(event)
+  onSponserEventTap: function (event) {
     let eventId = event.currentTarget.id
-    console.log(eventId)
     wx.navigateTo({
-      url: '../masterEvent/masterEvent?eventId=' + eventId,
+      url: '../event/event?eventId=' + eventId,
     })
   },
 
-  onAttendingEventTap: function() {
-    wx.redirectTo({
-      url: '../guestEvent/guestEvent',
+  onAttendingEventTap: function (event) {
+    let eventId = event.currentTarget.id
+
+    wx.navigateTo({
+      url: '../event/event?eventId=' + eventId,
     })
   },
 
-  onLongPress: function(event) {
+  onCreateLongPress: function (event) {
     let that = this
     let id = event.currentTarget.id
     var sponsorE = this.data.SponsorEvent
-    
-    console.log(id)
+
     wx.showModal({
       title: '提示',
       content: '确定要删除此事件吗？',
-      success: function(res) {
+      success: function (res) {
         if (res.confirm) {
           delete sponsorE[id]
           that.setData({
@@ -115,6 +118,7 @@ Page({
           db.collection('events').doc(id).get({
             success: function (res) {
               var Attendeelist = res.data.Attendee
+              Attendeelist[res.data.Sponser] = {}
               wx.cloud.callFunction({
                 name: 'deleteEventUser',
                 data: {
@@ -124,35 +128,67 @@ Page({
               })
             }
           })
-        } else {
+        } else {}
+      }
+    })
+  },
+  onAttendLongPress: function (event) {
+    let that = this
+    let id = event.currentTarget.id
+    var AttendEvent = this.data.AttendEvent
+
+    wx.showModal({
+      title: '提示',
+      content: '确定要取消加入此事件吗？',
+      success: function (res) {
+        if (res.confirm) {
+          delete AttendEvent[id]
+          that.setData({
+            AttendEvent: AttendEvent
+          })
+          wx.cloud.callFunction({
+            name: 'deleteAttendEvent',
+            data: {
+              eventId: (id),
+              userId: app.globalData.user
+            }
+          })
+
         }
       }
     })
   },
 
 
-  onUpdateEvents: function(){
-
+  onUpdateEvents: function () {
     var that = this;
-    const db = wx.cloud.database()
-    db.collection('users').doc(app.globalData.user).get({
-      success: function (res) {
-        console.log(res.data)
 
-        var SponsorEvent = res.data.SponsorEvent
-        var AttendEvent = {}
-        for (var id in res.data.AttendEvent) {
-          if (!SponsorEvent[id]) AttendEvent[id] = res.data.AttendEvent[id]
+    db.collection("users")
+      .doc(app.globalData.user)
+      .get({
+        success: function (res) {
+          var SponsorEvent = res.data.SponsorEvent;
+          var AttendEvent = res.data.AttendEvent;
+          // console.log(SponsorEvent)
+          for (var key in SponsorEvent) {
+            if (key in AttendEvent) {
+              delete AttendEvent[key];
+            }
+          }
+
+
+          that.setData({
+            SponsorEvent: SponsorEvent,
+            AttendEvent: AttendEvent
+          })
+          wx.stopPullDownRefresh();
+          wx.hideLoading();
+
+        },
+        fail: function (res) {
+          console.error('error on updating ');
         }
-        app.globalData.SponsorEvent = SponsorEvent
-        app.globalData.AttendEvent = AttendEvent
-        that.setData({
-          SponsorEvent: app.globalData.SponsorEvent,
-          AttendEvent: app.globalData.AttendEvent
-        })
-
-      }
-    })
+      })
   }
 
 })

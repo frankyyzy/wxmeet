@@ -1,35 +1,33 @@
 // pages/profile/profile.js
-const app = getApp()
+const app = getApp();
+
 Page({
   /**
    * Page initial data
    */
   data: {
-
-    user: '',
+    user: "",
     dates: [],
-    datechoose: [0, 0, 0, 0, 0, 0, 0, 0],
-    totaldate: 0,
-    start: -1,
-    end: -1,
-    edit: false,
+    totaldate: 3,
+    isCreate: false,
     intervals: [],
-    eventId:'',
-    eventName:'',
+    prevIntervals: [], // array to store intervals before this touch operation
+    toSet: false,
+    eventId: "",
+    eventName: "",
     createTime: -1,
-    windowHeight:0,
-    windowWidtht:0,
-    touchIntervals:[],
-    startx: 0,
-    starty: 0,
-    endx: 0,
-    endy: 0,
-    buttom: false,
+    windowHeight: 0,
+    windowWidtht: 0,
+    timer: null,
+    startHour: null,
+    startDate: null,
+    rowHeight: 30 // in px
   },
 
   /**
    * Lifecycle function--Called when page load
    */
+<<<<<<< HEAD
   onLoad: function (options) {
     wx.clearStorageSync()
     console.log("Hello1")
@@ -102,207 +100,295 @@ Page({
         intervals: value,
       })
     }
+=======
+  onLoad: function(options) {
+
+    console.log(options);
+    let that = this;
+    var datesTitle = ["小时"];
+    datesTitle = datesTitle.concat(JSON.parse(options.datesArr));
+    console.log(datesTitle);
+
+    that.setData({
+      eventName: options.eventName,
+      dates: datesTitle,
+      totaldate: datesTitle.length,
+      user: app.globalData.user
+    });
+    var intervals = [];
+    for (var i = 0; i < that.data.totaldate - 1; i++) {
+      var interves = [];
+      for (var j = 0; j < 24; j++) {
+        interves.push(false);
+      }
+      intervals.push(interves);
+    }
+    // if creating new event
+    if (options.isCreate) {
+      that.data.isCreate = options.isCreate;
+      that.setData({
+        intervals: intervals
+      });
+    }
+    //if editing user intervals
+    else {
+      that.setData({
+        intervals: options.userIntervals
+          ? JSON.parse(options.userIntervals)
+          : intervals,
+        eventId: options.eventId,
+        createTime: parseInt(options.createDate)
+      });
+    }
+    that.data.dates.splice(0, 1);
+
+    // set the height of each row
+    wx.getSystemInfo({
+      success: function(res) {
+        // 高度,宽度 单位为px
+        that.setData({
+          windowHeight: res.windowHeight,
+          windowWidth: res.windowWidth,
+          rowHeight: res.windowHeight / 30
+        });
+      }
+    });
   },
 
+  blockTouchStart: function(e) {
+    // deep copy 2d array
+    let intervalToSet = [];
+    for (let dayArr of this.data.intervals) {
+      let temp = [];
+      for (let value of dayArr) {
+        temp.push(value);
+      }
+      intervalToSet.push(temp);
+    }
+    this.data.prevIntervals = intervalToSet;
+
+    var date = parseInt(e.target.id[0]); // 0th char
+    var hour = parseInt(e.target.id.substr(1)); // 1st to end
+
+    this.data.startDate = date;
+    this.data.startHour = hour;
+
+    this.setData({
+      toSet: !this.data.prevIntervals[date][hour]
+    });
+  },
+
+  blockTouchMove: function(e) {
+    var horizontal = e.changedTouches[0].pageX;
+    var vertical = e.changedTouches[0].pageY;
+    var n = this.data.totaldate;
+
+    var date = parseInt((n * horizontal) / (0.98 * this.data.windowWidth)) - 1;
+    var hour = vertical / this.data.rowHeight - 1;
+
+    var sHour = this.data.startHour;
+    var sDate = this.data.startDate;
+
+    // deep copy 2d array
+    var intervalToSet = [];
+
+    for (let dayArr of this.data.prevIntervals) {
+      let temp = [];
+      for (let value of dayArr) {
+        temp.push(value);
+      }
+      intervalToSet.push(temp);
+    }
+
+    if (date >= sDate) {
+      for (let currDate = sDate; currDate <= date; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        }
+      }
+    } else {
+      for (let currDate = date; currDate <= sDate; currDate++) {
+        if (hour > sHour) {
+          for (var i = sHour; i <= hour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        } else {
+          for (var i = Math.floor(hour); i <= sHour; i++) {
+            intervalToSet[currDate][i] = this.data.toSet;
+          }
+        }
+      }
+    }
+
+    this.setData({
+      intervals: intervalToSet
+    });
+>>>>>>> origin/Karl
+  },
+
+  blockTouchEnd: function(e) {
+    this.setData({
+      prevIntervals: this.data.intervals
+    });
+  },
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function () {
-
-  },
+  onReady: function() {},
 
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function () { },
+  onShow: function() {},
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function () {
-
-  },
+  onHide: function() {},
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function () {
-
-  },
+  onUnload: function() {},
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function () {
-
-  },
+  onPullDownRefresh: function() {},
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function () {
-
-  },
+  onReachBottom: function() {},
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function() {},
+  onSubmitTap: function() {
+    wx.showLoading({});
+    var that = this;
+    if (that.data.isCreate) {
+      var createTime = new Date().getTime();
+      wx.cloud.callFunction({
+        name: "creatEvent",
+        data: {
+          id: that.data.user,
+          name: that.data.eventName,
+          dates: that.data.dates,
+          createDate: createTime
+        },
+        success: res => {
+          that.setData({
+            eventId: res.result._id
+          });
+          that.updateAttendeeOfEvent(createTime);
+        }
+      });
+    } else {
+      var that = this;
+      wx.cloud.callFunction({
+        name: "updateAttendEvent",
+        data: {
+          id: that.data.user,
+          eventId: that.data.eventId,
+          eventName: that.data.eventName,
+          createTime: that.data.createTime
+        },
+        success: res => {
+          wx.cloud.callFunction({
+            name: "testupdate",
+            data: {
+              eventId: that.data.eventId,
+              id: that.data.user,
+              dates: that.data.dates,
+              times: that.data.intervals
+            },
+            success: res => {
+              wx.navigateBack({
+                delta: 1
+              });
+            }
+          });
+        }
+      });
+    }
   },
 
+<<<<<<< HEAD
   onSubmitTap: function () {
     wx.setStorageSync("time", this.data.intervals)
+=======
+  updateAttendeeOfEvent: function(createTime) {
+    wx.navigateBack({
+      delta: 2
+    });
+>>>>>>> origin/Karl
     wx.showLoading({
-      title: '',
-    })
-    this.updateUser()
-    var that = this
-    const db = wx.cloud.database()
-    const _ = db.command
+      title: ""
+    });
+    this.updateSponsorAndAttendee(createTime);
+    var that = this;
     wx.cloud.callFunction({
-      name: 'testupdate',
+      name: "testupdate",
       data: {
         eventId: that.data.eventId,
         id: that.data.user,
         dates: that.data.dates,
-        times: that.data.intervals,
+        times: that.data.intervals
       },
       success: res => {
-        // console.log(that.data.eventId)
-        console.log('更新数据成功')
-        wx.redirectTo({
-          url: '/pages/masterEvent/masterEvent?eventId=' + that.data.eventId,
-        })
+        wx.navigateTo({
+          url: "/pages/event/event?eventId=" + that.data.eventId
+        });
       }
-    })
+    });
   },
-  updateUser: function () {
-    var that = this
+
+  updateSponsorAndAttendee: function(createTime) {
+    var that = this;
     wx.cloud.callFunction({
-      name: 'updateAttendEvent',
+      name: "updateSponsorEvent",
       data: {
         id: that.data.user,
         eventId: that.data.eventId,
         eventName: that.data.eventName,
-        createTime: that.data.createTime
+        createTime: createTime
       },
       success: res => {
-        console.log('新增用户参与事件！')
+        console.log("新增用户创建事件！");
+        wx.cloud.callFunction({
+          name: "updateAttendEvent",
+          data: {
+            id: that.data.user,
+            eventId: that.data.eventId,
+            eventName: that.data.eventName,
+            createTime: createTime
+          },
+          success: res => {}
+        });
       }
-    })
+    });
   },
 
-  mytouchstart: function (e) {
-    var sx = e.touches[0].pageX;
-    var sy = e.touches[0].pageY;
-    var intervalls = this.data.intervals
-    if (sy < 0.065 * this.data.windowHeight) {
-      this.setData({
-        buttom: true,
-      })
-    }
-    else{
-      this.setData({
-        touchIntervals:intervalls,
-        startx: sx,
-        starty: sy,
-        buttom: false,
-      })
-    }
-
-
-  },
-  //长按事件
-  mytouchmove: function (e) {
-    var sx = e.touches[0].pageX;
-    var sy = e.touches[0].pageY;
-    this.setData({
-      endx: sx,
-      endy: sy,
-    })
-    var n = this.data.totaldate;
-    var intervalls = this.data.touchIntervals;
-    var startxx = this.data.startx;
-    var startyy = this.data.starty;
-    var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
-    var endj = parseInt(n * sx / (0.98 * this.data.windowWidth)) - 1;
-    var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    var endi = parseInt((sy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-    
-    // for (var i = starti; i <= endi; i++) {
-    //   for (var j = startj; j <= endj; j++) {
-    //     if (!intervalls[j][i]) {
-    //       intervalls[j][i] = true;
-    //     }
-    //     else {
-    //       intervalls[j][i] = false;
-    //     }
-    //   }
-    // }
-    // this.setData({
-    //   intervals: intervalls,
-    // })
-
-  },
-  mytouchend: function (e) {
-    if(!this.data.buttom) {
-      var intervalls = this.data.intervals
-      var startxx = this.data.startx;
-      var startyy = this.data.starty;
-      var endxx = this.data.endx;
-      var endyy = this.data.endy;
-      var n = this.data.totaldate;
-      var startj = parseInt(n * startxx / (0.98 * this.data.windowWidth)) - 1;
-      var endj = parseInt(n * endxx / (0.98 * this.data.windowWidth)) - 1;
-      var starti = parseInt((startyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-      var endi = parseInt((endyy - 0.065 * this.data.windowHeight) / (0.935 * this.data.windowHeight / 25)) - 1;
-      console.log(starti)
-      console.log(endi)
-      console.log(startj)
-      console.log(endj)
-      for (var i = starti; i <= endi; i++) {
-        for (var j = startj; j <= endj; j++) {
-          if (!intervalls[j][i]) {
-            intervalls[j][i] = true;
-          }
-          else {
-            intervalls[j][i] = false;
-          }
-        }
-      }
-      this.setData({
-        intervals: intervalls,
-      })
-    }
-  },
-  mytap: function (e) {
-    var Name = parseInt(e.target.id[0])
-    console.log(Name)
-    var idd = e.target.id
-    var ID = '';
-    for (let i = 1; i < idd.length; i++) {
-      ID = ID + idd[i];
-    }
-    ID = parseInt(ID);
-    console.log(ID)
-    var interv = []
-    interv = this.data.intervals
-    if (!interv[Name][ID]) {
-      interv[Name][ID] = true;
-    }
-    else {
-      interv[Name][ID] = false;
-    }
+  mytap: function(e) {
+    var date = parseInt(e.target.id[0]); // 0th char
+    var hour = parseInt(e.target.id.substr(1)); // 1st to end
+    var interv = this.data.intervals;
+    interv[date][hour] = !interv[date][hour];
     this.setData({
       intervals: interv
-    })
+    });
   },
-  testposition: function (e) {
+
+  testposition: function(e) {
     var sx = e.touches[0].pageX;
     var sy = e.touches[0].pageY;
-    console.log(sx)
-    console.log(sy)
   }
-
-})
+});

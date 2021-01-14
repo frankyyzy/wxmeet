@@ -1,1 +1,33 @@
 /* pages/profile/profile.wxss */
+.headerimage{
+  width: 100%;
+}
+
+.createButton {
+  margin: 1em 2em;
+}
+
+
+.title {
+  padding: 0.1em 1em;
+  font-size: 20pt;
+  background: #E0E3DA;
+  color: rgba(0,0,0,0.5)
+}
+
+
+.divLine {
+ background: #E0E3DA;
+ margin: auto;
+ width: 90%;
+ height: 3rpx;
+}
+
+.items {
+  margin: 0.2em;
+}
+.help {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+}
